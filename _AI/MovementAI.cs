@@ -9,6 +9,9 @@ namespace Advencursor._AI
 {
     public abstract class MovementAI
     {
+        public bool stop { get; set; } = false;
         public abstract void Move(Sprite sprite);
+        public abstract void Stop();
+        public abstract void Start();
     }
 }

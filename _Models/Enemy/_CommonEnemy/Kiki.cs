@@ -10,34 +10,38 @@ using System.Threading.Tasks;
 
 namespace Advencursor._Models.Enemy._CommonEnemy
 {
-    public class Kiki : CommonEnemy
+    public class Kiki : _Enemy
     {
+        
         public Kiki(Texture2D texture, Vector2 position, int health, int row, int column) : base(texture, position, health)
         {
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  1, true) },
+                { "Attack", new(texture,row,column,2,1,false) },
                 
             };
+            indicator = "Idle";
         }
 
         public override void Update(GameTime gameTime)
         {
-            foreach (var animation in animations)
+            if (animations.ContainsKey(indicator))
             {
-                animation.Value.Update(gameTime);
-                collision = animation.Value.GetCollision(position);
+                animations[indicator].Update(gameTime);
+                collision = animations[indicator].GetCollision(position);
             }
+
             movementAI.Move(this);
-            speed = 300;
+            velocity = new(300,300);
         }
 
-        public override void Draw()
+        /*public override void Draw()
         {
-            foreach (var animation in animations)
+            if (animations.ContainsKey(indicator))
             {
-                animation.Value.Draw(position);
+                animations[indicator].Draw(position);
             }
-        }
+        }*/
     }
 }

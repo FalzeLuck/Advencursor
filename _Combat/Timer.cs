@@ -21,14 +21,13 @@ namespace Advencursor._Combat
         private bool active;
         public bool Repeat {  get; set; }
 
-        public Timer(Texture2D texture,SpriteFont font, Vector2 position,  float length)
+        public Timer(Texture2D texture,SpriteFont font, Vector2 position)
         {
             this.texture = texture;
             this.position = position;
             textPosition = new(position.X + 32, position.Y + 2);
             this.font = font;
-            this.timeLength = length;
-            this.timeLeft = length;
+            this.timeLeft = 0f;
             text = string.Empty;
         }
 
@@ -51,20 +50,7 @@ namespace Advencursor._Combat
         public void Update()
         {
             if (!active) return;
-            timeLeft -= TimeManager.TotalSeconds;
-
-            if(timeLeft <= 0)
-            {
-                if (Repeat)
-                {
-                    Reset();
-                }
-                else
-                {
-                    StartStop();
-                    timeLeft = 0f;
-                }
-            }
+            timeLeft += TimeManager.TotalSeconds;
 
             FormatText();
         }

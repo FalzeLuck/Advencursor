@@ -22,6 +22,7 @@ namespace Advencursor._Animation
         public bool IsLooping { get; }
         public bool IsComplete { get; set; }
         public bool IsCollide;
+        public bool IsPause {  get; set; }
 
         public int currentFrame;
         public float timer;
@@ -41,6 +42,7 @@ namespace Advencursor._Animation
             currentFrame = 0;
             timer = 0f;
             IsComplete = false;
+            IsPause = false;
             IsCollide = false;
             offset = Vector2.Zero;
         }
@@ -57,6 +59,7 @@ namespace Advencursor._Animation
             currentFrame = (column * Startrow) - column;
             timer = 0f;
             IsComplete = false;
+            IsPause = false;
             IsCollide = false;
             offset = Vector2.Zero;
         }
@@ -143,5 +146,7 @@ namespace Advencursor._Animation
                 return new(startX, startY, frameWidth, frameHeight);
 
         }
+
+        
     }
 }

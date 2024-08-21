@@ -17,7 +17,7 @@ namespace Advencursor._Managers
         public static float TotalSeconds { get; set; }
         public static float BulletTime { get; private set; }
 
-        public static float fps = 30;
+        public static float framerate = 30;
 
         public static void Update(GameTime gameTime)
         {

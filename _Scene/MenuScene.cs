@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Advencursor._Scene.Stage;
 
 namespace Advencursor._Scene
 {
@@ -26,8 +27,8 @@ namespace Advencursor._Scene
 
         public void Load()
         {
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("playButton"), new Vector2(Globals.Bounds.X/2 ,Globals.Bounds.Y/2),OnPlayButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("playButton"), new Vector2(Globals.Bounds.X / 2, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X - 400 ,Globals.Bounds.Y/2),OnPlayButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
             uiManager.AddElement(playButton);
             uiManager.AddElement(exitButton);
         }
@@ -45,7 +46,7 @@ namespace Advencursor._Scene
 
         private void OnPlayButtonClick()
         {
-            sceneManager.AddScene(new GameScene(contentManager, sceneManager));
+            sceneManager.AddScene(new Stage1(contentManager, sceneManager));
         }
 
         private void OnExitButtonClick()

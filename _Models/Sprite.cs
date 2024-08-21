@@ -14,13 +14,13 @@ namespace Advencursor._Models
         protected Texture2D texture;
         protected Vector2 origin;
         public Vector2 position {  get; set; }
-        public int speed {  get; set; }
+        public Vector2 velocity {  get; set; }
         public float rotation {  get; set; }
 
         public SpriteEffects spriteEffects;
-        public bool flip;
 
         protected Dictionary<string ,Animation> animations;
+        public string indicator;
         protected int row;
         protected int column;
 
@@ -28,29 +28,23 @@ namespace Advencursor._Models
         {
             this.texture = texture;
             this.position = position;
-            speed = 300;
             origin = new Vector2(texture.Width/2, texture.Height/2);
             spriteEffects = SpriteEffects.None;
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+
         }
 
 
         public virtual void Draw()
         {
-            Globals.SpriteBatch.Draw(texture, position, null, Color.White, rotation, origin, 1, spriteEffects, 1);
+            if (animations.ContainsKey(indicator))
+            {
+                animations[indicator].Draw(position);
+            }
         }
 
-        public void FlipHorizontal()
-        {
-            if (flip == true)
-            {
-                spriteEffects = SpriteEffects.FlipHorizontally;
-                flip = false;
-            }
-            else if (flip == false)
-            {
-                spriteEffects = SpriteEffects.None;
-                flip = true;
-            }
-        }
     }
 }

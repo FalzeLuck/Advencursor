@@ -17,6 +17,7 @@ namespace Advencursor._Models.Enemy
         public Status Status { get; set; }
         public MovementAI movementAI { get; set; }
         public Rectangle collision;
+        public bool isAttacking;
 
         public _Enemy(Texture2D texture, Vector2 position, int health) : base(texture, position)
         {
@@ -24,7 +25,7 @@ namespace Advencursor._Models.Enemy
             animations = new Dictionary<string, Animation>();
         }
 
-        public abstract void Update(GameTime gameTime);
+
 
     }
 }

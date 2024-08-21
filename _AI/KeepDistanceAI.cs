@@ -16,6 +16,7 @@ namespace Advencursor._AI
         public override void Move(Sprite bot)
         {
             if (target == null) return;
+            if (stop) return;
 
             var direction = target.position - bot.position;
             var length = direction.Length();
@@ -23,14 +24,23 @@ namespace Advencursor._AI
             if (length > distance + 2)
             {
                 direction.Normalize();
-                bot.position += direction * bot.speed * TimeManager.TotalSeconds;
+                bot.position += direction * bot.velocity * TimeManager.TotalSeconds;
             }
 
             else if (length < distance - 2)
             {
                 direction.Normalize();
-                bot.position -= direction * bot.speed * TimeManager.TotalSeconds;
+                bot.position -= direction * bot.velocity * TimeManager.TotalSeconds;
             }
+        }
+
+        public override void Stop()
+        {
+            stop = true;
+        }
+        public override void Start()
+        {
+            stop = false;
         }
     }
 }

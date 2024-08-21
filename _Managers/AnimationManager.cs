@@ -51,6 +51,15 @@ namespace Advencursor._Managers
             }
         }
 
+        public void PauseFrame(string name,int frame)
+        {
+            Animation animation = GetAnimation(name);
+            animation.currentFrame = frame;
+            animation.IsComplete = false;
+            animation.IsCollide = true;
+
+        }
+
         public void Stop(string name)
         {
             Animation animation = GetAnimation(name);

@@ -1,5 +1,6 @@
 ﻿using Advencursor._Managers;
 using Advencursor._Scene;
+using Advencursor._Scene.Stage;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -50,7 +51,7 @@ namespace Advencursor
             Globals.SpriteFont = _font;
 
 
-            _sceneManager.AddScene(new GameScene(Content, _sceneManager));
+            _sceneManager.AddScene(new Stage1(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
@@ -68,7 +69,7 @@ namespace Advencursor
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin();
             _sceneManager.GetCurrScene().Draw(_spriteBatch);
