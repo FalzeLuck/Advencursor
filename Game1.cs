@@ -39,6 +39,7 @@ namespace Advencursor
 
             Globals.Content = Content;
             Globals.Game = this;
+            Globals.graphicsDevice = GraphicsDevice; 
 
             base.Initialize();
 

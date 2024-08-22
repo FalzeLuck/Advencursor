@@ -17,6 +17,10 @@ namespace Advencursor._Models.Enemy
         public bool charge;
         public bool dashing;
         public bool dashed;
+
+        public float stunduration;
+        public float stuntimer;
+        public bool stunned;
         
         public Rectangle checkRadius;
         public float charge_duration;
@@ -27,6 +31,7 @@ namespace Advencursor._Models.Enemy
             {
                 { "Idle", new(texture, row, column,1,  1, true) },
                 { "Attack", new(texture,row,column,2,1,false) },
+                {"Stun", new(texture,row,column,2,1,true) }
 
             };
             indicator = "Idle";
@@ -34,7 +39,7 @@ namespace Advencursor._Models.Enemy
             charge = false;
             dashing = false;
             dashed = false;
-
+            stunned = false;
             
         }
 
@@ -59,7 +64,7 @@ namespace Advencursor._Models.Enemy
             checkRadius = new Rectangle(newX, newY, newWidth, newHeight);
 
             //Limit Movement
-            if (!dashing)
+            if (!dashing && !stunned)
             {
                 if (position.Y > 470 && position.Y < 1080 - 200)
                 {
@@ -87,6 +92,13 @@ namespace Advencursor._Models.Enemy
                     dashing = false;
                 }
             }
+
+            //Stun
+            if (stunned)
+            {
+                stuntimer += TimeManager.TotalSeconds;
+                if(stuntimer > stunduration) stunned = false;
+            }
         }
 
         public void Dash(Sprite target)
@@ -104,6 +116,11 @@ namespace Advencursor._Models.Enemy
             }
         }
 
-
+        public void Stun(float stunduration)
+        {
+            stunned = true;
+            stuntimer = 0f;
+            this.stunduration = stunduration;
+        }
     }
 }

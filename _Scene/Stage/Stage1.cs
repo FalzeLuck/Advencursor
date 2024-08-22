@@ -39,10 +39,12 @@ namespace Advencursor._Scene.Stage
         private Boss1 boss_obj;
         List<Item> items;
 
+
         private readonly Timer timer;
         private Texture2D background;
 
         private readonly Random random = new Random();
+
 
         //Stage Timer & Controls
         private float clickCD;
@@ -127,6 +129,7 @@ namespace Advencursor._Scene.Stage
             soundManager.LoadSound("Beep",beep);
             SoundEffect charge = Globals.Content.Load<SoundEffect>("Sound/Boss1Charge");
             soundManager.LoadSound("Charge", charge);
+            soundManager.SetVolume("Charge", 0.2f);
             SoundEffect parry = Globals.Content.Load<SoundEffect>("Sound/Parry");
             soundManager.LoadSound("Parry", parry);
         }
@@ -185,7 +188,6 @@ namespace Advencursor._Scene.Stage
 
             if (boss_obj.charge)
             {
-
                 boss_obj.movementAI.Stop();
                 boss_obj.charge_duration += TimeManager.TotalSeconds;
                 if (boss_obj.charge_duration >= 2f)
@@ -202,7 +204,7 @@ namespace Advencursor._Scene.Stage
                     boss_obj.Dash(player);
                 }
             }
-            if (!boss_obj.dashing && !boss_obj.charge)
+            if (!boss_obj.dashing && !boss_obj.charge && !boss_obj.stunned)
             {
                 boss_obj.movementAI.Start();
                 boss_obj.indicator = "Idle";
@@ -216,6 +218,7 @@ namespace Advencursor._Scene.Stage
             //Parry Control
             if (player.TryParryAttack(boss_obj))
             {
+                boss_obj.Stun(2f);
                 boss_obj.isAttacking = false;
                 boss_obj.charge = false ;
                 player.Status.immunity = true;
@@ -266,8 +269,6 @@ namespace Advencursor._Scene.Stage
             player.Draw();
             ParticleManager.Draw();
             animationManager.Draw();
-            
-            
         }
 
         private void UpdatePlayer()
@@ -300,6 +301,7 @@ namespace Advencursor._Scene.Stage
             if (InputManager.MouseLeftClicked)
             {
                 animationManager.SetOffset("Slash", new Vector2(0, 0));
+                player.indicator = "Attack";
                 animationManager.Play("Slash");
             }
 
@@ -312,6 +314,7 @@ namespace Advencursor._Scene.Stage
                         enemy.Status.immunity = false;
                     }
                 }
+                player.indicator = "Idle";
                 animationManager.Stop("Slash");
             }
 
@@ -375,6 +378,5 @@ namespace Advencursor._Scene.Stage
                 }
             }
         }
-
     }
 }

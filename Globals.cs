@@ -13,6 +13,7 @@ namespace Advencursor
         public static ContentManager Content { get; set; }
         public static SpriteBatch SpriteBatch { get; set; }
         public static SpriteFont SpriteFont { get; set; }
+        public static GraphicsDevice graphicsDevice { get; set; }
         public static Point Bounds { get; set; }
         public static bool Paused = false;
 

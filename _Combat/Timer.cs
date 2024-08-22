@@ -57,7 +57,7 @@ namespace Advencursor._Combat
 
         public void Draw()
         {
-            Globals.SpriteBatch.Draw(texture,position,Color.White);
+            //Globals.SpriteBatch.Draw(texture,position,Color.White);
             Globals.SpriteBatch.DrawString(font, text, textPosition, Color.Black);
         }
     }
