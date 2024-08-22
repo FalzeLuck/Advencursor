@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:Animation/SlashTexture.png
 
+#begin Animation/Sparkle.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Animation/Sparkle.PNG
+
 #begin background.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -115,6 +127,24 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:playerTexture.png
+
+#begin Sound/Beep.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Beep.wav
+
+#begin Sound/Boss1Charge.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Boss1Charge.wav
+
+#begin Sound/Parry.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Parry.wav
 
 #begin TestUI.png
 /importer:TextureImporter

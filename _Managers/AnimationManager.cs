@@ -88,11 +88,11 @@ namespace Advencursor._Managers
             }
         }
 
-        public void Draw(Vector2 position)
+        public void Draw()
         {
             foreach (var animation in activeAnimations)
             {
-                animation.Draw(position);
+                animation.Draw(animation.position);
             }
         }
 
@@ -140,6 +140,14 @@ namespace Advencursor._Managers
         {
             Animation animation = GetAnimation(name);
             return animation.IsCollide;
+        }
+        public void UpdatePosition(string name,Vector2 position)
+        {
+            if (animations.ContainsKey(name))
+            {
+                Animation animation = animations[name];
+                animation.position = position;
+            }
         }
 
 

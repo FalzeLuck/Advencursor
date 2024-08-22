@@ -23,9 +23,13 @@ namespace Advencursor._Models
 
         public Rectangle collision {  get; private set; }
 
-        public float parryDuration = 0.5f;
+        public float parryDuration = 0.1f;
+        public float parryCooldown = 1.0f;
+
         private float parryTimer = 0f;
-        public bool IsParrying => parryTimer > 0;
+        private float cooldownTimer = 0f;
+        public bool isParrying => parryTimer > 0;
+        public bool CanParry => cooldownTimer <= 0;
 
 
 
@@ -34,6 +38,7 @@ namespace Advencursor._Models
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
+                { "Attack", new(texture, row, column,2,  TimeManager.framerate, true) }
             };
             indicator = "Idle";
             Skills = new Dictionary<Keys, Skill>();
@@ -70,11 +75,15 @@ namespace Advencursor._Models
 
         public void StartParry()
         {
-            parryTimer = parryDuration;
+            if (CanParry)
+            {
+                parryTimer = parryDuration;
+                cooldownTimer = parryCooldown;
+            }
         }
         public bool TryParryAttack(_Enemy enemy)
         {
-            if(IsParrying && enemy.isAttacking)
+            if(isParrying && enemy.isAttacking && collision.Intersects(enemy.parryZone))
             {
                 return true;
             }
@@ -93,6 +102,10 @@ namespace Advencursor._Models
             if (parryTimer > 0)
             {
                 parryTimer -= TimeManager.TotalSeconds;
+            }
+            if (cooldownTimer > 0)
+            {
+                cooldownTimer -= TimeManager.TotalSeconds;
             }
         }
 

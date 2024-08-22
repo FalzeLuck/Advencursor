@@ -17,6 +17,8 @@ using Microsoft.Xna.Framework.Input;
 using Advencursor._AI;
 using Advencursor._Models.Enemy._CommonEnemy;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
+
 
 namespace Advencursor._Scene.Stage
 {
@@ -26,6 +28,7 @@ namespace Advencursor._Scene.Stage
         private SceneManager sceneManager;
         private AnimationManager animationManager = new AnimationManager();
         private UIManager uiManager = new UIManager();
+        private SoundManager soundManager = new SoundManager();
 
         private SpriteFont font;
 
@@ -39,18 +42,24 @@ namespace Advencursor._Scene.Stage
         private readonly Timer timer;
         private Texture2D background;
 
+        private readonly Random random = new Random();
+
         //Stage Timer & Controls
         private float clickCD;
         private float immune_duration;
         private float boss_spawn_time;
         private float boss_dash_cooldown;
         private bool boss_spawned;
+        private float enemy_spawn_time;
+        private int enemy_count;
+        private int enemy_max = 20;
 
         public Stage1(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
             Globals.Game.IsMouseVisible = false;
+            Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             font = Globals.Content.Load<SpriteFont>("basicFont");
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
@@ -71,21 +80,13 @@ namespace Advencursor._Scene.Stage
             background = Globals.Content.Load<Texture2D>("background");
 
             //Player
-            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), 10,1,1);
+            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), 10,2,1);
 
             //Load enemies(Temp)
-            enemies = new List<_Enemy>
-            {
-            new Kiki(Globals.Content.Load<Texture2D>("Enemies/Kiki"), new(500, 500), 1, 2, 2)
-            {
-                movementAI = new FollowMovementAI
-                {
-                    target = player,
-                }
-            }
-        };
+            enemies = new List<_Enemy> ();
+            
 
-            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(0, 500), 10, 2, 1)
+            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(960, 0), 10, 2, 1)
             {
                 movementAI = new FollowMovementAI
                 {
@@ -94,8 +95,10 @@ namespace Advencursor._Scene.Stage
             };
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 2, column: 4, fps: 30, false);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 12, false);
             animationManager.AddAnimation("Slash", slashAnimation);
+            Animation sparkAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/Sparkle"), row: 1, column: 4, fps: 12, false);
+            animationManager.AddAnimation("Sparkle", sparkAnimation);
 
 
             //Temporary Skill
@@ -118,67 +121,152 @@ namespace Advencursor._Scene.Stage
             uiManager.AddElement(skillUI_E);
             uiManager.AddElement(skillUI_R);
             uiManager.AddElement(uIPanel);
+
+            //Load Sound
+            SoundEffect beep = Globals.Content.Load<SoundEffect>("Sound/Beep");
+            soundManager.LoadSound("Beep",beep);
+            SoundEffect charge = Globals.Content.Load<SoundEffect>("Sound/Boss1Charge");
+            soundManager.LoadSound("Charge", charge);
+            SoundEffect parry = Globals.Content.Load<SoundEffect>("Sound/Parry");
+            soundManager.LoadSound("Parry", parry);
         }
 
         public void Update(GameTime gameTime)
         {
             //Timer
             boss_spawn_time += TimeManager.TotalSeconds;
+            enemy_spawn_time += TimeManager.TotalSeconds;
             if (boss_obj.dashed)
             {
                 boss_dash_cooldown += TimeManager.TotalSeconds;
             }
-            if (boss_dash_cooldown > 15f)
+            if (boss_dash_cooldown > 10f)
             {
                 boss_obj.dashed = false;
                 boss_dash_cooldown = 0;
             }
 
             //Spawning
-            if(boss_spawn_time > 5f && !boss_spawned)
+            if (enemy_spawn_time >= 2f && !boss_spawned)
             {
-                enemies.Add(boss_obj);
+                enemies.Add(new Kiki(
+                    Globals.Content.Load<Texture2D>("Enemies/Kiki"),
+                    new(0, random.Next(200, 900)),
+                    health: 3,
+                    row: 2,
+                    column: 2
+                    )
+                {
+                    movementAI = new FollowMovementAI
+                    {
+                        target = player,
+                    }
+                });
+                enemy_spawn_time = 0;
+            }
+            if(boss_spawn_time > 1f && !boss_spawned)
+            {
                 boss_spawned = true;
             }
 
             //Boss Control
-            if (player.collision.Intersects(boss_obj.checkRadius) && boss_obj.dashed)
+            if (boss_spawned && boss_obj.Status.IsAlive())
             {
-                boss_obj.movementAI.Stop();
-                boss_obj.dashed = true;
+                boss_obj.Update(gameTime);
             }
-            else
+
+            if (player.collision.Intersects(boss_obj.checkRadius) && !boss_obj.dashed)
+            {
+                boss_obj.dashed = true;
+                boss_obj.charge = true;
+                boss_obj.charge_duration = 0;
+                soundManager.PlaySound("Charge");
+            }
+
+            if (boss_obj.charge)
+            {
+
+                boss_obj.movementAI.Stop();
+                boss_obj.charge_duration += TimeManager.TotalSeconds;
+                if (boss_obj.charge_duration >= 2f)
+                {
+                    soundManager.StopSound("Charge");
+                    boss_obj.isAttacking = true;
+                    soundManager.PlaySound("Beep");
+                    
+                }
+                if (boss_obj.charge_duration >= 3f)
+                {
+                    boss_obj.charge = false;
+                    boss_obj.isAttacking = false;
+                    boss_obj.Dash(player);
+                }
+            }
+            if (!boss_obj.dashing && !boss_obj.charge)
             {
                 boss_obj.movementAI.Start();
+                boss_obj.indicator = "Idle";
+            }
+            if (!boss_obj.Status.IsAlive())
+            {
+                boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
+            }
+
+
+            //Parry Control
+            if (player.TryParryAttack(boss_obj))
+            {
+                boss_obj.isAttacking = false;
+                boss_obj.charge = false ;
+                player.Status.immunity = true;
+                boss_obj.Status.TakeDamage(5);
+                soundManager.PlaySound("Parry");
+                animationManager.SetOffset("Sparkle", new Vector2(0, 0));
+                animationManager.UpdatePosition("Sparkle", player.position);
+                animationManager.Play("Sparkle");
+            }
+            foreach (var enemy in enemies)
+            {
+                if (player.TryParryAttack(enemy))
+                {
+                    animationManager.SetOffset("Sparkle", new Vector2(0, 0));
+                    animationManager.UpdatePosition("Sparkle", player.position);
+                    animationManager.Play("Sparkle");
+                    enemies.Remove(enemy);
+                    break;
+                }
             }
 
             //Mash Update
             timer.Update();
             player.Update(gameTime);
             animationManager.Update(gameTime);
+            animationManager.UpdatePosition("Slash",player.position);
             ParticleManager.Update();
             uiManager.Update(gameTime);
             UpdatePlayer();
             UpdateEnemies(gameTime);
 
-            foreach (var enemy in enemies)
-            {
-                Trace.WriteLine(boss_obj.checkRadius);
-            }
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(background, Vector2.Zero, Color.Gray);
+            //spriteBatch.Draw(background, Vector2.Zero, Color.Gray);
             timer.Draw();
             uiManager.Draw(spriteBatch);
-            player.Draw();
-            ParticleManager.Draw();
-            animationManager.Draw(player.position);
             foreach (var enemy in enemies)
             {
                 enemy.Draw();
             }
+            if (boss_spawned)
+            {
+                boss_obj.Draw();
+            }
+            player.Draw();
+            ParticleManager.Draw();
+            animationManager.Draw();
+            
             
         }
 
@@ -186,7 +274,6 @@ namespace Advencursor._Scene.Stage
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
             {
-
                 player.UseSkill(Keys.Q);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W))
@@ -206,11 +293,7 @@ namespace Advencursor._Scene.Stage
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                foreach (var enemy in enemies)
-                {
-                    enemy.movementAI.Start();
-                }
-
+                player.StartParry();
             }
 
 
@@ -232,11 +315,18 @@ namespace Advencursor._Scene.Stage
                 animationManager.Stop("Slash");
             }
 
+            if (animationManager.IsComplete("Sparkle"))
+            {
+
+                animationManager.Stop("Sparkle");
+            }
+
             foreach (var item in items)
             {
                 player.EquipItem(item);
                 item.skill.Update(TimeManager.TotalSeconds);
             }
+
         }
         private void UpdateEnemies(GameTime gameTime)
         {
@@ -247,10 +337,13 @@ namespace Advencursor._Scene.Stage
                 {
                     enemy.Status.TakeDamage(1);
                     enemy.Status.immunity = true;
+                    enemy.movementAI.Stop();
+                    enemy.recovery_time = 0;
                 }
 
                 if (!enemy.Status.IsAlive())
                 {
+                    enemy.position = new Vector2(2000, 2000);
                     enemies.Remove(enemy);
                     break; //Don't remove. If remove = crash
                 }
@@ -261,8 +354,9 @@ namespace Advencursor._Scene.Stage
                     player.Status.TakeDamage(1);
                     player.Status.immunity = true;
                     enemy.movementAI.Stop();
+                    enemy.recovery_time = 0;
                 }
-                if (immune_duration > 0.25f)
+                if (enemy.recovery_time > 1f)
                 {
                     enemy.indicator = "Idle";
                     enemy.movementAI.Start();
@@ -274,7 +368,7 @@ namespace Advencursor._Scene.Stage
             {
                 immune_duration += TimeManager.TotalSeconds;
 
-                if (immune_duration > 0.5f)
+                if (immune_duration > 1f)
                 {
                     player.Status.immunity = false;
                     immune_duration = 0f;

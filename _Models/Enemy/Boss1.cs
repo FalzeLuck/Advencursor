@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +14,12 @@ namespace Advencursor._Models.Enemy
 {
     public class Boss1 : _Enemy
     {
+        public bool charge;
+        public bool dashing;
         public bool dashed;
+        
         public Rectangle checkRadius;
+        public float charge_duration;
 
         public Boss1(Texture2D texture, Vector2 position, int health, int row, int column) : base(texture, position, health)
         {
@@ -26,7 +31,10 @@ namespace Advencursor._Models.Enemy
             };
             indicator = "Idle";
 
+            charge = false;
+            dashing = false;
             dashed = false;
+
             
         }
 
@@ -39,6 +47,8 @@ namespace Advencursor._Models.Enemy
                 collision = animations[indicator].GetCollision(position);
             }
 
+            UpdateParryZone();
+
             //Update Radius
             checkRadius = collision;
             int increaseamount = 300;
@@ -48,22 +58,50 @@ namespace Advencursor._Models.Enemy
             int newHeight = checkRadius.Height + increaseamount;
             checkRadius = new Rectangle(newX, newY, newWidth, newHeight);
 
-            if (position.Y > 470 && position.Y < 1080-200)
+            //Limit Movement
+            if (!dashing)
             {
-                velocity = new(50, 50);
-            }
-            else if (position.Y <= 470)
-            {
-                velocity = new(50,0);
-                position = new(position.X,position.Y + 1);
-            }
-            else if (position.Y >= 1080 - 200)
-            {
-                velocity = new(50, 0);
-                position = new(position.X, position.Y - 1);
+                if (position.Y > 470 && position.Y < 1080 - 200)
+                {
+                    velocity = new(50, 50);
+                }
+                else if (position.Y <= 470)
+                {
+                    velocity = new(50, 0);
+                    position = new(position.X, position.Y + 1);
+                }
+                else if (position.Y >= 1080 - 200)
+                {
+                    velocity = new(50, 0);
+                    position = new(position.X, position.Y - 1);
+                }
             }
 
-            
+            //Dashing
+            if (dashing)
+            {
+                position += velocity * TimeManager.TotalSeconds;
+
+                if(collision.X+collision.Width >= Globals.Bounds.X || collision.X <= 0)
+                {
+                    dashing = false;
+                }
+            }
+        }
+
+        public void Dash(Sprite target)
+        {
+            dashing = true;
+            var direction = target.position - position;
+            direction.Normalize();
+            if (target.position.X > position.X)
+            {
+                velocity = new(1000,direction.Y);
+            }
+            else
+            {
+                velocity = new(-1000,direction.Y);
+            }
         }
 
 

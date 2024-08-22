@@ -23,6 +23,7 @@ namespace Advencursor._Models
         public string indicator;
         protected int row;
         protected int column;
+        public float recovery_time;
 
         public Sprite(Texture2D texture,Vector2 position)
         {

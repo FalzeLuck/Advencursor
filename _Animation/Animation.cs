@@ -28,6 +28,7 @@ namespace Advencursor._Animation
         public float timer;
 
         public Vector2 offset { get; set; }
+        public Vector2 position { get; set; }
 
 
         public Animation(Texture2D texture,int row, int column,  float fps, bool IsLooping)

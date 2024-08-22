@@ -17,6 +17,7 @@ namespace Advencursor._Models.Enemy
         public Status Status { get; set; }
         public MovementAI movementAI { get; set; }
         public Rectangle collision;
+        public Rectangle parryZone;
         public bool isAttacking;
 
         public _Enemy(Texture2D texture, Vector2 position, int health) : base(texture, position)
@@ -25,7 +26,16 @@ namespace Advencursor._Models.Enemy
             animations = new Dictionary<string, Animation>();
         }
 
-
+        public void UpdateParryZone()
+        {
+            parryZone = collision;
+            int increaseamount = 300;
+            int newX = parryZone.X - increaseamount / 2;
+            int newY = parryZone.Y - increaseamount / 2;
+            int newWidth = parryZone.Width + increaseamount;
+            int newHeight = parryZone.Height + increaseamount;
+            parryZone = new Rectangle(newX, newY, newWidth, newHeight);
+        }
 
     }
 }
