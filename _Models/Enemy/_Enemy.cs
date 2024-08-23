@@ -20,9 +20,9 @@ namespace Advencursor._Models.Enemy
         public Rectangle parryZone;
         public bool isAttacking;
 
-        public _Enemy(Texture2D texture, Vector2 position, int health) : base(texture, position)
+        public _Enemy(Texture2D texture, Vector2 position, int health,int attack) : base(texture, position)
         {
-            Status = new(health);
+            Status = new(health, attack);
             animations = new Dictionary<string, Animation>();
         }
 

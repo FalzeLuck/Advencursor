@@ -12,10 +12,12 @@ namespace Advencursor._Managers
     public class UIManager
     {
         private List<UIElement> uiElements;
+        private Dictionary<string, ProgressBar> progressBarDictionary;
 
         public UIManager()
         {
             uiElements = new List<UIElement>();
+            progressBarDictionary = new Dictionary<string, ProgressBar>();
         }
 
         public void AddElement(UIElement element)
@@ -23,11 +25,21 @@ namespace Advencursor._Managers
             uiElements.Add(element);
         }
 
+        public void AddElement(string barName,ProgressBar progressBar)
+        {
+            progressBarDictionary.Add(barName, progressBar);
+        }
+
+
         public void Update(GameTime gameTime)
         {
             foreach (var element in uiElements)
             {
                 element.Update(gameTime);
+            }
+            foreach (var value in progressBarDictionary.Values)
+            {
+                value.Update(gameTime);
             }
         }
 
@@ -37,8 +49,18 @@ namespace Advencursor._Managers
             {
                 element.Draw(spriteBatch);
             }
+            foreach (var value in progressBarDictionary.Values)
+            {
+                value.Draw(spriteBatch);
+            }
         }
 
-
+        public void UpdateBarValue(string barName,float value)
+        {
+            if (progressBarDictionary.ContainsKey(barName))
+            {
+                progressBarDictionary[barName].UpdateValue(value);
+            }
+        }
     }
 }

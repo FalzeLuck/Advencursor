@@ -27,7 +27,6 @@ namespace Advencursor._Scene.Stage
         private ContentManager contentManager;
         private SceneManager sceneManager;
         private AnimationManager animationManager = new AnimationManager();
-        private UIManager uiManager = new UIManager();
         private SoundManager soundManager = new SoundManager();
 
         private SpriteFont font;
@@ -56,6 +55,9 @@ namespace Advencursor._Scene.Stage
         private int enemy_count;
         private int enemy_max = 20;
 
+        //UI
+        private UIManager uiManager = new UIManager();
+
         public Stage1(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
@@ -82,13 +84,13 @@ namespace Advencursor._Scene.Stage
             background = Globals.Content.Load<Texture2D>("background");
 
             //Player
-            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), 10,2,1);
+            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 10, attack: 1, row: 2, column: 1);
 
             //Load enemies(Temp)
             enemies = new List<_Enemy> ();
             
 
-            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(960, 0), 10, 2, 1)
+            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(960, 0), health: 10,attack:2,row: 2,column: 1)
             {
                 movementAI = new FollowMovementAI
                 {
@@ -156,6 +158,7 @@ namespace Advencursor._Scene.Stage
                     Globals.Content.Load<Texture2D>("Enemies/Kiki"),
                     new(0, random.Next(200, 900)),
                     health: 3,
+                    attack: 1,
                     row: 2,
                     column: 2
                     )
@@ -167,9 +170,14 @@ namespace Advencursor._Scene.Stage
                 });
                 enemy_spawn_time = 0;
             }
-            if(boss_spawn_time > 1f && !boss_spawned)
+            if(boss_spawn_time > 45f && !boss_spawned)
             {
                 boss_spawned = true;
+
+                Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
+                Texture2D fg = Globals.Content.Load<Texture2D>("UI/HealthBarFull");
+                ProgressBarAnimated bossBar = new ProgressBarAnimated(bg,fg,boss_obj.Status.MaxHP,new(Globals.Bounds.X/2,100));
+                uiManager.AddElement("bossBar",bossBar);
             }
 
             //Boss Control
@@ -211,8 +219,13 @@ namespace Advencursor._Scene.Stage
             }
             if (boss_obj.collision.Intersects(player.collision) && boss_obj.dashing)
             {
-                player.Status.TakeDamage(5);
+                player.Status.TakeDamage(boss_obj.Status.Attack * 3);
                 player.Status.immunity = true;
+            }
+            if(boss_obj.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
+            {
+                boss_obj.Status.TakeDamage(player.Status.Attack);
+                boss_obj.Status.immunity = true ;
             }
             if (!boss_obj.Status.IsAlive())
             {
@@ -228,7 +241,7 @@ namespace Advencursor._Scene.Stage
                 boss_obj.isAttacking = false;
                 boss_obj.charge = false ;
                 player.Status.immunity = true;
-                boss_obj.Status.TakeDamage(5);
+                boss_obj.Status.TakeDamage(player.Status.Attack * 2);
                 soundManager.PlaySound("Parry");
                 animationManager.SetOffset("Sparkle", new Vector2(0, 0));
                 animationManager.UpdatePosition("Sparkle", player.position);
@@ -253,8 +266,10 @@ namespace Advencursor._Scene.Stage
             animationManager.UpdatePosition("Slash",player.position);
             ParticleManager.Update();
             uiManager.Update(gameTime);
+            uiManager.UpdateBarValue("bossBar", boss_obj.Status.CurrentHP);
             UpdatePlayer();
             UpdateEnemies(gameTime);
+
 
             
         }
@@ -320,6 +335,7 @@ namespace Advencursor._Scene.Stage
                         enemy.Status.immunity = false;
                     }
                 }
+                boss_obj.Status.immunity = false ;
                 player.indicator = "Idle";
                 animationManager.Stop("Slash");
             }
@@ -360,7 +376,7 @@ namespace Advencursor._Scene.Stage
                 if (enemy.collision.Intersects(player.collision))
                 {
                     enemy.indicator = "Attack";
-                    player.Status.TakeDamage(1);
+                    player.Status.TakeDamage(enemy.Status.Attack);
                     player.Status.immunity = true;
                     enemy.movementAI.Stop();
                     enemy.recovery_time = 0;

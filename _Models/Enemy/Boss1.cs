@@ -25,7 +25,7 @@ namespace Advencursor._Models.Enemy
         public Rectangle checkRadius;
         public float charge_duration;
 
-        public Boss1(Texture2D texture, Vector2 position, int health, int row, int column) : base(texture, position, health)
+        public Boss1(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position, health,attack)
         {
             animations = new Dictionary<string, Animation>
             {

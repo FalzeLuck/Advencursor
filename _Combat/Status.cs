@@ -13,10 +13,11 @@ namespace Advencursor._Combat
         public int Attack {  get; private set; }
 
         public bool immunity;
-        public Status(int MaxHP) 
+        public Status(int MaxHP,int Attack) 
         {
             this.MaxHP = MaxHP;
             this.CurrentHP = MaxHP;
+            this.Attack = Attack;
             immunity = false;
         }
 
@@ -30,6 +31,15 @@ namespace Advencursor._Combat
             }
 
             if (CurrentHP < 0) {CurrentHP = 0; }
+        }
+
+        public void TakeDamageNoImmune(int damage)
+        {
+            if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
+
+            CurrentHP -= damage;
+
+            if (CurrentHP < 0) { CurrentHP = 0; }
         }
 
         public void Heal(int amount)

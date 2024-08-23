@@ -118,7 +118,7 @@ namespace Advencursor._Managers
             animations[name].offset = offset;
         }
 
-        public Rectangle GetCollision(string name,Vector2 position)
+        public Rectangle GetCollision(string name,Vector2 animationReleasePosition)
         {
             if (animations.ContainsKey(name))
             {
@@ -130,7 +130,7 @@ namespace Advencursor._Managers
                 int startY = (int)((position.Y-frameHeight/2) + animation.offset.Y);
                 */
 
-                return animation.GetCollision(position);
+                return animation.GetCollision(animationReleasePosition);
             }
             return new Rectangle(0,0, 0, 0);
             

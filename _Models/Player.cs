@@ -33,7 +33,7 @@ namespace Advencursor._Models
 
 
 
-        public Player(Texture2D texture, Vector2 position, int health, int row, int column) : base(texture, position)
+        public Player(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position)
         {
             animations = new Dictionary<string, Animation>
             {
@@ -42,7 +42,7 @@ namespace Advencursor._Models
             };
             indicator = "Idle";
             Skills = new Dictionary<Keys, Skill>();
-            Status = new(health);
+            Status = new(health,attack);
             Inventory = new Inventory();
         }
 
