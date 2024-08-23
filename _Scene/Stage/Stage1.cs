@@ -112,7 +112,7 @@ namespace Advencursor._Scene.Stage
 
 
             //Load UI
-            int space = 1920 / 15;
+            int space = 150;
             UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("TestUI"), new(space * 4, 1000), fire);
             UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("TestUI"), new(space * 6, 1000), fire);
             UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("TestUI"), new(space * 8, 1000), fire);
@@ -209,9 +209,15 @@ namespace Advencursor._Scene.Stage
                 boss_obj.movementAI.Start();
                 boss_obj.indicator = "Idle";
             }
+            if (boss_obj.collision.Intersects(player.collision) && boss_obj.dashing)
+            {
+                player.Status.TakeDamage(5);
+                player.Status.immunity = true;
+            }
             if (!boss_obj.Status.IsAlive())
             {
                 boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
+                sceneManager.RemoveScene(this);
             }
 
 

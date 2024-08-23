@@ -18,6 +18,8 @@ namespace Advencursor._Scene
         private ContentManager contentManager;
         private SceneManager sceneManager;
         private UIManager uiManager;
+
+        private Texture2D background;
         public MenuScene(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
@@ -31,6 +33,8 @@ namespace Advencursor._Scene
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
             uiManager.AddElement(playButton);
             uiManager.AddElement(exitButton);
+
+            background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
 
         public void Update(GameTime gameTime)
@@ -41,6 +45,7 @@ namespace Advencursor._Scene
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            Globals.SpriteBatch.Draw(background,Vector2.Zero,Color.White);
             uiManager.Draw(spriteBatch);
         }
 
