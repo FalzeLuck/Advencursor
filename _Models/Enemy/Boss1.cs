@@ -68,22 +68,35 @@ namespace Advencursor._Models.Enemy
             {
                 int topBound = 0;
                 int bottomBound = 1080;
+                int leftBound = 0;
+                int rightBound = 1920;
                 indicator = "Idle";
 
-                if (position.Y > topBound && position.Y < bottomBound)
+                if (collision.X > leftBound && collision.X + collision.Width < rightBound && collision.Y > topBound && collision.Y + collision.Height < bottomBound)
                 {
                     velocity = new(50, 50);
                 }
-                else if (position.Y <= topBound)
+                else if (collision.X <= leftBound)
+                {
+                    velocity = new(0,50);
+                    position += new Vector2(1,0);
+                }
+                else if (collision.Y <= topBound)
                 {
                     velocity = new(50, 0);
-                    position = new(position.X, position.Y + 1);
+                    position += new Vector2(0, 1);
                 }
-                else if (position.Y >= bottomBound)
+                else if (collision.X + collision.Width >= rightBound)
+                {
+                    velocity = new(0, 50);
+                    position -= new Vector2(1, 0);
+                }
+                else if (collision.Y + collision.Height >= bottomBound)
                 {
                     velocity = new(50, 0);
-                    position = new(position.X, position.Y - 1);
+                    position -= new Vector2(0, 1);
                 }
+
             }
 
             //Dashing
@@ -92,7 +105,7 @@ namespace Advencursor._Models.Enemy
                 indicator = "Attack";
                 position += velocity * TimeManager.TotalSeconds;
 
-                if(collision.X+collision.Width >= Globals.Bounds.X || collision.X <= 0)
+                if(collision.X+collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y+collision.Height >= Globals.Bounds.Y || collision.Y <= 0)
                 {
                     dashing = false;
                 }
@@ -112,14 +125,7 @@ namespace Advencursor._Models.Enemy
             dashing = true;
             var direction = target.position - position;
             direction.Normalize();
-            if (target.position.X > position.X)
-            {
-                velocity = new(1000,direction.Y);
-            }
-            else
-            {
-                velocity = new(-1000,direction.Y);
-            }
+            velocity = direction * 2000;
         }
 
         public void Stun(float stunduration)

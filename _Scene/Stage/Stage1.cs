@@ -173,12 +173,12 @@ namespace Advencursor._Scene.Stage
                     spawnSide = 1920;
                 }
                 commonEnemy.Add(new Common1(
-                    Globals.Content.Load<Texture2D>("Enemies/Kiki"),
+                    Globals.Content.Load<Texture2D>("Enemies/Common1"),
                     new(spawnSide, random.Next(200, 900)),
                     health: 3,
                     attack: 1,
-                    row: 2,
-                    column: 2
+                    row: 1,
+                    column: 4
                     )
                 {
                     movementAI = new FollowMovementAI
@@ -188,12 +188,12 @@ namespace Advencursor._Scene.Stage
                 });
                 enemy_spawn_time = 0;
             }
-            if (elite_spawn_time > 15f && !boss_spawned)
+            if (elite_spawn_time > 30f && !boss_spawned)
             {
                 eliteEnemy.Add(new Elite1(
                     Globals.Content.Load<Texture2D>("Enemies/Elite1"),
                     new(1920/2, 0),
-                    health: 10,
+                    health: 50,
                     attack: 1,
                     row: 4,
                     column: 1
@@ -238,6 +238,7 @@ namespace Advencursor._Scene.Stage
             {
                 if (player.TryParryAttack(enemy))
                 {
+                    soundManager.PlaySound("Parry");
                     animationManager.SetOffset("Sparkle", new Vector2(0, 0));
                     animationManager.UpdatePosition("Sparkle", player.position);
                     animationManager.Play("Sparkle");
@@ -248,6 +249,7 @@ namespace Advencursor._Scene.Stage
             {
                 if (player.TryParryAttack(elite))
                 {
+                    soundManager.PlaySound("Parry");
                     animationManager.SetOffset("Sparkle", new Vector2(0, 0));
                     animationManager.UpdatePosition("Sparkle", player.position);
                     animationManager.Play("Sparkle");
@@ -273,7 +275,7 @@ namespace Advencursor._Scene.Stage
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(background, Vector2.Zero, Color.Gray);
+            //spriteBatch.Draw(background, Vector2.Zero, Color.White);
             timer.Draw();
             uiManager.Draw(spriteBatch);
             foreach (var enemy in commonEnemy)

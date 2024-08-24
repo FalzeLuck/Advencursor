@@ -34,7 +34,7 @@ namespace Advencursor
             Globals.Bounds = new(1920, 1080);
             _graphics.PreferredBackBufferWidth = Globals.Bounds.X;
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
-            _graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
             Globals.Content = Content;

@@ -22,8 +22,8 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  1, true) },
-                { "Attack", new(texture,row,column,2,1,false) },
+                { "Idle", new(texture, row, column,1,  4, true) },
+                { "Attack", new(texture,row,column,1,1,false) },
                 
             };
             indicator = "Idle";
