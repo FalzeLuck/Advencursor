@@ -27,9 +27,15 @@ namespace Advencursor._Models
         public float parryCooldown = 1.0f;
 
         private float parryTimer = 0f;
-        private float cooldownTimer = 0f;
+        public float cooldownTimer {  get; private set; } = 0f;
         public bool isParrying => parryTimer > 0;
         public bool CanParry => cooldownTimer <= 0;
+
+
+        public bool isStun;
+        public float stunDuration;
+        public float stunWaitDuration;
+        public Vector2 stunPosition;
 
 
 
@@ -44,6 +50,9 @@ namespace Advencursor._Models
             Skills = new Dictionary<Keys, Skill>();
             Status = new(health,attack);
             Inventory = new Inventory();
+
+            isStun = false;
+            stunWaitDuration = 0f;
         }
 
 
@@ -90,10 +99,33 @@ namespace Advencursor._Models
             return false;
         }
 
+        public void Stun(float duration)
+        {
+            isStun = true;
+            stunDuration = duration;
+            stunPosition = position;
+        }
+
 
         public  override void Update(GameTime gameTime)
         {
-            position = new(InputManager._mousePosition.X,InputManager._mousePosition.Y);
+            if (!isStun)
+            {
+                position = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
+            }
+            if (isStun)
+            {
+                stunWaitDuration += TimeManager.TotalSeconds;
+                Mouse.SetPosition((int)stunPosition.X,(int)stunPosition.Y);
+
+                if(stunWaitDuration > stunDuration)
+                {
+                    isStun = false;
+                    stunWaitDuration = 0f;
+                }
+            }
+
+            
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update(gameTime);

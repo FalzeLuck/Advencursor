@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Advencursor._Models.Enemy._CommonEnemy
 {
-    public class Kiki : _Enemy
+    public class Common1 : _Enemy
     {
         private float minidash_timer;
         private bool dash;
 
         public Rectangle attackRadius;
 
-        public Kiki(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position, health, attack)
+        public Common1(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {

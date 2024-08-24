@@ -10,6 +10,7 @@ namespace Advencursor._Combat
     {
         public int MaxHP { get; private set; }
         public int CurrentHP { get; private set; }
+        public int BaseAttack { get; private set; }
         public int Attack {  get; private set; }
         public int Shield { get; private set; }
 
@@ -18,6 +19,7 @@ namespace Advencursor._Combat
         {
             this.MaxHP = MaxHP;
             this.CurrentHP = MaxHP;
+            this.BaseAttack = Attack;
             this.Attack = Attack;
             immunity = false;
             Shield = 0;
@@ -91,5 +93,12 @@ namespace Advencursor._Combat
             Shield += amount;
         }
 
+        public void AddAttack(int amount)
+        {
+            if (amount < 0) throw new ArgumentOutOfRangeException("Attack can't be negative");
+
+
+            Attack += amount;
+        }
     }
 }
