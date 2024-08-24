@@ -30,8 +30,8 @@ namespace Advencursor._Models.Enemy
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  1, true) },
-                { "Attack", new(texture,row,column,2,1,false) },
-                {"Stun", new(texture,row,column,2,1,true) }
+                { "Attack", new(texture,row,column,2,1,true) },
+                {"Stun", new(texture,row,column,3,1,true) }
 
             };
             indicator = "Idle";
@@ -66,16 +66,20 @@ namespace Advencursor._Models.Enemy
             //Limit Movement
             if (!dashing && !stunned)
             {
-                if (position.Y > 470 && position.Y < 1080 - 200)
+                int topBound = 0;
+                int bottomBound = 1080;
+                indicator = "Idle";
+
+                if (position.Y > topBound && position.Y < bottomBound)
                 {
                     velocity = new(50, 50);
                 }
-                else if (position.Y <= 470)
+                else if (position.Y <= topBound)
                 {
                     velocity = new(50, 0);
                     position = new(position.X, position.Y + 1);
                 }
-                else if (position.Y >= 1080 - 200)
+                else if (position.Y >= bottomBound)
                 {
                     velocity = new(50, 0);
                     position = new(position.X, position.Y - 1);
@@ -85,6 +89,7 @@ namespace Advencursor._Models.Enemy
             //Dashing
             if (dashing)
             {
+                indicator = "Attack";
                 position += velocity * TimeManager.TotalSeconds;
 
                 if(collision.X+collision.Width >= Globals.Bounds.X || collision.X <= 0)
@@ -96,6 +101,7 @@ namespace Advencursor._Models.Enemy
             //Stun
             if (stunned)
             {
+                indicator = "Stun";
                 stuntimer += TimeManager.TotalSeconds;
                 if(stuntimer > stunduration) stunned = false;
             }

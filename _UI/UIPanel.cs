@@ -33,7 +33,9 @@ namespace Advencursor._UI
             {
                 Globals.SpriteBatch.Draw(texture, position, null, _color, rotation, origin, 1f, SpriteEffects.None, 1);
                 string HP = status.CurrentHP.ToString();
-                Globals.SpriteBatch.DrawString(font, $"Player HP : {HP}", new(position.X,position.Y), Color.White, rotation, origin, 1, spriteEffects, 1);
+                string Shield = status.Shield.ToString();
+                Globals.SpriteBatch.DrawString(font, $"Player HP : {HP}", new(position.X +10,position.Y), Color.Black, rotation, origin, 1, spriteEffects, 1);
+                Globals.SpriteBatch.DrawString(font, $"Player Shield : {Shield}", new(position.X +10, position.Y + 20), Color.Black, rotation, origin, 1, spriteEffects, 1);
             }
         }
 

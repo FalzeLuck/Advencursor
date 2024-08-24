@@ -52,8 +52,10 @@ namespace Advencursor._Scene.Stage
         private float boss_dash_cooldown;
         private bool boss_spawned;
         private float enemy_spawn_time;
+        private float elite_spawn_time;
         private int enemy_count;
         private int enemy_max = 20;
+        private int enemy_killed = 0;
 
         //UI
         private UIManager uiManager = new UIManager();
@@ -74,6 +76,8 @@ namespace Advencursor._Scene.Stage
             timer.StartStop();
             timer.Repeat = true;
             boss_spawn_time = 0f;
+            elite_spawn_time = 0f;
+            enemy_spawn_time = 0f;
             boss_spawned = false;
         }
 
@@ -90,7 +94,7 @@ namespace Advencursor._Scene.Stage
             enemies = new List<_Enemy> ();
             
 
-            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(960, 0), health: 10,attack:2,row: 2,column: 1)
+            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(1920, 500), health: 50,attack:2,row: 3,column: 1)
             {
                 movementAI = new FollowMovementAI
                 {
@@ -141,6 +145,7 @@ namespace Advencursor._Scene.Stage
             //Timer
             boss_spawn_time += TimeManager.TotalSeconds;
             enemy_spawn_time += TimeManager.TotalSeconds;
+            elite_spawn_time += TimeManager.TotalSeconds;
             if (boss_obj.dashed)
             {
                 boss_dash_cooldown += TimeManager.TotalSeconds;
@@ -152,11 +157,21 @@ namespace Advencursor._Scene.Stage
             }
 
             //Spawning
-            if (enemy_spawn_time >= 2f && !boss_spawned)
+            /*if (enemy_spawn_time >= 2f && !boss_spawned)
             {
+                int spawnDirection = random.Next(1,3);
+                int spawnSide = 0;
+                if (spawnDirection == 1)
+                {
+                    spawnSide = 0;
+                }
+                else if (spawnDirection == 2)
+                {
+                    spawnSide = 1920;
+                }
                 enemies.Add(new Kiki(
                     Globals.Content.Load<Texture2D>("Enemies/Kiki"),
-                    new(0, random.Next(200, 900)),
+                    new(spawnSide, random.Next(200, 900)),
                     health: 3,
                     attack: 1,
                     row: 2,
@@ -169,8 +184,27 @@ namespace Advencursor._Scene.Stage
                     }
                 });
                 enemy_spawn_time = 0;
+            }*/
+            if (elite_spawn_time > 2f)
+            {
+                enemies.Add(new Elite1(
+                    Globals.Content.Load<Texture2D>("Enemies/Elite1"),
+                    new(1920/2, 0),
+                    health: 50,
+                    attack: 1,
+                    row: 3,
+                    column: 1
+                    )
+                {
+                    movementAI = new FollowMovementAI
+                    {
+                        target = player,
+                    }
+                });
+
+                elite_spawn_time = 0f;
             }
-            if(boss_spawn_time > 45f && !boss_spawned)
+            if(boss_spawn_time > 180f && !boss_spawned)
             {
                 boss_spawned = true;
 
@@ -181,57 +215,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Boss Control
-            if (boss_spawned && boss_obj.Status.IsAlive())
-            {
-                boss_obj.Update(gameTime);
-            }
-
-            if (player.collision.Intersects(boss_obj.checkRadius) && !boss_obj.dashed)
-            {
-                boss_obj.dashed = true;
-                boss_obj.charge = true;
-                boss_obj.charge_duration = 0;
-                soundManager.PlaySound("Charge");
-            }
-
-            if (boss_obj.charge)
-            {
-                boss_obj.movementAI.Stop();
-                boss_obj.charge_duration += TimeManager.TotalSeconds;
-                if (boss_obj.charge_duration >= 2f)
-                {
-                    soundManager.StopSound("Charge");
-                    boss_obj.isAttacking = true;
-                    soundManager.PlaySound("Beep");
-                    
-                }
-                if (boss_obj.charge_duration >= 3f)
-                {
-                    boss_obj.charge = false;
-                    boss_obj.isAttacking = false;
-                    boss_obj.Dash(player);
-                }
-            }
-            if (!boss_obj.dashing && !boss_obj.charge && !boss_obj.stunned)
-            {
-                boss_obj.movementAI.Start();
-                boss_obj.indicator = "Idle";
-            }
-            if (boss_obj.collision.Intersects(player.collision) && boss_obj.dashing)
-            {
-                player.Status.TakeDamage(boss_obj.Status.Attack * 3);
-                player.Status.immunity = true;
-            }
-            if(boss_obj.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
-            {
-                boss_obj.Status.TakeDamage(player.Status.Attack);
-                boss_obj.Status.immunity = true ;
-            }
-            if (!boss_obj.Status.IsAlive())
-            {
-                boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
-                sceneManager.RemoveScene(this);
-            }
+            UpdateBoss(gameTime);
 
 
             //Parry Control
@@ -254,7 +238,7 @@ namespace Advencursor._Scene.Stage
                     animationManager.SetOffset("Sparkle", new Vector2(0, 0));
                     animationManager.UpdatePosition("Sparkle", player.position);
                     animationManager.Play("Sparkle");
-                    enemies.Remove(enemy);
+                    enemy.Status.TakeDamage(9999);
                     break;
                 }
             }
@@ -360,7 +344,7 @@ namespace Advencursor._Scene.Stage
                 enemy.Update(gameTime);
                 if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
                 {
-                    enemy.Status.TakeDamage(1);
+                    enemy.Status.TakeDamage(player.Status.Attack);
                     enemy.Status.immunity = true;
                     enemy.movementAI.Stop();
                     enemy.recovery_time = 0;
@@ -368,6 +352,12 @@ namespace Advencursor._Scene.Stage
 
                 if (!enemy.Status.IsAlive())
                 {
+                    enemy_killed++;
+                    Trace.WriteLine(enemy_killed);
+                    if (enemy_killed % 3 == 0)
+                    {
+                        player.Status.AddShield(2);
+                    }
                     enemy.position = new Vector2(2000, 2000);
                     enemies.Remove(enemy);
                     break; //Don't remove. If remove = crash
@@ -398,6 +388,60 @@ namespace Advencursor._Scene.Stage
                     player.Status.immunity = false;
                     immune_duration = 0f;
                 }
+            }
+        }
+        private void UpdateBoss(GameTime gameTime)
+        {
+            if (boss_spawned && boss_obj.Status.IsAlive())
+            {
+                boss_obj.Update(gameTime);
+            }
+
+            if (player.collision.Intersects(boss_obj.checkRadius) && !boss_obj.dashed)
+            {
+                boss_obj.dashed = true;
+                boss_obj.charge = true;
+                boss_obj.charge_duration = 0;
+                soundManager.PlaySound("Charge");
+            }
+
+            if (boss_obj.charge)
+            {
+                boss_obj.movementAI.Stop();
+                boss_obj.charge_duration += TimeManager.TotalSeconds;
+                if (boss_obj.charge_duration >= 2f)
+                {
+                    soundManager.StopSound("Charge");
+                    boss_obj.isAttacking = true;
+                    soundManager.PlaySound("Beep");
+
+                }
+                if (boss_obj.charge_duration >= 3f)
+                {
+                    boss_obj.charge = false;
+                    boss_obj.isAttacking = false;
+                    boss_obj.Dash(player);
+                }
+            }
+            if (!boss_obj.dashing && !boss_obj.charge && !boss_obj.stunned)
+            {
+                boss_obj.movementAI.Start();
+                boss_obj.indicator = "Idle";
+            }
+            if (boss_obj.collision.Intersects(player.collision) && boss_obj.dashing)
+            {
+                player.Status.TakeDamage(boss_obj.Status.Attack * 3);
+                player.Status.immunity = true;
+            }
+            if (boss_obj.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
+            {
+                boss_obj.Status.TakeDamage(player.Status.Attack);
+                boss_obj.Status.immunity = true;
+            }
+            if (!boss_obj.Status.IsAlive())
+            {
+                boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
+                sceneManager.RemoveScene(this);
             }
         }
     }

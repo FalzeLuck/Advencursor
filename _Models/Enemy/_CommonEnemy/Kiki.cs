@@ -16,6 +16,8 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         private float minidash_timer;
         private bool dash;
 
+        public Rectangle attackRadius;
+
         public Kiki(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>

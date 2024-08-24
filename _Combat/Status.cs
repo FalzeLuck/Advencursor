@@ -11,6 +11,7 @@ namespace Advencursor._Combat
         public int MaxHP { get; private set; }
         public int CurrentHP { get; private set; }
         public int Attack {  get; private set; }
+        public int Shield { get; private set; }
 
         public bool immunity;
         public Status(int MaxHP,int Attack) 
@@ -19,6 +20,7 @@ namespace Advencursor._Combat
             this.CurrentHP = MaxHP;
             this.Attack = Attack;
             immunity = false;
+            Shield = 0;
         }
 
         public void TakeDamage(int damage)
@@ -27,7 +29,20 @@ namespace Advencursor._Combat
 
             if (immunity == false)
             {
-                CurrentHP -= damage;
+                if (Shield >= damage)
+                {
+                    Shield -= damage;
+                }
+                else if (Shield < damage)
+                {
+                    int remainDamage = (damage - Shield);
+                    Shield = 0;
+                    CurrentHP -= remainDamage;
+                }else if (Shield == 0)
+                {
+                    CurrentHP -= damage;
+                }
+                
             }
 
             if (CurrentHP < 0) {CurrentHP = 0; }
@@ -37,7 +52,20 @@ namespace Advencursor._Combat
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
 
-            CurrentHP -= damage;
+            if (Shield >= damage)
+            {
+                Shield -= damage;
+            }
+            else if (Shield < damage)
+            {
+                int remainDamage = (damage - Shield);
+                Shield = 0;
+                CurrentHP -= remainDamage;
+            }
+            else if (Shield == 0)
+            {
+                CurrentHP -= damage;
+            }
 
             if (CurrentHP < 0) { CurrentHP = 0; }
         }
@@ -56,6 +84,12 @@ namespace Advencursor._Combat
             return CurrentHP > 0;
         }
             
+        public void AddShield(int amount)
+        {
+            if (amount < 0) throw new ArgumentOutOfRangeException("Shield can't be negative");
+
+            Shield += amount;
+        }
 
     }
 }
