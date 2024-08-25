@@ -25,6 +25,8 @@ namespace Advencursor._Models
         protected int column;
         public float recovery_time;
 
+        public Rectangle collision;
+
         public Sprite(Texture2D texture,Vector2 position)
         {
             this.texture = texture;
@@ -35,7 +37,10 @@ namespace Advencursor._Models
 
         public virtual void Update(GameTime gameTime)
         {
-
+            if (animations.ContainsKey(indicator))
+            {
+                animations[indicator].Update(gameTime);
+            }
         }
 
 

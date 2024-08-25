@@ -30,7 +30,7 @@ namespace Advencursor._UI
         {
             if (isVisible)
             {
-                Globals.SpriteBatch.Draw(texture, position, null, Color.White, rotation, origin, 1, SpriteEffects.None, 1);
+                Globals.SpriteBatch.Draw(texture, position, null, Color.White * opacity, rotation, origin, 1, SpriteEffects.None, 1);
                 string cooldown = skill.cooldownTimer.ToString("F1");
                 Vector2 textSize = font.MeasureString(cooldown);
                 Globals.SpriteBatch.DrawString(font, cooldown, new(position.X + (texture.Width - textSize.X) / 2, position.Y + (texture.Height - textSize.Y) / 2), Color.White, rotation, origin, 1, spriteEffects, 1);

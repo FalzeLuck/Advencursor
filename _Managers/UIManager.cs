@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Advencursor._Models;
+using System.Xml.Linq;
 
 namespace Advencursor._Managers
 {
@@ -61,6 +63,38 @@ namespace Advencursor._Managers
             {
                 progressBarDictionary[barName].UpdateValue(value);
             }
+        }
+
+        public void SetAllOpacity(float opacity)
+        {
+            foreach (var element in uiElements)
+            {
+                element.opacity = opacity;
+            }
+            foreach (var value in progressBarDictionary.Values)
+            {
+                value.opacity = opacity;
+            }
+        }
+
+        public bool CheckCollide(Sprite sprite)
+        {
+            foreach (var element in uiElements)
+            {
+                if (sprite.collision.Intersects(element.collision))
+                {
+                    return true;
+                }
+            }
+            foreach (var value in progressBarDictionary.Values)
+            {
+                if (sprite.collision.Intersects(value.collision))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

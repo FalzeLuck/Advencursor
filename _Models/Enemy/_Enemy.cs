@@ -16,7 +16,6 @@ namespace Advencursor._Models.Enemy
     {
         public Status Status { get; set; }
         public MovementAI movementAI { get; set; }
-        public Rectangle collision;
         public Rectangle parryZone;
         public bool isAttacking;
 

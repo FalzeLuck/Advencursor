@@ -36,6 +36,7 @@ namespace Advencursor._Models.Enemy
             };
             indicator = "Idle";
 
+            checkRadius = new Rectangle(9999,9999,0,0);
             charge = false;
             dashing = false;
             dashed = false;

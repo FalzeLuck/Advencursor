@@ -21,7 +21,6 @@ namespace Advencursor._Models
         public Dictionary<Keys, Skill> Skills {  get; private set; }
         public Inventory Inventory { get; private set; }
 
-        public Rectangle collision {  get; private set; }
 
         public float parryDuration = 0.1f;
         public float parryCooldown = 1.0f;
@@ -72,7 +71,6 @@ namespace Advencursor._Models
             {
                 Skills[key].Use();
                 ParticleManager.AddParticle(new(position, new()));
-                Debug.WriteLine("Player use Q");
             }
 
             if (Skills.ContainsKey(key) && !Skills[key].CanUse())

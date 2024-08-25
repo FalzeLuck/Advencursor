@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -15,19 +16,22 @@ namespace Advencursor._Models.Enemy
     {
         private float walkTimer;
 
+        private float bombTimer = 0f;
+        public bool isBombed => bombTimer > 3f;
+
         public Special1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  4, true) },
-                { "Attack", new(texture,row,column,2,12,true) },
-                { "Parry", new(texture,row,column,3,12,true) }
+                { "Right", new(texture, row, column,1,  4, true) },
+                { "Left", new(texture,row,column,2,4,true) },
+                { "Bomb", new(texture,row,column,3,30,true) }
 
             };
 
-            indicator = "Idle";
+            indicator = "Left";
             walkTimer = 0;
-            velocity = new Vector2(50, 0);
+            velocity = new Vector2(-50, 0);
         }
 
         public override void Update(GameTime gameTime)
@@ -53,22 +57,31 @@ namespace Advencursor._Models.Enemy
             }
             else if (walkTimer > 0)
             {
+                
                 position += velocity * TimeManager.TotalSeconds;
             }
 
 
             if (collision.X + collision.Width > Globals.Bounds.X)
             {
+                if (!isBombed) indicator = "Left";
                 velocity = new Vector2(velocity.X * - 1,0);
                 position += new Vector2(-10,0);
             }
 
             if (collision.X < 0)
             {
+                if(!isBombed) indicator = "Right";
                 velocity = new Vector2(velocity.X * -1, 0);
                 position += new Vector2(10, 0);
             }
 
+        }
+
+        public void Bomb()
+        {
+            indicator = "Bomb";
+            bombTimer += TimeManager.TotalSeconds;
         }
         }
 }

@@ -26,7 +26,7 @@ namespace Advencursor._UI
         {
             if (isVisible)
             {
-                Globals.SpriteBatch.Draw(texture, position, null, _color, rotation, origin, 1f, SpriteEffects.None, 1);
+                Globals.SpriteBatch.Draw(texture, position, null, _color * opacity, rotation, origin, 1f, SpriteEffects.None, 1);
             }
         }
     }

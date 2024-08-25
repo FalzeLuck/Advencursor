@@ -39,8 +39,8 @@ namespace Advencursor._UI
         {
             if (isVisible)
             {
-                Globals.SpriteBatch.Draw(background, position, null, _color, rotation, origin, 1f, SpriteEffects.None, 1);
-                Globals.SpriteBatch.Draw(foreground, position, part, _color, rotation, origin, 1f, SpriteEffects.None, 1);
+                Globals.SpriteBatch.Draw(background, position, null, _color * opacity, rotation, origin, 1f, SpriteEffects.None, 0.5f);
+                Globals.SpriteBatch.Draw(foreground, position, part, _color * opacity, rotation, origin, 1f, SpriteEffects.None, 0.5f);
             }
         }
 
