@@ -15,6 +15,7 @@ namespace Advencursor._Managers
 
         public static Vector2 _mousePosition => Mouse.GetState().Position.ToVector2();
         public static bool MouseLeftClicked { get; private set; }
+        public static bool MouseRightClicked { get; private set; }
         public static Rectangle MouseCursor { get; set; }
         public static void Update()
         {
@@ -24,6 +25,9 @@ namespace Advencursor._Managers
 
             MouseLeftClicked = Mouse.GetState().LeftButton == ButtonState.Pressed
                                 && _lastmouseState.LeftButton == ButtonState.Released;
+
+            MouseRightClicked = Mouse.GetState().RightButton == ButtonState.Pressed
+                && _lastmouseState.RightButton == ButtonState.Released;
 
 
             MouseCursor = new((int)_mousePosition.X, (int)_mousePosition.Y, 1, 1);

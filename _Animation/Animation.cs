@@ -140,8 +140,8 @@ namespace Advencursor._Animation
                 int frameWidth = Texture.Width / Column;
                 int frameHeight = Texture.Height / Row;
 
-                int startX = (int)(position.X - frameWidth/2);
-                int startY = (int)(position.Y - frameHeight/2);
+                int startX = (int)((position.X - frameWidth/2) + offset.X);
+                int startY = (int)((position.Y - frameHeight/2) + offset.Y);
 
 
                 return new(startX, startY, frameWidth, frameHeight);

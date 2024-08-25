@@ -12,7 +12,7 @@ namespace Advencursor._UI
     public class ProgressBarAnimated : ProgressBar
     {
         private float targetValue;
-        private readonly float animationSpeed = 20f;
+        private readonly float animationSpeed = 100f;
         private Rectangle animationPart;
         private Vector2 animationPosition;
         private Color animationShade;

@@ -77,7 +77,7 @@ namespace Advencursor._Models.Enemy
             if (!isSlam && !stunned)
             {
                 indicator = "Idle";
-                velocity = new(200, 200);
+                velocity = new(80, 80);
                 movementAI.Move(this);
                 slamCooldown += TimeManager.TotalSeconds;
             }
@@ -98,14 +98,14 @@ namespace Advencursor._Models.Enemy
                     isAttacking = true;
                 }
 
-                if (slamChargeTime > 3)
+                if (slamChargeTime > 3f)
                 {
                     slamIndicator = "slamFinish";
                     isAttacking = false ;
                     isSlamming = true;
                 }
 
-                if(slamChargeTime > 4)
+                if(slamChargeTime > 3.5f)
                 {
                     isSlam = false;
                     isSlamming = false;

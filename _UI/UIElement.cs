@@ -11,7 +11,7 @@ namespace Advencursor._UI
     public abstract class UIElement
     {
         public bool isVisible { get; set; } = true;
-        protected readonly Texture2D texture;
+        public readonly Texture2D texture;
         protected readonly Vector2 origin;
         public Vector2 position { get; set; }
         public float rotation { get; set; }

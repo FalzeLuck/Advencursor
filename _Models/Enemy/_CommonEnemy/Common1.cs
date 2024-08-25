@@ -13,20 +13,29 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 {
     public class Common1 : _Enemy
     {
-        private float minidash_timer;
+        private float dashTimer;
+        private float dashCooldown;
+        private Vector2 dashDirection;
+
+        public bool isDashing;
+        private bool canDash => dashCooldown > 5f;
         private bool dash;
 
-        public Rectangle attackRadius;
+        public Rectangle dashRadius;
 
         public Common1(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  4, true) },
-                { "Attack", new(texture,row,column,1,1,false) },
+                { "Attack", new(texture,row,column,2,12,true) },
+                { "Parry", new(texture,row,column,3,12,true) }
                 
             };
             indicator = "Idle";
+
+            dash = false;
+            dashCooldown = 5f;
         }
 
         public override void Update(GameTime gameTime)
@@ -39,36 +48,77 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             }
             UpdateParryZone();
 
-            movementAI.Move(this);
-            recovery_time += TimeManager.TotalSeconds;
+            //Update Radius
+            dashRadius = collision;
+            int increaseamount = 300;
+            int newX = dashRadius.X - increaseamount / 2;
+            int newY = dashRadius.Y - increaseamount / 2;
+            int newWidth = dashRadius.Width + increaseamount;
+            int newHeight = dashRadius.Height + increaseamount;
+            dashRadius = new Rectangle(newX, newY, newWidth, newHeight);
 
-            minidash_timer += TimeManager.TotalSeconds;
-            if (minidash_timer > 1f)
+            movementAI.Move(this);
+
+
+            
+
+
+            if (dash)
             {
-                minidash_timer = 0f;
+                dashTimer += TimeManager.TotalSeconds;
+                dashCooldown = 0f;
+
+                if (dashTimer > 0f)
+                {
+                    dash = true;
+                    movementAI.Stop();
+                }
+                if(dashTimer > 0.7f)
+                {
+                    isAttacking = true;
+                    indicator = "Parry";
+                }
+                if (dashTimer > 1.2f)
+                {
+                    position += dashDirection * TimeManager.TotalSeconds;
+                    isAttacking = false;
+                    isDashing = true;
+                    indicator = "Attack";
+                }
+                if(dashTimer > 1.7f)
+                {
+                    isDashing = false;
+                    dash = false;
+                }
             }
-            else if (minidash_timer > 0.5f)
+            else if (!dash)
             {
-                dash = false;
+                indicator = "Idle";
+                movementAI.Start();
                 isAttacking = false;
-                velocity = new Vector2(0, 0);
+                isDashing = false;
+                dashCooldown += TimeManager.TotalSeconds;
+                dashTimer = 0f;
+                velocity = new(50, 50);
             }
-            else if (minidash_timer > 0f)
-            {
-                dash = true;
-                isAttacking = true;
-                velocity = new Vector2(300, 300);
-            }
-            
-            
+
+
         }
 
-        /*public override void Draw()
+        public void Dash(Sprite target)
         {
-            if (animations.ContainsKey(indicator))
+            if (canDash)
             {
-                animations[indicator].Draw(position);
+                dash = true;
+                var direction = target.position - position;
+                direction.Normalize();
+                dashDirection = direction * 600;
             }
-        }*/
+        }
+
+        public void DashStop()
+        {
+            dash = false ;
+        }
     }
 }
