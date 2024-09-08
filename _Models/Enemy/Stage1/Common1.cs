@@ -43,7 +43,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             
             if (animations.ContainsKey(indicator))
             {
-                animations[indicator].Update(gameTime);
+                animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
             UpdateParryZone();
@@ -58,10 +58,18 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             dashRadius = new Rectangle(newX, newY, newWidth, newHeight);
 
             movementAI.Move(this);
+            Status.Update();
 
 
-            
 
+            if (Status.isParalysis && !dash)
+            {
+                velocity = new Vector2(25, 25);
+            }
+            else if(!Status.isParalysis && !dash)
+            {
+                velocity = new(50, 50);
+            }
 
             if (dash)
             {
@@ -99,10 +107,9 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 isDashing = false;
                 dashCooldown += TimeManager.TotalSeconds;
                 dashTimer = 0f;
-                velocity = new(50, 50);
             }
 
-
+            
         }
 
         public void Dash(Sprite target)
@@ -119,6 +126,15 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         public void DashStop()
         {
             dash = false ;
+        }
+
+        public void TakeDamage(int damage,Player player)
+        {
+            if(player.isBuff && player.buffIndicator == "Thunder_")
+            {
+                Status.Paralysis(2f);
+            }
+            Status.TakeDamage(damage);
         }
     }
 }

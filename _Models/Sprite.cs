@@ -39,7 +39,7 @@ namespace Advencursor._Models
         {
             if (animations.ContainsKey(indicator))
             {
-                animations[indicator].Update(gameTime);
+                animations[indicator].Update();
             }
         }
 

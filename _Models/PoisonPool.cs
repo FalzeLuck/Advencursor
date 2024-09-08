@@ -34,7 +34,7 @@ namespace Advencursor._Models
             burnCooldown += TimeManager.TotalSeconds;
             if (animations.ContainsKey(indicator))
             {
-                animations[indicator].Update(gameTime);
+                animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
         }

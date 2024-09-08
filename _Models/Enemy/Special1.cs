@@ -39,7 +39,7 @@ namespace Advencursor._Models.Enemy
 
             if (animations.ContainsKey(indicator))
             {
-                animations[indicator].Update(gameTime);
+                animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
             UpdateParryZone();

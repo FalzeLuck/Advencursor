@@ -18,6 +18,7 @@ using Advencursor._AI;
 using Advencursor._Models.Enemy._CommonEnemy;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
+using Advencursor._Skill.Thunder_Set;
 
 
 namespace Advencursor._Scene.Stage
@@ -96,7 +97,7 @@ namespace Advencursor._Scene.Stage
             background = Globals.Content.Load<Texture2D>("Background/Stage1_5");
 
             //Player
-            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 1000, attack: 50, row: 2, column: 1);
+            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 1000, attack: 50, row: 4, column: 1);
 
             //Load enemies(Temp)
             commonEnemy = new List<Common1> ();
@@ -115,17 +116,19 @@ namespace Advencursor._Scene.Stage
             };
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 2, column: 4, fps: 30, false);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 8, fps: 30, false);
             animationManager.AddAnimation("Slash", slashAnimation);
             Animation sparkAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/Sparkle"), row: 1, column: 4, fps: 12, false);
             animationManager.AddAnimation("Sparkle", sparkAnimation);
 
 
             //Temporary Skill
-            Skill fire = new Skill("fireball", 30, 5);
+            Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
+            Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 10);
             items = new List<Item>()
             {
-                new Item("fireball book",fire,Keys.Q),
+                new Item("ThunderCore book",ThunderCore,Keys.Q),
+                new Item("ThunderShuriken book",ThunderShuriken,Keys.W),
             };
 
 
@@ -134,10 +137,10 @@ namespace Advencursor._Scene.Stage
             int startX = (int)uIBackground.position.X - (uIBackground.texture.Width/2);
             int space = uIBackground.texture.Width / 10;
             int skillY = 950;
-            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), fire);
-            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), fire);
-            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), fire);
-            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), fire);
+            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), ThunderCore);
+            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), ThunderShuriken);
+            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), ThunderCore);
+            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), ThunderCore);
             UIPlayerCheckPanel uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
 
             Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
@@ -184,7 +187,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Spawning
-            if (enemy_spawn_time >= 1f && !boss_spawned)
+            if (enemy_spawn_time >= 0.1f && !boss_spawned)
             {
                 if (enemy_count < enemy_max)
                 {
@@ -405,20 +408,18 @@ namespace Advencursor._Scene.Stage
                 if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 {
                     player.UseSkill(Keys.Q);
+                    player.ChangeAnimation("Idle");
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-
                     player.UseSkill(Keys.W);
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.E))
                 {
-
                     player.UseSkill(Keys.E);
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.R))
                 {
-
                     player.UseSkill(Keys.R);
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Space))
@@ -429,15 +430,15 @@ namespace Advencursor._Scene.Stage
 
                 if (InputManager.MouseRightClicked && canClick)
                 {
-                    animationManager.SetOffset("Slash", new Vector2(0, player.collision.Height/2));
-                    player.indicator = "Attack";
+                    animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
+                    player.ChangeAnimation("Attack");
                     animationManager.Play("Slash");
                     canClick = false;
                 }
                 if (InputManager.MouseLeftClicked && canClick)
                 {
-                    animationManager.SetOffset("Slash", new Vector2(0, -(player.collision.Height / 2)));
-                    player.indicator = "Attack";
+                    animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
+                    player.ChangeAnimation("Attack");
                     animationManager.Play("Slash");
                     canClick = false;
                 }
@@ -453,21 +454,19 @@ namespace Advencursor._Scene.Stage
                     }
                 }
                 boss_obj.Status.immunity = false ;
-                player.indicator = "Idle";
+                player.ChangeAnimation("Idle");
                 animationManager.Stop("Slash");
                 canClick = true;
             }
 
             if (animationManager.IsComplete("Sparkle"))
             {
-
                 animationManager.Stop("Sparkle");
             }
 
             foreach (var item in items)
             {
                 player.EquipItem(item);
-                item.skill.Update(TimeManager.TotalSeconds);
             }
 
             if (player.Status.immunity)
@@ -493,7 +492,7 @@ namespace Advencursor._Scene.Stage
                 enemy.Update(gameTime);
                 if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
                 {
-                    enemy.Status.TakeDamage(player.Status.Attack);
+                    enemy.TakeDamage(player.Status.Attack, player);
                     enemy.Status.immunity = true;
                 }
 

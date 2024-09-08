@@ -49,7 +49,7 @@ namespace Advencursor._Models.Enemy
             movementAI.Move(this);
             if (animations.ContainsKey(indicator))
             {
-                animations[indicator].Update(gameTime);
+                animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
 

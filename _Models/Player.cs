@@ -12,6 +12,7 @@ using Advencursor._Combat;
 using System.Diagnostics;
 using Advencursor._Animation;
 using Advencursor._Models.Enemy;
+using System.Xml.Linq;
 
 namespace Advencursor._Models
 {
@@ -36,21 +37,30 @@ namespace Advencursor._Models
         public float stunWaitDuration;
         public Vector2 stunPosition;
 
+        public bool isBuff;
+        public string buffIndicator;
+        public string finalIndicator {  get; private set; }
 
 
         public Player(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position)
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
-                { "Attack", new(texture, row, column,2,  TimeManager.framerate, true) }
+                { "Normal_Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
+                { "Normal_Attack", new(texture, row, column,2,  TimeManager.framerate, true) },
+                { "Thunder_Idle", new(texture, row, column,3,  TimeManager.framerate, true) },
+                { "Thunder_Attack", new(texture, row, column,4,  TimeManager.framerate, true) }
             };
-            indicator = "Idle";
+            
             Skills = new Dictionary<Keys, Skill>();
             Status = new(health,attack);
             Inventory = new Inventory();
 
             isStun = false;
+            isBuff = false;
+            indicator = "Idle";
+            buffIndicator = "Normal_";
+            finalIndicator =  buffIndicator + indicator;
             stunWaitDuration = 0f;
         }
 
@@ -70,7 +80,6 @@ namespace Advencursor._Models
             if (Skills.ContainsKey(key) && Skills[key].CanUse())
             {
                 Skills[key].Use();
-                ParticleManager.AddParticle(new(position, new()));
             }
 
             if (Skills.ContainsKey(key) && !Skills[key].CanUse())
@@ -104,6 +113,19 @@ namespace Advencursor._Models
             stunPosition = position;
         }
 
+        public void ChangeAnimation(string name)
+        {
+            if (!isBuff)
+            {
+                finalIndicator = buffIndicator + name;
+            }
+            if (isBuff)
+            {
+                indicator = name;
+                finalIndicator = buffIndicator + indicator;
+            }
+        }
+
 
         public  override void Update(GameTime gameTime)
         {
@@ -124,10 +146,10 @@ namespace Advencursor._Models
             }
 
             
-            if (animations.ContainsKey(indicator))
+            if (animations.ContainsKey(finalIndicator))
             {
-                animations[indicator].Update(gameTime);
-                collision = animations[indicator].GetCollision(position);
+                animations[finalIndicator].Update();
+                collision = animations[finalIndicator].GetCollision(position);
             }
             if (parryTimer > 0)
             {
@@ -137,13 +159,22 @@ namespace Advencursor._Models
             {
                 cooldownTimer -= TimeManager.TotalSeconds;
             }
+
+            foreach (var skill in Skills.Values)
+            {
+                skill.Update(TimeManager.TotalSeconds,this);
+            }
         }
 
         public override void Draw()
         {
-            if (animations.ContainsKey(indicator))
+            if (animations.ContainsKey(finalIndicator))
             {
-                animations[indicator].Draw(position);
+                animations[finalIndicator].Draw(position);
+            }
+            foreach(var skill in Skills.Values)
+            {
+                skill.Draw();
             }
         }
     }

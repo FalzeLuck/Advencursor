@@ -55,13 +55,13 @@ namespace Advencursor._Models.Enemy
         {
             if (animations.ContainsKey(indicator))
             {
-                animations[indicator].Update(gameTime);
+                animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
 
             if (slamTexture.ContainsKey(slamIndicator))
             {
-                slamTexture[slamIndicator].Update(gameTime);
+                slamTexture[slamIndicator].Update();
             }
             UpdateParryZone();
 

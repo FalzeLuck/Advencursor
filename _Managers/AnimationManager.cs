@@ -78,7 +78,7 @@ namespace Advencursor._Managers
                 Animation animation = activeAnimations[i];
                 if (!animation.IsComplete)
                 {
-                    animation.Update(gameTime);
+                    animation.Update();
                 }
 
                 if (animation.IsLooping && animation.IsComplete)

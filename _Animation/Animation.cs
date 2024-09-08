@@ -66,9 +66,9 @@ namespace Advencursor._Animation
         }
 
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
-            timer += (float)TimeManager.TotalSeconds;
+            timer += TimeManager.TotalSeconds;
 
             if(timer >= FrameTime  && Startrow == 0)
             {

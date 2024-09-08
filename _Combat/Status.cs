@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Advencursor._Managers;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +17,14 @@ namespace Advencursor._Combat
         public int Shield { get; private set; }
 
         public bool immunity;
+
+        public float CritRate {  get; private set; }
+        public float CritDam { get; private set; }
+
+        //CC
+        public float paralysisTimer;
+        public bool isParalysis { get; private set; } = false;
+
         public Status(int MaxHP,int Attack) 
         {
             this.MaxHP = MaxHP;
@@ -97,8 +107,22 @@ namespace Advencursor._Combat
         {
             if (amount < 0) throw new ArgumentOutOfRangeException("Attack can't be negative");
 
-
             Attack += amount;
+        }
+
+        public void Paralysis(float time)
+        {
+            paralysisTimer = time;
+            isParalysis = true;
+        }
+
+        public void Update()
+        {
+            if (isParalysis)
+            {
+                paralysisTimer -= TimeManager.TotalSeconds;
+                if( paralysisTimer < 0 ) { isParalysis=false; }
+            }
         }
     }
 }
