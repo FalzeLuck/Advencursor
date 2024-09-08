@@ -29,6 +29,7 @@ namespace Advencursor._Scene.Stage
         private SceneManager sceneManager;
         private AnimationManager animationManager = new AnimationManager();
         private SoundManager soundManager = new SoundManager();
+        private DamageNumberManager damageNumberManager;
 
         private SpriteFont font;
 
@@ -76,6 +77,8 @@ namespace Advencursor._Scene.Stage
             Globals.Game.IsMouseVisible = false;
             Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             font = Globals.Content.Load<SpriteFont>("basicFont");
+
+            damageNumberManager = new(font);
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
                 font,
@@ -361,6 +364,7 @@ namespace Advencursor._Scene.Stage
             uiManager.Update(gameTime);
             uiManager.UpdateBarValue("bossBar", boss_obj.Status.CurrentHP);
             uiManager.UpdateBarValue("playerBar", player.Status.CurrentHP);
+            damageNumberManager.Update();
             UpdatePlayer();
             UpdateEnemies(gameTime);
             UpdateElites(gameTime);
@@ -398,6 +402,7 @@ namespace Advencursor._Scene.Stage
             player.Draw();
             ParticleManager.Draw();
             animationManager.Draw();
+            damageNumberManager.Draw();
         }
 
         private void UpdatePlayer()
@@ -493,6 +498,10 @@ namespace Advencursor._Scene.Stage
                 if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
                 {
                     enemy.TakeDamage(player.Status.Attack, player);
+                    if (!enemy.Status.immunity)
+                    {
+                        damageNumberManager.AddDamageNumber(player.Status.Attack.ToString(), enemy.position, Color.Red);
+                    }
                     enemy.Status.immunity = true;
                 }
 
