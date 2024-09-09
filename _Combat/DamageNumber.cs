@@ -14,19 +14,27 @@ namespace Advencursor._Combat
         public string text { get; private set; }
         public Vector2 position { get; private set; }
         public Color color { get; private set; }
+        public float scale { get; private set; }
+
 
         private float elapsedTime;
         private float timeLive;
         private Vector2 velocity;
 
-        public DamageNumber(string text, Vector2 position, Color color, float timeLive = 1.0f, Vector2? velocity = null)
+        private bool isCrit;
+
+        Random random;
+
+        public DamageNumber(string text, Vector2 position, Color color, float timeLive = 0.5f, Vector2? velocity = null)
         {
+            random = new Random();
             this.text = text;
-            this.position = position;
+            this.position = position + new Vector2(random.Next(-20,20));
             this.color = color;
             this.timeLive = timeLive;
             elapsedTime = 0f;
             this.velocity = velocity ?? new Vector2(0, -30);
+            scale = 1.5f;
         }
 
         public void Update()
@@ -51,7 +59,7 @@ namespace Advencursor._Combat
 
         public void Draw(SpriteFont font)
         {
-            Globals.SpriteBatch.DrawString(font, text, position, color);
+            Globals.SpriteBatch.DrawString(font,text, position, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0f); 
         }
     }
 }

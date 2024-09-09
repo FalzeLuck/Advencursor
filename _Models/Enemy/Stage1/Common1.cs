@@ -40,7 +40,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
         public override void Update(GameTime gameTime)
         {
-            
+            base.Update(gameTime);
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
@@ -128,7 +128,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             dash = false ;
         }
 
-        public void TakeDamage(int damage,Player player)
+        public override void TakeDamage(int damage,Player player)
         {
             if(player.isBuff && player.buffIndicator == "Thunder_")
             {

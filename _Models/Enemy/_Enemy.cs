@@ -19,10 +19,17 @@ namespace Advencursor._Models.Enemy
         public Rectangle parryZone;
         public bool isAttacking;
 
+        public float collisionCooldown {  get; private set; }
+
         public _Enemy(Texture2D texture, Vector2 position, int health,int attack) : base(texture, position)
         {
             Status = new(health, attack);
             animations = new Dictionary<string, Animation>();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            collisionCooldown -= TimeManager.TotalSeconds;
         }
 
         public void UpdateParryZone()
@@ -34,6 +41,16 @@ namespace Advencursor._Models.Enemy
             int newWidth = parryZone.Width + increaseamount;
             int newHeight = parryZone.Height + increaseamount;
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
+        }
+
+        public virtual void TakeDamage(int damage, Player player)
+        {
+            Status.TakeDamage(damage);
+        }
+
+        public virtual void CollisionCooldownReset(float timer)
+        {
+            collisionCooldown = timer;
         }
 
     }

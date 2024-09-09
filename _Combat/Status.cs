@@ -18,12 +18,17 @@ namespace Advencursor._Combat
 
         public bool immunity;
 
+        //Crit
         public float CritRate {  get; private set; }
         public float CritDam { get; private set; }
+        public bool isCrit {  get; private set; }
 
         //CC
         public float paralysisTimer;
         public bool isParalysis { get; private set; } = false;
+
+        //Action
+        public Action<string,Color> OnTakeDamage;
 
         public Status(int MaxHP,int Attack) 
         {
@@ -54,10 +59,12 @@ namespace Advencursor._Combat
                 {
                     CurrentHP -= damage;
                 }
-                
+                OnTakeDamage?.Invoke(damage.ToString(),Color.HotPink);
             }
 
             if (CurrentHP < 0) {CurrentHP = 0; }
+
+            
         }
 
         public void TakeDamageNoImmune(int damage)

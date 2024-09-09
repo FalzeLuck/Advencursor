@@ -1,4 +1,6 @@
 ﻿using Advencursor._Combat;
+using Advencursor._Models;
+using Advencursor._Models.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -14,14 +16,30 @@ namespace Advencursor._Managers
         private List<DamageNumber> damageNumbers = new List<DamageNumber>();
         private SpriteFont font;
 
+
         public DamageNumberManager(SpriteFont font)
         {
             this.font = font;
         }
 
-        public void AddDamageNumber(string text, Vector2 position, Color color)
+        public void AddDamageNumber(string text, Sprite whotake, Color color)
         {
-            damageNumbers.Add(new DamageNumber(text, position, color));
+            damageNumbers.Add(new DamageNumber(text, whotake.position,color));
+        }
+
+        public void SubscribeToTakeDamageEvent(Status status, Sprite whotake)
+        {
+            status.OnTakeDamage += (text,color) => AddDamageNumber(text,whotake,color);
+        }
+
+        public void SubscribeToTakeDamageEvent(Status status, Sprite whotake, Color wantColor)
+        {
+            status.OnTakeDamage += (text, color) => AddDamageNumber(text, whotake, wantColor);
+        }
+
+        public void UnSubscribeToTakeDamageEvent(Status status, Sprite whotake)
+        {
+            status.OnTakeDamage -= (text,color) => AddDamageNumber(text, whotake, color);
         }
 
         public void Update()

@@ -82,10 +82,6 @@ namespace Advencursor._Models
                 Skills[key].Use();
             }
 
-            if (Skills.ContainsKey(key) && !Skills[key].CanUse())
-            {
-                Debug.WriteLine("Player cant use Q");
-            }
 
         }
 

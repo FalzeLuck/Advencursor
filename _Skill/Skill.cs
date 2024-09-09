@@ -46,5 +46,8 @@ namespace Advencursor._Skill
         }
 
         public virtual void Draw() { }
+
+
+
     }
 }

@@ -46,6 +46,7 @@ namespace Advencursor._Models.Enemy
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             movementAI.Move(this);
             if (animations.ContainsKey(indicator))
             {

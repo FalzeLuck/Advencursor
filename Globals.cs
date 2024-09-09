@@ -1,7 +1,9 @@
 ﻿using Advencursor._Managers;
+using Advencursor._Models.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace Advencursor
 {
@@ -16,6 +18,8 @@ namespace Advencursor
         public static GraphicsDevice graphicsDevice { get; set; }
         public static Point Bounds { get; set; }
         public static bool Paused = false;
+
+        public static List<_Enemy> EnemyManager { get; set; } = new List<_Enemy>();
 
         public static void Update(GameTime gameTime)
         {

@@ -19,6 +19,7 @@ using Advencursor._Models.Enemy._CommonEnemy;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
 using Advencursor._Skill.Thunder_Set;
+using System.ComponentModel;
 
 
 namespace Advencursor._Scene.Stage
@@ -78,7 +79,7 @@ namespace Advencursor._Scene.Stage
             Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             font = Globals.Content.Load<SpriteFont>("basicFont");
 
-            damageNumberManager = new(font);
+            damageNumberManager = new(Globals.Content.Load<SpriteFont>("DamageFont"));
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
                 font,
@@ -101,6 +102,7 @@ namespace Advencursor._Scene.Stage
 
             //Player
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 1000, attack: 50, row: 4, column: 1);
+            damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player, Color.Red);
 
             //Load enemies(Temp)
             commonEnemy = new List<Common1> ();
@@ -127,7 +129,7 @@ namespace Advencursor._Scene.Stage
 
             //Temporary Skill
             Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
-            Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 10);
+            Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 2);
             items = new List<Item>()
             {
                 new Item("ThunderCore book",ThunderCore,Keys.Q),
@@ -171,120 +173,7 @@ namespace Advencursor._Scene.Stage
 
         public void Update(GameTime gameTime)
         {
-            //Timer
-            boss_spawn_time += TimeManager.TotalSeconds;
-            enemy_spawn_time += TimeManager.TotalSeconds;
-            if (!boss_obj.stunned)
-            {
-                elite_spawn_time += TimeManager.TotalSeconds;
-            }
-            special_spawn_time += TimeManager.TotalSeconds;
-            if (boss_obj.dashed)
-            {
-                boss_dash_cooldown += TimeManager.TotalSeconds;
-            }
-            if (boss_dash_cooldown > 15f)
-            {
-                boss_obj.dashed = false;
-                boss_dash_cooldown = 0;
-            }
-
-            //Spawning
-            if (enemy_spawn_time >= 0.1f && !boss_spawned)
-            {
-                if (enemy_count < enemy_max)
-                {
-
-                    int spawnDirection = random.Next(1, 3);
-                    int spawnSide = 0;
-                    if (spawnDirection == 1)
-                    {
-                        spawnSide = 100;
-                    }
-                    else if (spawnDirection == 2)
-                    {
-                        spawnSide = 1820;
-                    }
-                    commonEnemy.Add(new Common1(
-                        Globals.Content.Load<Texture2D>("Enemies/Common1"),
-                        new(spawnSide, random.Next(200, 900)),
-                        health: 200,
-                        attack: 1,
-                        row: 3,
-                        column: 4
-                        )
-                    {
-                        movementAI = new FollowMovementAI
-                        {
-                            target = player,
-                        }
-                    });
-                    enemy_spawn_time = 0;
-                    enemy_count++;
-                }
-            }
-            if (elite_spawn_time > 15f && !boss_spawned)
-            {
-                eliteEnemy.Add(new Elite1(
-                    Globals.Content.Load<Texture2D>("Enemies/Elite1"),
-                    new(1920/2, 0),
-                    health: 1000,
-                    attack: 1,
-                    row: 4,
-                    column: 1
-                    )
-                {
-                    movementAI = new FollowMovementAI
-                    {
-                        target = player,
-                    }
-                });
-
-                elite_spawn_time = 0f;
-            }
-            if(boss_spawn_time > 135f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
-            {
-                special_spawn_time = 10f;
-                if(player.position.X > Globals.Bounds.X / 2)
-                {
-                    boss_obj.position = new Vector2(150,boss_obj.position.Y);
-                }
-                if (player.position.X <= Globals.Bounds.X / 2)
-                {
-                    boss_obj.position = new Vector2(1920-150, boss_obj.position.Y);
-                }
-                boss_spawned = true;
-                commonEnemy.Clear();
-                eliteEnemy.Clear();
-
-
-                Texture2D bg = Globals.Content.Load<Texture2D>("UI/BossBarNone");
-                Texture2D fg = Globals.Content.Load<Texture2D>("UI/BossBarFull");
-                ProgressBarAnimated bossBar = new ProgressBarAnimated(bg,fg,boss_obj.Status.MaxHP,new(Globals.Bounds.X/2,100));
-                uiManager.AddElement("bossBar",bossBar);
-            }
-            if (boss_spawned && special_spawn_time > 10f)
-            {
-                if(special_count < special_max)
-                {
-                    specialEnemy.Add(new Special1(
-                        Globals.Content.Load<Texture2D>("Enemies/Special1"),
-                        new(boss_obj.position.X, boss_obj.position.Y + random.Next(100, 300)),
-                        health: 600,
-                        attack: 1,
-                        row: 3,
-                        column: 4
-                        )
-                    {
-                        movementAI = new FollowMovementAI
-                        {
-                            target = player,
-                        }
-                    });
-                    special_count++;
-                    special_spawn_time = 0f;
-                }
-            }
+            EnemyManage();
 
             //Boss Control
             UpdateBoss(gameTime);
@@ -330,30 +219,15 @@ namespace Advencursor._Scene.Stage
                 }
             }
 
-            //UI Control
-            if (uiManager.CheckCollide(player))
+            foreach (var enemy in Globals.EnemyManager)
             {
-                uiManager.SetAllOpacity(0.5f);
+                enemy.Update(gameTime);
             }
-            else if (uiManager.CheckCollide(boss_obj))
-            {
-                uiManager.SetAllOpacity(0.5f);
-            }
-            else if(commonEnemy.Any(collidable => uiManager.CheckCollide(collidable)))
-            {
-                uiManager.SetAllOpacity(0.7f);
-            }
-            else if (eliteEnemy.Any(collidable => uiManager.CheckCollide(collidable)))
-            {
-                uiManager.SetAllOpacity(0.7f);
-            }
-            else if (specialEnemy.Any(collidable => uiManager.CheckCollide(collidable)))
-            {
-                uiManager.SetAllOpacity(0.7f);
-            }
-            else { uiManager.SetAllOpacity(1f); }
-            
-            
+
+
+
+            UiManage(gameTime);
+            CollisionManage(gameTime);
 
             //Mash Update
             timer.Update();
@@ -361,16 +235,15 @@ namespace Advencursor._Scene.Stage
             animationManager.Update(gameTime);
             animationManager.UpdatePosition("Slash",player.position);
             ParticleManager.Update();
-            uiManager.Update(gameTime);
-            uiManager.UpdateBarValue("bossBar", boss_obj.Status.CurrentHP);
-            uiManager.UpdateBarValue("playerBar", player.Status.CurrentHP);
-            damageNumberManager.Update();
+            
+            
             UpdatePlayer();
             UpdateEnemies(gameTime);
             UpdateElites(gameTime);
             UpdateSpecial(gameTime);
             UpdatePoisonPool(gameTime);
-            
+
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -494,16 +367,7 @@ namespace Advencursor._Scene.Stage
         {
             foreach (var enemy in commonEnemy)
             {
-                enemy.Update(gameTime);
-                if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
-                {
-                    enemy.TakeDamage(player.Status.Attack, player);
-                    if (!enemy.Status.immunity)
-                    {
-                        damageNumberManager.AddDamageNumber(player.Status.Attack.ToString(), enemy.position, Color.Red);
-                    }
-                    enemy.Status.immunity = true;
-                }
+               
 
                 if (enemy.dashRadius.Intersects(player.collision))
                 {
@@ -515,20 +379,6 @@ namespace Advencursor._Scene.Stage
                     player.Status.TakeDamage(50);
                     player.Status.immunity = true;
                 }
-
-                if (!enemy.Status.IsAlive())
-                {
-                    enemy_killed++;
-                    enemy_count--;
-                    if (enemy_killed % 40 == 0)
-                    {
-                        player.Status.AddShield(200);
-                    }
-                    enemy.position = new Vector2(2000, 2000);
-                    commonEnemy.Remove(enemy);
-                    break; //Don't remove. If remove = crash
-                }
-
             }
             
         }
@@ -536,13 +386,7 @@ namespace Advencursor._Scene.Stage
         {
             foreach (var elite in eliteEnemy)
             {
-                elite.Update(gameTime);
-
-                if (elite.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
-                {
-                    elite.Status.TakeDamage(player.Status.Attack);
-                    elite.Status.immunity = true;
-                }
+               
                 if (elite.slamRadius.Intersects(player.collision) && !elite.isSlam)
                 {
                     elite.Slam();
@@ -560,12 +404,7 @@ namespace Advencursor._Scene.Stage
                     elite.Status.immunity = false;
                 }
 
-                if (!elite.Status.IsAlive())
-                {
-                    player.Status.AddAttack(20);
-                    eliteEnemy.Remove(elite);
-                    break;
-                }
+                
             }
         }
         private void UpdateSpecial(GameTime gameTime)
@@ -574,32 +413,9 @@ namespace Advencursor._Scene.Stage
             {
                 special.Update(gameTime);
 
-                if (special.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
-                {
-                    special.Status.TakeDamage(player.Status.Attack);
-                    special.Status.immunity = true;
-                }
-
                 if (animationManager.IsComplete("Slash"))
                 {
                     special.Status.immunity = false;
-                }
-
-                if (!special.Status.IsAlive())
-                {
-                    special.Bomb();
-                    if (special.isBombed)
-                    {
-                        poisonPool.Add(new PoisonPool(
-                            Globals.Content.Load<Texture2D>("GroundEffect/PoisonPool"),
-                            special.position,
-                            1,
-                            1
-                            ));
-
-                        specialEnemy.Remove(special);
-                        break;
-                    }
                 }
             }
         }
@@ -608,7 +424,6 @@ namespace Advencursor._Scene.Stage
             foreach (var pool in poisonPool)
             {
                 pool.Update(gameTime);
-
                 if (pool.collision.Intersects(player.collision) && pool.canBurn)
                 {
                     pool.Burn();
@@ -665,16 +480,256 @@ namespace Advencursor._Scene.Stage
                 player.Status.TakeDamage(500);
                 player.Status.immunity = true;
             }
-            if (boss_obj.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
-            {
-                boss_obj.Status.TakeDamage(player.Status.Attack);
-                boss_obj.Status.immunity = true;
-            }
-            if (!boss_obj.Status.IsAlive())
-            {
-                boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
-                sceneManager.RemoveScene(this);
-            }
+            
         }
+
+        private void EnemyManage()
+        {
+            //Timer
+            boss_spawn_time += TimeManager.TotalSeconds;
+            enemy_spawn_time += TimeManager.TotalSeconds;
+            elite_spawn_time += TimeManager.TotalSeconds;
+            special_spawn_time += TimeManager.TotalSeconds;
+            if (boss_spawned)
+            {
+                if (boss_obj.dashed)
+                {
+                    boss_dash_cooldown += TimeManager.TotalSeconds;
+                }
+                if (boss_dash_cooldown > 15f)
+                {
+                    boss_obj.dashed = false;
+                    boss_dash_cooldown = 0;
+                }
+            }
+
+            //Common1
+            if (enemy_spawn_time >= 0.1f && !boss_spawned)
+            {
+                if (enemy_count < enemy_max)
+                {
+
+                    int spawnDirection = random.Next(1, 3);
+                    int spawnSide = 0;
+                    if (spawnDirection == 1)
+                    {
+                        spawnSide = 100;
+                    }
+                    else if (spawnDirection == 2)
+                    {
+                        spawnSide = 1820;
+                    }
+                    Common1 enemy = (new Common1(
+                        Globals.Content.Load<Texture2D>("Enemies/Common1"),
+                        new(spawnSide, random.Next(200, 900)),
+                        health: 200,
+                        attack: 1,
+                        row: 3,
+                        column: 4
+                        )
+                    {
+                        movementAI = new FollowMovementAI
+                        {
+                            target = player,
+                        }
+                    });
+                    commonEnemy.Add(enemy);
+                    Globals.EnemyManager.Add(enemy);
+                    damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
+                    enemy_spawn_time = 0;
+                    enemy_count++;
+                }
+            }
+            foreach (var enemy in commonEnemy)
+            {
+                if (!enemy.Status.IsAlive())
+                {
+                    enemy_killed++;
+                    enemy_count--;
+                    if (enemy_killed % 40 == 0)
+                    {
+                        player.Status.AddShield(200);
+                    }
+                    enemy.position = new Vector2(2000, 2000);
+                    damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+                    Globals.EnemyManager.Remove(enemy);
+                    commonEnemy.Remove(enemy);
+                    break; //Don't remove. If remove = crash
+                }
+            }
+
+            //Elite1
+            if (elite_spawn_time > 15f && !boss_spawned)
+            {
+                Elite1 enemy = (new Elite1(
+                    Globals.Content.Load<Texture2D>("Enemies/Elite1"),
+                    new(1920 / 2, 0),
+                    health: 1000,
+                    attack: 1,
+                    row: 4,
+                    column: 1
+                    )
+                {
+                    movementAI = new FollowMovementAI
+                    {
+                        target = player,
+                    }
+                });
+                eliteEnemy.Add(enemy);
+                Globals.EnemyManager.Add(enemy);
+                damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
+
+                elite_spawn_time = 0f;
+            }
+            foreach (var enemy in eliteEnemy)
+            {
+                if (!enemy.Status.IsAlive())
+                {
+                    player.Status.AddAttack(20);
+                    damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+                    Globals.EnemyManager.Remove(enemy);
+                    eliteEnemy.Remove(enemy);
+                    break;
+                }
+            }
+
+            //Boss1
+            if (boss_spawn_time > 135f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
+            {
+                special_spawn_time = 10f;
+                boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 4000, attack: 2, row: 3, column: 1)
+                {
+                    movementAI = new FollowMovementAI
+                    {
+                        target = player,
+                    }
+                };
+                if (player.position.X > Globals.Bounds.X / 2)
+                {
+                    boss_obj.position = new Vector2(150, boss_obj.position.Y);
+                }
+                if (player.position.X <= Globals.Bounds.X / 2)
+                {
+                    boss_obj.position = new Vector2(1920 - 150, boss_obj.position.Y);
+                }
+                boss_spawned = true;
+                commonEnemy.Clear();
+                eliteEnemy.Clear();
+                Globals.EnemyManager.Clear();
+                Globals.EnemyManager.Add(boss_obj);
+                damageNumberManager.SubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
+
+
+                Texture2D bg = Globals.Content.Load<Texture2D>("UI/BossBarNone");
+                Texture2D fg = Globals.Content.Load<Texture2D>("UI/BossBarFull");
+                ProgressBarAnimated bossBar = new ProgressBarAnimated(bg, fg, boss_obj.Status.MaxHP, new(Globals.Bounds.X / 2, 100));
+                uiManager.AddElement("bossBar", bossBar);
+            }
+            if (boss_spawned)
+            {
+                if (!boss_obj.Status.IsAlive())
+                {
+                    boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
+                    damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
+                    Globals.EnemyManager.Remove(boss_obj);
+                    sceneManager.RemoveScene(this);
+                }
+            }
+
+            if (boss_spawned && special_spawn_time > 10f)
+            {
+                if (special_count < special_max)
+                {
+                     Special1 enemy = new Special1(
+                        Globals.Content.Load<Texture2D>("Enemies/Special1"),
+                        new(boss_obj.position.X, boss_obj.position.Y + random.Next(100, 300)),
+                        health: 600,
+                        attack: 1,
+                        row: 3,
+                        column: 4
+                        )
+                    {
+                        movementAI = new FollowMovementAI
+                        {
+                            target = player,
+                        }
+                    };
+                    specialEnemy.Add(enemy);
+                    Globals.EnemyManager.Add(enemy);
+                    damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
+                    special_count++;
+                    special_spawn_time = 0f;
+                }
+            }
+            foreach (var special in specialEnemy)
+            {
+                if (!special.Status.IsAlive())
+                {
+                    special.Bomb();
+                    if (special.isBombed)
+                    {
+                        poisonPool.Add(new PoisonPool(
+                            Globals.Content.Load<Texture2D>("GroundEffect/PoisonPool"),
+                            special.position,
+                            1,
+                            1
+                            ));
+                        damageNumberManager.UnSubscribeToTakeDamageEvent(special.Status, special);
+                        Globals.EnemyManager.Remove(special);
+                        specialEnemy.Remove(special);
+                        break;
+                    }
+                }
+            }
+
+
+        }
+        private void UiManage(GameTime gameTime)
+        {
+            //UI Control
+            if (uiManager.CheckCollide(player))
+            {
+                uiManager.SetAllOpacity(0.5f);
+            }
+            else if (uiManager.CheckCollide(boss_obj))
+            {
+                uiManager.SetAllOpacity(0.5f);
+            }
+            else if (commonEnemy.Any(collidable => uiManager.CheckCollide(collidable)))
+            {
+                uiManager.SetAllOpacity(0.7f);
+            }
+            else if (eliteEnemy.Any(collidable => uiManager.CheckCollide(collidable)))
+            {
+                uiManager.SetAllOpacity(0.7f);
+            }
+            else if (specialEnemy.Any(collidable => uiManager.CheckCollide(collidable)))
+            {
+                uiManager.SetAllOpacity(0.7f);
+            }
+            else { uiManager.SetAllOpacity(1f); }
+
+            uiManager.Update(gameTime);
+            uiManager.UpdateBarValue("bossBar", boss_obj.Status.CurrentHP);
+            uiManager.UpdateBarValue("playerBar", player.Status.CurrentHP);
+        }
+        private void CollisionManage(GameTime gameTime)
+        {
+            foreach (var enemy in Globals.EnemyManager)
+            {
+                
+                if(enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
+                {
+                    enemy.TakeDamage(player.Status.Attack, player);
+                    enemy.Status.immunity = true;
+                }
+
+            }
+
+
+
+            damageNumberManager.Update();
+        }
+
     }
 }

@@ -53,6 +53,7 @@ namespace Advencursor._Models.Enemy
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
