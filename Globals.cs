@@ -11,7 +11,6 @@ namespace Advencursor
     public static class Globals
     {
         public static Game Game { get; set; }
-        public static float TotalSeconds { get; set; }
         public static float BulletTime { get; private set; }
         public static ContentManager Content { get; set; }
         public static SpriteBatch SpriteBatch { get; set; }
@@ -27,6 +26,11 @@ namespace Advencursor
         public static void Update(GameTime gameTime)
         {
             TimeManager.Update(gameTime);
+        }
+
+        public static float RandomFloat(float min, float max)
+        {
+            return (float)(random.NextDouble() * (max - min)) + min;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Advencursor._Managers;
-using Advencursor._Models;
+﻿using Advencursor._Models;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Advencursor._UI;
 
 namespace Advencursor._Scene
 {

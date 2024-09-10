@@ -27,7 +27,7 @@ namespace Advencursor._Skill.Thunder_Set
         private bool isUsing = false;
 
         private float radius = 200f;
-        private List<float> angle = new List<float>();
+        private List<double> angle = new List<double>();
         private float rotation_speed = 0.05f;
         private List<Vector2> position = new List<Vector2>();
         private const float collisionCooldownTime = 0.5f;
@@ -50,7 +50,7 @@ namespace Advencursor._Skill.Thunder_Set
             for (int i = 0; i < maxAmount; i++)
             {
                 animations.Add(new(Globals.Content.Load<Texture2D>("Animation/LightningShuriken"), 1, 2, TimeManager.framerate, true));
-                angle.Add(i * 80f);
+                angle.Add((i * 90 * Math.PI)/180);
                 position.Add(Vector2.Zero);
             }
         }

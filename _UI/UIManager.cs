@@ -1,5 +1,4 @@
-﻿using Advencursor._UI;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 using Advencursor._Models;
 using System.Xml.Linq;
 
-namespace Advencursor._Managers
+namespace Advencursor._UI
 {
     public class UIManager
     {
@@ -27,7 +26,7 @@ namespace Advencursor._Managers
             uiElements.Add(element);
         }
 
-        public void AddElement(string barName,ProgressBar progressBar)
+        public void AddElement(string barName, ProgressBar progressBar)
         {
             progressBarDictionary.Add(barName, progressBar);
         }
@@ -57,7 +56,7 @@ namespace Advencursor._Managers
             }
         }
 
-        public void UpdateBarValue(string barName,float value)
+        public void UpdateBarValue(string barName, float value)
         {
             if (progressBarDictionary.ContainsKey(barName))
             {

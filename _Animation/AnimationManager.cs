@@ -1,5 +1,4 @@
-﻿using Advencursor._Animation;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -9,20 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Advencursor._Managers
+namespace Advencursor._Animation
 {
     public class AnimationManager
     {
         Dictionary<string, Animation> animations;
         private List<Animation> activeAnimations;
 
-        public AnimationManager() 
+        public AnimationManager()
         {
             animations = new Dictionary<string, Animation>();
             activeAnimations = new List<Animation>();
         }
 
-        public void AddAnimation(string name,Animation animation)
+        public void AddAnimation(string name, Animation animation)
         {
             animations[name] = animation;
         }
@@ -51,7 +50,7 @@ namespace Advencursor._Managers
             }
         }
 
-        public void PauseFrame(string name,int frame)
+        public void PauseFrame(string name, int frame)
         {
             Animation animation = GetAnimation(name);
             animation.currentFrame = frame;
@@ -118,7 +117,7 @@ namespace Advencursor._Managers
             animations[name].offset = offset;
         }
 
-        public Rectangle GetCollision(string name,Vector2 animationReleasePosition)
+        public Rectangle GetCollision(string name, Vector2 animationReleasePosition)
         {
             if (animations.ContainsKey(name))
             {
@@ -132,8 +131,8 @@ namespace Advencursor._Managers
 
                 return animation.GetCollision(animationReleasePosition);
             }
-            return new Rectangle(0,0, 0, 0);
-            
+            return new Rectangle(0, 0, 0, 0);
+
         }
 
         public bool IsCollision(string name)
@@ -141,7 +140,7 @@ namespace Advencursor._Managers
             Animation animation = GetAnimation(name);
             return animation.IsCollide;
         }
-        public void UpdatePosition(string name,Vector2 position)
+        public void UpdatePosition(string name, Vector2 position)
         {
             if (animations.ContainsKey(name))
             {

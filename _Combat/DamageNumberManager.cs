@@ -1,5 +1,4 @@
-﻿using Advencursor._Combat;
-using Advencursor._Models;
+﻿using Advencursor._Models;
 using Advencursor._Models.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advencursor._Managers
+namespace Advencursor._Combat
 {
     public class DamageNumberManager
     {
@@ -24,12 +23,12 @@ namespace Advencursor._Managers
 
         public void AddDamageNumber(string text, Sprite whotake, Color color)
         {
-            damageNumbers.Add(new DamageNumber(text, whotake.position,color));
+            damageNumbers.Add(new DamageNumber(text, whotake.position, color));
         }
 
         public void SubscribeToTakeDamageEvent(Status status, Sprite whotake)
         {
-            status.OnTakeDamage += (text,color) => AddDamageNumber(text,whotake,color);
+            status.OnTakeDamage += (text, color) => AddDamageNumber(text, whotake, color);
         }
 
         public void SubscribeToTakeDamageEvent(Status status, Sprite whotake, Color wantColor)
@@ -39,7 +38,7 @@ namespace Advencursor._Managers
 
         public void UnSubscribeToTakeDamageEvent(Status status, Sprite whotake)
         {
-            status.OnTakeDamage -= (text,color) => AddDamageNumber(text, whotake, color);
+            status.OnTakeDamage -= (text, color) => AddDamageNumber(text, whotake, color);
         }
 
         public void Update()

@@ -10,8 +10,8 @@ namespace Advencursor._Particles
 {
     public class ParticleData
     {
-        public static Texture2D _defaultTexture;
-        public Texture2D texture = _defaultTexture ??= Globals.Content.Load<Texture2D>("particle");
+        public static Texture2D defaultTexture;
+        public Texture2D texture = defaultTexture ??= Globals.Content.Load<Texture2D>("particle");
         public float lifespan = 2f;
         public Color colorStart = Color.Yellow;
         public Color colorEnd = Color.Red;

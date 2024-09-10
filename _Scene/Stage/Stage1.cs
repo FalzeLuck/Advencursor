@@ -20,6 +20,9 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
 using Advencursor._Skill.Thunder_Set;
 using System.ComponentModel;
+using Advencursor._Particles;
+using System.Xml.Serialization;
+using Advencursor._Particles.Emitter;
 
 
 namespace Advencursor._Scene.Stage
@@ -71,6 +74,7 @@ namespace Advencursor._Scene.Stage
         //UI
         private UIManager uiManager = new UIManager();
 
+
         public Stage1(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
@@ -97,6 +101,8 @@ namespace Advencursor._Scene.Stage
 
         public void Load()
         {
+            
+
             //Load Background
             background = Globals.Content.Load<Texture2D>("Background/BG_Stage1");
 
@@ -130,10 +136,12 @@ namespace Advencursor._Scene.Stage
             //Temporary Skill
             Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
             Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 2);
+            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 10, player);
             items = new List<Item>()
             {
                 new Item("ThunderCore book",ThunderCore,Keys.Q),
                 new Item("ThunderShuriken book",ThunderShuriken,Keys.W),
+                new Item("ThunderSpeed book",ThunderSpeed,Keys.E),
             };
 
 
@@ -144,7 +152,7 @@ namespace Advencursor._Scene.Stage
             int skillY = 950;
             UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), ThunderCore);
             UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), ThunderShuriken);
-            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), ThunderCore);
+            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), ThunderSpeed);
             UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), ThunderCore);
             UIPlayerCheckPanel uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
 
@@ -223,9 +231,6 @@ namespace Advencursor._Scene.Stage
             {
                 enemy.Update(gameTime);
             }
-
-
-
             UiManage(gameTime);
             CollisionManage(gameTime);
 
@@ -273,8 +278,9 @@ namespace Advencursor._Scene.Stage
             }
             uiManager.Draw(spriteBatch);
             player.Draw();
-            ParticleManager.Draw();
+            
             animationManager.Draw();
+            ParticleManager.Draw();
             damageNumberManager.Draw();
         }
 

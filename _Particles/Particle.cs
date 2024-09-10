@@ -11,58 +11,61 @@ namespace Advencursor._Particles
 {
     public class Particle
     {
-        public readonly ParticleData _data;
-        private Vector2 _position;
-        private float _lifespanLeft;
-        private float _lifespanAmount;
-        private Color _color;
-        public float _opacity;
+        public readonly ParticleData data;
+        protected Vector2 position;
+        protected float lifespanLeft;
+        protected float lifespanAmount;
+        protected Color color;
+        public float opacity;
         public bool IsFinished = false;
-        public float _scale;
-        private Vector2 _origin;
-        private Vector2 _direction;
+        public float scale;
+        protected Vector2 origin;
+        protected Vector2 direction;
+        protected float rotation;
 
         public Particle(Vector2 position, ParticleData data) 
         {
-            _data = data;
-            _position = position;
-            _lifespanLeft = data.lifespan;
-            _lifespanAmount = 1f;
-            _color = data.colorStart;
-            _opacity = data.opacityStart;
-            _origin = new(_data.texture.Width / 2, _data.texture.Height / 2);
+            this.data = data;
+            this.position = position;
+            lifespanLeft = data.lifespan;
+            lifespanAmount = 1f;
+            color = data.colorStart;
+            opacity = data.opacityStart;
+            origin = new(this.data.texture.Width / 2, this.data.texture.Height / 2);
+            rotation = 0f;
 
             if(data.speed != 0)
             {
-                _data.angle = MathHelper.ToRadians(_data.angle);
-                _direction = new Vector2((float)Math.Sin(_data.angle), (float)Math.Cos(_data.angle));
+                this.data.angle = MathHelper.ToRadians(this.data.angle);
+                direction = new Vector2((float)Math.Sin(this.data.angle), (float)Math.Cos(this.data.angle));
             }
             else
             {
-                _direction = Vector2.Zero;
+                direction = Vector2.Zero;
             }
         }
 
-        public void Update()
+        public virtual void Update()
         {
-            _lifespanLeft -= TimeManager.TotalSeconds;
-            if(_lifespanLeft <= 0f)
+            lifespanLeft -= TimeManager.TotalSeconds;
+            if(lifespanLeft <= 0f)
             {
                 IsFinished = true;
                 return;
             }
 
-            _lifespanAmount = MathHelper.Clamp(_lifespanLeft / _data.lifespan, 0f, 1f);
-            _color = Color.Lerp(_data.colorEnd, _data.colorStart, _lifespanAmount);
-            _opacity = MathHelper.Clamp(MathHelper.Lerp(_data.opacityEnd, _data.opacityStart, _lifespanAmount), 0f, 1f);
-            _scale = MathHelper.Lerp(_data.sizeEnd,_data.sizeStart, _lifespanAmount) / _data.texture.Width;
-            _position += _direction * _data.speed * TimeManager.TotalSeconds;
+            lifespanAmount = MathHelper.Clamp(lifespanLeft / data.lifespan, 0f, 1f);
+            color = Color.Lerp(data.colorEnd, data.colorStart, lifespanAmount);
+            opacity = MathHelper.Clamp(MathHelper.Lerp(data.opacityEnd, data.opacityStart, lifespanAmount), 0f, 1f);
+            scale = MathHelper.Lerp(data.sizeEnd,data.sizeStart, lifespanAmount) / data.texture.Width;
+            position += direction * data.speed * TimeManager.TotalSeconds;
+
 
         }
 
-        public void Draw()
+        public virtual void Draw()
         {
-            Globals.SpriteBatch.Draw(_data.texture, _position, null, _color * _opacity, 0f, _origin, _scale, SpriteEffects.None, 1f);
+            Globals.SpriteBatch.Draw(data.texture, position, null, color * opacity, rotation, origin, scale, SpriteEffects.None, 1f);
         }
     }
 }
