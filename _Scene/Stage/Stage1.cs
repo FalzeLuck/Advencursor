@@ -63,7 +63,7 @@ namespace Advencursor._Scene.Stage
         private int enemy_count = 0;
         private int elite_count = 0;
         private int special_count = 0;
-        private int enemy_max = 20;
+        private int enemy_max = 40;
         private int elite_max = 2;
         private int special_max = 2;
         private int enemy_killed = 0;
@@ -509,19 +509,30 @@ namespace Advencursor._Scene.Stage
                 if (enemy_count < enemy_max)
                 {
 
-                    int spawnDirection = random.Next(1, 3);
-                    int spawnSide = 0;
+                    int spawnDirection = Globals.random.Next(1, 5);
+
+                    Vector2 spawnpoint = Vector2.Zero;
                     if (spawnDirection == 1)
                     {
-                        spawnSide = 100;
+                        spawnpoint = new(Globals.random.Next(0, 1920), 0);
                     }
                     else if (spawnDirection == 2)
                     {
-                        spawnSide = 1820;
+                        spawnpoint = new(Globals.random.Next(0, 1920), 1080);
                     }
+                    else if (spawnDirection == 3)
+                    {
+                        spawnpoint = new(0, Globals.random.Next(0, 1080));
+                    }
+                    else if (spawnDirection == 4)
+                    {
+                        spawnpoint = new(1920, Globals.random.Next(0, 1080));
+                    }
+
+
                     Common1 enemy = (new Common1(
                         Globals.Content.Load<Texture2D>("Enemies/Common1"),
-                        new(spawnSide, random.Next(200, 900)),
+                        spawnpoint,
                         health: 200,
                         attack: 1,
                         row: 3,

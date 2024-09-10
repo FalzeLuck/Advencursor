@@ -3,6 +3,7 @@ using Advencursor._Models.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace Advencursor
@@ -18,6 +19,8 @@ namespace Advencursor
         public static GraphicsDevice graphicsDevice { get; set; }
         public static Point Bounds { get; set; }
         public static bool Paused = false;
+
+        public static Random random { get; set; } = new Random();
 
         public static List<_Enemy> EnemyManager { get; set; } = new List<_Enemy>();
 
