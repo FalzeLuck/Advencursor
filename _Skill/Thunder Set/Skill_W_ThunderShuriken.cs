@@ -21,16 +21,16 @@ namespace Advencursor._Skill.Thunder_Set
         private float buffTime;
         
 
-        private int maxAmount = 1;
+        private int maxAmount = 4;
         private int currentAmount = 0;
 
         private bool isUsing = false;
 
         private float radius = 200f;
         private List<float> angle = new List<float>();
-        private float rotation_speed = 0.2f;
+        private float rotation_speed = 0.05f;
         private List<Vector2> position = new List<Vector2>();
-        private const float collisionCooldownTime = 0.2f;
+        private const float collisionCooldownTime = 0.5f;
 
         private float maxDuration = 1.5f;
         private float stayDuration;
