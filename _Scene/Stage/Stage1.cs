@@ -98,7 +98,7 @@ namespace Advencursor._Scene.Stage
         public void Load()
         {
             //Load Background
-            background = Globals.Content.Load<Texture2D>("Background/Stage1_5");
+            background = Globals.Content.Load<Texture2D>("Background/BG_Stage1");
 
             //Player
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 1000, attack: 50, row: 4, column: 1);
