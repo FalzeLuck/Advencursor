@@ -23,6 +23,11 @@ namespace Advencursor._Particles
             particleEmitters.Add(emitter);
         }
 
+        public static void RemoveParticleEmitter(ParticleEmitter emitter)
+        {
+            particleEmitters.Remove(emitter);
+        }
+
         public static void UpdateParticles()
         {
             foreach (var particle in particles)
