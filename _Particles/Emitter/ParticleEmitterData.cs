@@ -15,6 +15,8 @@ namespace Advencursor._Particles.Emitter
         public float lifeSpanMax = 2.0f;
         public float speedMin = 10f;
         public float speedMax = 100f;
+        public float rotationMin = 0f;
+        public float rotationMax = 0f;
         public float interval = 1f;
         public int emitCount = 1;
 

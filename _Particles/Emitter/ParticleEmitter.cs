@@ -31,6 +31,9 @@ namespace Advencursor._Particles.Emitter
             float r = (float)(Globals.random.NextDouble() * 2) - 1;
             d.angle += data.angleVariance * r;
 
+            d.rotation = Globals.RandomFloat(data.rotationMin,data.rotationMax);
+
+
             Particle p = new(pos,d);
             ParticleManager.AddParticle(p);
         }

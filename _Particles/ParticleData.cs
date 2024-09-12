@@ -21,6 +21,7 @@ namespace Advencursor._Particles
         public float sizeEnd = 4f;
         public float speed = -100f;
         public float angle = 0f;
+        public float rotation = 0f;
 
 
         public ParticleData()

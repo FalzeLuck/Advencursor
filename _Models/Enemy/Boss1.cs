@@ -1,5 +1,6 @@
 ﻿using Advencursor._AI;
 using Advencursor._Animation;
+using Advencursor._Combat;
 using Advencursor._Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,6 +36,8 @@ namespace Advencursor._Models.Enemy
 
             };
             indicator = "Idle";
+
+            Status = new Status(health,attack);
 
             checkRadius = new Rectangle(9999,9999,0,0);
             charge = false;

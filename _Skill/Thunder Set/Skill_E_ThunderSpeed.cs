@@ -32,16 +32,21 @@ namespace Advencursor._Skill.Thunder_Set
 
             ped = new()
             {
-                particleData = new()
+                particleData = new LightningParticleData()
                 {
-                    colorStart = Color.LightGoldenrodYellow,
-                    colorEnd = Color.White,
+                    colorStart = Color.White,
+                    colorEnd = Color.Yellow,
+                    sizeStart = 150,
+                    sizeEnd = 150,
                 },
-                interval = 0.01f,
+                interval = 0.05f,
                 emitCount = 1,
-                angleVariance = 0f,
+                angleVariance = 180f,
                 speedMax = 0f,
                 speedMin = 0f,
+                lifeSpanMax = 1f,
+                lifeSpanMin = 0.5f,
+                rotationMax = 360f,
             };
 
             pe = new(spriteEmitter, ped);

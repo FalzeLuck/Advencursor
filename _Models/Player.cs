@@ -41,6 +41,8 @@ namespace Advencursor._Models
         public string buffIndicator;
         public string finalIndicator {  get; private set; }
 
+        private float immuneDuration;
+
 
         public Player(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position)
         {
@@ -122,6 +124,21 @@ namespace Advencursor._Models
             }
         }
 
+        public void TakeDamage(int damage)
+        {
+            Status.TakeDamage(damage);
+            if (!Status.immunity)
+            {
+                Immunity(0.5f);
+            }
+        }
+
+        public void Immunity(float duration)
+        {
+            Status.immunity = true;
+            immuneDuration = duration;
+        }
+
 
         public  override void Update(GameTime gameTime)
         {
@@ -159,6 +176,16 @@ namespace Advencursor._Models
             foreach (var skill in Skills.Values)
             {
                 skill.Update(TimeManager.TotalSeconds,this);
+            }
+
+            if (Status.immunity)
+            {
+                immuneDuration -= TimeManager.TotalSeconds;
+
+                if(immuneDuration <= 0f)
+                {
+                    Status.immunity = false;
+                }
             }
         }
 

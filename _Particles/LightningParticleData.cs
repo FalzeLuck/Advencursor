@@ -18,8 +18,8 @@ namespace Advencursor._Particles
             colorEnd = new Color(100,100,255);
             opacityStart = 1f;
             opacityEnd = 0f;
-            sizeStart = 0.5f; 
-            sizeEnd = 0.1f;
+            sizeStart = 100f; 
+            sizeEnd = 50f;
             speed = 200f;
             angle = 0f;
         }

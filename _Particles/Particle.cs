@@ -32,7 +32,7 @@ namespace Advencursor._Particles
             color = data.colorStart;
             opacity = data.opacityStart;
             origin = new(this.data.texture.Width / 2, this.data.texture.Height / 2);
-            rotation = 0f;
+            rotation = data.rotation;
 
             if(data.speed != 0)
             {

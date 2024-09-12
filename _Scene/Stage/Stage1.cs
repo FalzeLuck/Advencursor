@@ -56,7 +56,6 @@ namespace Advencursor._Scene.Stage
 
         //Stage Timer & Controls
         private bool canClick = true;
-        private float immune_duration;
         private float boss_spawn_time;
         private float boss_dash_cooldown;
         private bool boss_spawned;
@@ -107,7 +106,7 @@ namespace Advencursor._Scene.Stage
             background = Globals.Content.Load<Texture2D>("Background/BG_Stage1");
 
             //Player
-            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 1000, attack: 50, row: 4, column: 1);
+            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 15000, attack: 800, row: 4, column: 1);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player, Color.Red);
 
             //Load enemies(Temp)
@@ -117,8 +116,8 @@ namespace Advencursor._Scene.Stage
             poisonPool = new List<PoisonPool> ();
 
 
-
-            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 4000,attack:2,row: 3,column: 1)
+            //boss
+            boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 100000,attack:2,row: 3,column: 1)
             {
                 movementAI = new FollowMovementAI
                 {
@@ -136,7 +135,7 @@ namespace Advencursor._Scene.Stage
             //Temporary Skill
             Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
             Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 2);
-            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 10, player);
+            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 2, player);
             items = new List<Item>()
             {
                 new Item("ThunderCore book",ThunderCore,Keys.Q),
@@ -353,16 +352,6 @@ namespace Advencursor._Scene.Stage
                 player.EquipItem(item);
             }
 
-            if (player.Status.immunity)
-            {
-                immune_duration += TimeManager.TotalSeconds;
-
-                if (immune_duration > 1f)
-                {
-                    player.Status.immunity = false;
-                    immune_duration = 0f;
-                }
-            }
 
             if (!player.Status.IsAlive())
             {
@@ -383,7 +372,6 @@ namespace Advencursor._Scene.Stage
                 if(enemy.collision.Intersects(player.collision) && enemy.isDashing)
                 {
                     player.Status.TakeDamage(50);
-                    player.Status.immunity = true;
                 }
             }
             
@@ -467,7 +455,6 @@ namespace Advencursor._Scene.Stage
                     soundManager.StopSound("Charge");
                     boss_obj.isAttacking = true;
                     soundManager.PlaySound("Beep");
-
                 }
                 if (boss_obj.charge_duration >= 3f)
                 {
@@ -734,17 +721,17 @@ namespace Advencursor._Scene.Stage
         {
             foreach (var enemy in Globals.EnemyManager)
             {
-                
                 if(enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
                 {
                     enemy.TakeDamage(player.Status.Attack, player);
                     enemy.Status.immunity = true;
                 }
 
+                if (enemy.collision.Intersects(player.collision))
+                {
+                    player.TakeDamage(enemy.Status.Attack);
+                }
             }
-
-
-
             damageNumberManager.Update();
         }
 
