@@ -311,6 +311,7 @@ namespace Advencursor._Scene.Stage
                 }
 
 
+
                 if (InputManager.MouseRightClicked && canClick)
                 {
                     animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
@@ -470,8 +471,7 @@ namespace Advencursor._Scene.Stage
             }
             if (boss_obj.collision.Intersects(player.collision) && boss_obj.dashing)
             {
-                player.Status.TakeDamage(500);
-                player.Status.immunity = true;
+                player.TakeDamage(5000);
             }
             
         }
@@ -601,13 +601,6 @@ namespace Advencursor._Scene.Stage
             if (boss_spawn_time > 135f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
             {
                 special_spawn_time = 10f;
-                boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 4000, attack: 2, row: 3, column: 1)
-                {
-                    movementAI = new FollowMovementAI
-                    {
-                        target = player,
-                    }
-                };
                 if (player.position.X > Globals.Bounds.X / 2)
                 {
                     boss_obj.position = new Vector2(150, boss_obj.position.Y);
@@ -727,10 +720,10 @@ namespace Advencursor._Scene.Stage
                     enemy.Status.immunity = true;
                 }
 
-                if (enemy.collision.Intersects(player.collision))
+                /*if (enemy.collision.Intersects(player.collision))
                 {
                     player.TakeDamage(enemy.Status.Attack);
-                }
+                }*/
             }
             damageNumberManager.Update();
         }

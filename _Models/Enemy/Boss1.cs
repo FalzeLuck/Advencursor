@@ -37,7 +37,7 @@ namespace Advencursor._Models.Enemy
             };
             indicator = "Idle";
 
-            Status = new Status(health,attack);
+
 
             checkRadius = new Rectangle(9999,9999,0,0);
             charge = false;

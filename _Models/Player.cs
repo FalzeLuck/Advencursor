@@ -126,9 +126,9 @@ namespace Advencursor._Models
 
         public void TakeDamage(int damage)
         {
-            Status.TakeDamage(damage);
             if (!Status.immunity)
             {
+                Status.TakeDamage(damage);
                 Immunity(0.5f);
             }
         }

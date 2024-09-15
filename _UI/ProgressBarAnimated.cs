@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Advencursor._UI
     public class ProgressBarAnimated : ProgressBar
     {
         private float targetValue;
-        private readonly float animationSpeed = 100f;
+        private float animationSpeed;
         private Rectangle animationPart;
         private Vector2 animationPosition;
         private Color animationShade;
@@ -23,6 +24,8 @@ namespace Advencursor._UI
             animationPart = new Rectangle(foreground.Width,0,0,foreground.Height);
             animationPosition = position;
             animationShade = Color.DarkGray;
+            animationSpeed = (maxValue/5);
+            Trace.WriteLine(animationSpeed);
         }
 
         public override void Update(GameTime gameTime)

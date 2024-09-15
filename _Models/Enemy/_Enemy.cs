@@ -43,9 +43,16 @@ namespace Advencursor._Models.Enemy
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
         }
 
-        public virtual void TakeDamage(int damage, Player player)
+        public virtual void TakeDamage(int damage, Player player, bool throughImmune = false)
         {
-            Status.TakeDamage(damage);
+            if (throughImmune)
+            {
+                Status.TakeDamageNoImmune(damage);
+            }
+            else
+            {
+                Status.TakeDamage(damage);
+            }
         }
 
         public virtual void CollisionCooldownReset(float timer)
