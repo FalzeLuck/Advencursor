@@ -39,7 +39,7 @@ namespace Advencursor._Combat
 
         public void Update()
         {
-            float deltaTime = TimeManager.TotalSeconds;
+            float deltaTime = TimeManager.TimeGlobal;
             elapsedTime += deltaTime;
 
             //Update pos

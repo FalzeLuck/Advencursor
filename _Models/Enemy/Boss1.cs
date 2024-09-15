@@ -108,7 +108,7 @@ namespace Advencursor._Models.Enemy
             if (dashing)
             {
                 indicator = "Attack";
-                position += velocity * TimeManager.TotalSeconds;
+                position += velocity * TimeManager.TimeGlobal;
 
                 if(collision.X+collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y+collision.Height >= Globals.Bounds.Y || collision.Y <= 0)
                 {
@@ -120,7 +120,7 @@ namespace Advencursor._Models.Enemy
             if (stunned)
             {
                 indicator = "Stun";
-                stuntimer += TimeManager.TotalSeconds;
+                stuntimer += TimeManager.TimeGlobal;
                 if(stuntimer > stunduration) stunned = false;
             }
         }

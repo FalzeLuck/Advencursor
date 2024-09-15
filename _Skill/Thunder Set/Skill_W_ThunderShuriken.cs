@@ -31,6 +31,7 @@ namespace Advencursor._Skill.Thunder_Set
         private float rotation_speed = 0.05f;
         private List<Vector2> position = new List<Vector2>();
         private const float collisionCooldownTime = 0.5f;
+        private List<float> collisionCooldown = new List<float>();
 
         private float maxDuration = 1.5f;
         private float stayDuration;
@@ -47,12 +48,16 @@ namespace Advencursor._Skill.Thunder_Set
             base.Use();
             isUsing = true;
             stayDuration = 0f;
+            int collisionCooldownindex = 0;
             for (int i = 0; i < maxAmount; i++)
             {
                 animations.Add(new(Globals.Content.Load<Texture2D>("Animation/LightningShuriken"), 1, 2, TimeManager.framerate, true));
                 angle.Add((i * 90 * Math.PI)/180);
                 position.Add(Vector2.Zero);
+                collisionCooldownindex++;
             }
+
+            collisionCooldown = new List<float>(new float[(Globals.EnemyManager.Count * collisionCooldownindex) + 100]);
         }
 
         public override void Update(float deltaTime, Player player)
@@ -98,29 +103,27 @@ namespace Advencursor._Skill.Thunder_Set
 
         private void CheckCollision()
         {
-            float deltaTime = TimeManager.TotalSeconds;
 
-            for (int i = 0; i < Math.Min(animations.Count, position.Count); i++)
+            for (int i = 0; i < Globals.EnemyManager.Count; i++)
             {
-                if (i >= maxAmount) break;
-
-
-                foreach (var enemy in Globals.EnemyManager)
+                for (int j = 0; j < Math.Min(animations.Count, position.Count); j++)
                 {
-
-                    bool isColliding = enemy.collision.Intersects(animations[i].GetCollision(position[i]));
-                    if (isColliding)
+                    int index = (animations.Count * i) + j;
+                    if (collisionCooldown[index] <= 0)
                     {
-                        if (enemy.collisionCooldown <= 0)
+                        if (Globals.EnemyManager[i].collision.Intersects(animations[j].GetCollision(position[j])))
                         {
-                            enemy.TakeDamage((int)(player.Status.Attack * skillMultiplier), player);
-                            enemy.Status.Paralysis(1.5f);
-                            enemy.CollisionCooldownReset(collisionCooldownTime);
+                            Globals.EnemyManager[i].TakeDamage((int)(player.Status.Attack * skillMultiplier), player);
+                            Globals.EnemyManager[i].Status.Paralysis(1.5f);
+                            collisionCooldown[index] = collisionCooldownTime;
                         }
                     }
                 }
-                
-                
+            }
+
+            for (int i = 0; i < collisionCooldown.Count; i++)
+            {
+                collisionCooldown[i] -= TimeManager.TimeGlobal;
             }
 
         }

@@ -24,13 +24,13 @@ namespace Advencursor._AI
             if (length > distance + 2)
             {
                 direction.Normalize();
-                bot.position += direction * bot.velocity * TimeManager.TotalSeconds;
+                bot.position += direction * bot.velocity * TimeManager.TimeGlobal;
             }
 
             else if (length < distance - 2)
             {
                 direction.Normalize();
-                bot.position -= direction * bot.velocity * TimeManager.TotalSeconds;
+                bot.position -= direction * bot.velocity * TimeManager.TimeGlobal;
             }
         }
 

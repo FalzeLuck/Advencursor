@@ -44,7 +44,7 @@ namespace Advencursor._Models.Enemy
             }
             UpdateParryZone();
 
-            walkTimer += TimeManager.TotalSeconds;
+            walkTimer += TimeManager.TimeGlobal;
 
             if (walkTimer > 1.5f)
             {
@@ -57,7 +57,7 @@ namespace Advencursor._Models.Enemy
             else if (walkTimer > 0)
             {
                 
-                position += velocity * TimeManager.TotalSeconds;
+                position += velocity * TimeManager.TimeGlobal;
             }
 
 
@@ -80,7 +80,7 @@ namespace Advencursor._Models.Enemy
         public void Bomb()
         {
             indicator = "Bomb";
-            bombTimer += TimeManager.TotalSeconds;
+            bombTimer += TimeManager.TimeGlobal;
         }
         }
 }

@@ -50,7 +50,7 @@ namespace Advencursor._Combat
         public void Update()
         {
             if (!active) return;
-            timeLeft += TimeManager.TotalSeconds;
+            timeLeft += TimeManager.TimeGlobal;
 
             FormatText();
         }

@@ -73,7 +73,7 @@ namespace Advencursor._Skill.Thunder_Set
 
             if (isUsing)
             {
-                bufftime -= TimeManager.TotalSeconds;
+                bufftime -= TimeManager.TimeGlobal;
 
                 
                 if(bufftime <= 0)
@@ -98,7 +98,7 @@ namespace Advencursor._Skill.Thunder_Set
 
                 for (int i = 0; i < collisionCooldown.Count; i++)
                 {
-                    collisionCooldown[i] -= TimeManager.TotalSeconds;
+                    collisionCooldown[i] -= TimeManager.TimeGlobal;
                 }
                 
             }

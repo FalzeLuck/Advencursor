@@ -15,15 +15,48 @@ namespace Advencursor._Managers
         private const float TIME_DILATION_PER_SECOND = (MAX_TIME_DILATION - MIN_TIME_DILATION) / TIME_DILATION_SPEED;
         private static float TimeDilation { get; set; } = 1.00f;
         public static float TotalSeconds { get; set; }
-        public static float BulletTime { get; private set; }
+        public static float TimeGlobal { get; set; }
+        public static float GameSpeedParamiter { get; set; }
 
         public static float framerate = 30;
+
+        private static bool IsIncrease;
 
         public static void Update(GameTime gameTime)
         {
             TotalSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            BulletTime = 0.05f * TotalSeconds;
+            BulletTime();
+
+            TimeGlobal = TotalSeconds * GameSpeedParamiter;
             
+        }
+
+        public static void ChangeGameSpeed(float amount)
+        {
+            if (amount > GameSpeedParamiter)
+            {
+                IsIncrease = true;
+            }
+            else
+            {
+                IsIncrease = false;
+            }
+
+            GameSpeedParamiter = amount;
+        }
+
+        private static void BulletTime()
+        {
+            if (IsIncrease)
+            {
+                TimeDilation += TIME_DILATION_PER_SECOND * TotalSeconds;
+            }
+            else
+            {
+                TimeDilation -= TIME_DILATION_PER_SECOND * TotalSeconds;
+            }
+
+            TimeDilation = Math.Clamp(TimeDilation, MIN_TIME_DILATION, MAX_TIME_DILATION);
         }
     }
 }

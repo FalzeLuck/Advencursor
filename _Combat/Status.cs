@@ -127,7 +127,7 @@ namespace Advencursor._Combat
         {
             if (isParalysis)
             {
-                paralysisTimer -= TimeManager.TotalSeconds;
+                paralysisTimer -= TimeManager.TimeGlobal;
                 if( paralysisTimer < 0 ) { isParalysis=false; }
             }
         }

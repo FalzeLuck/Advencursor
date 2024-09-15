@@ -29,7 +29,7 @@ namespace Advencursor._Models.Enemy
 
         public override void Update(GameTime gameTime)
         {
-            collisionCooldown -= TimeManager.TotalSeconds;
+            collisionCooldown -= TimeManager.TimeGlobal;
         }
 
         public void UpdateParryZone()

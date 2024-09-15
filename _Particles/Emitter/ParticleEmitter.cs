@@ -40,7 +40,7 @@ namespace Advencursor._Particles.Emitter
 
         public void Update()
         {
-            intervalLeft -= TimeManager.TotalSeconds;
+            intervalLeft -= TimeManager.TimeGlobal;
             while (intervalLeft <= 0f)
             {
                 intervalLeft += data.interval;

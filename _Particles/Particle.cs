@@ -47,7 +47,7 @@ namespace Advencursor._Particles
 
         public virtual void Update()
         {
-            lifespanLeft -= TimeManager.TotalSeconds;
+            lifespanLeft -= TimeManager.TimeGlobal;
             if(lifespanLeft <= 0f)
             {
                 IsFinished = true;
@@ -58,7 +58,7 @@ namespace Advencursor._Particles
             color = Color.Lerp(data.colorEnd, data.colorStart, lifespanAmount);
             opacity = MathHelper.Clamp(MathHelper.Lerp(data.opacityEnd, data.opacityStart, lifespanAmount), 0f, 1f);
             scale = MathHelper.Lerp(data.sizeEnd,data.sizeStart, lifespanAmount) / data.texture.Width;
-            position += direction * data.speed * TimeManager.TotalSeconds;
+            position += direction * data.speed * TimeManager.TimeGlobal;
 
 
         }

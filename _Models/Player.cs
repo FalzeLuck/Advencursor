@@ -4,15 +4,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using Advencursor._Skill;
 using Advencursor._Combat;
 using System.Diagnostics;
 using Advencursor._Animation;
 using Advencursor._Models.Enemy;
 using System.Xml.Linq;
+using Advencursor._Models.Enemy._CommonEnemy;
+using System.ComponentModel;
 
 namespace Advencursor._Models
 {
@@ -39,6 +39,9 @@ namespace Advencursor._Models
 
         public bool isBuff;
         public string buffIndicator;
+
+        public bool isStop;
+
         public string finalIndicator {  get; private set; }
 
         private float immuneDuration;
@@ -83,8 +86,6 @@ namespace Advencursor._Models
             {
                 Skills[key].Use();
             }
-
-
         }
 
         public void StartParry()
@@ -111,6 +112,15 @@ namespace Advencursor._Models
             stunPosition = position;
         }
 
+        public void Stop()
+        {
+            isStop = true;
+        }
+
+        public void Start()
+        {
+            isStop = false;
+        }
         public void ChangeAnimation(string name)
         {
             if (!isBuff)
@@ -129,7 +139,7 @@ namespace Advencursor._Models
             if (!Status.immunity)
             {
                 Status.TakeDamage(damage);
-                Immunity(0.5f);
+                //Immunity(0.5f);
             }
         }
 
@@ -139,16 +149,66 @@ namespace Advencursor._Models
             immuneDuration = duration;
         }
 
+        public void CheckEnemyCollision()
+        {
+            float takeDamageCooldown = 1f;
+            foreach (var enemy in Globals.EnemyManager)
+            {
+                if (enemy.collision.Intersects(collision) && enemy.collisionCooldown <= 0)
+                {
+                    if (enemy is Common1)
+                    {
+                        Common1 common1 = (Common1)enemy;
+                        if (common1.isDashing)
+                        {
+                            TakeDamage((int)(enemy.Status.Attack * 2.5f));
+                        }
+                        else
+                        {
+                            TakeDamage((int)(enemy.Status.Attack));
+                        }
+                        enemy.CollisionCooldownReset(takeDamageCooldown);
+                    }
+                    if (enemy is Elite1)
+                    {
+                        Elite1 elite1 = (Elite1)enemy;
+
+                        TakeDamage(enemy.Status.Attack);
+                        enemy.CollisionCooldownReset(takeDamageCooldown);
+                    }
+                    if (enemy is Boss1)
+                    {
+                        Boss1 boss1 = (Boss1)enemy;
+
+                        if (boss1.dashing)
+                        {
+                            TakeDamage(enemy.Status.Attack + 2000);
+                        }
+                        else
+                        {
+                            TakeDamage(enemy.Status.Attack);
+                        }
+                        enemy.CollisionCooldownReset(takeDamageCooldown);
+                    }
+                }
+            }
+        }
+
 
         public  override void Update(GameTime gameTime)
         {
-            if (!isStun)
+            if (!isStun && !isStop)
             {
                 position = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
+                if (animations.ContainsKey(finalIndicator))
+                {
+                    animations[finalIndicator].Update();
+                    collision = animations[finalIndicator].GetCollision(position);
+                }
             }
-            if (isStun)
+            else if (isStun)
             {
-                stunWaitDuration += TimeManager.TotalSeconds;
+                stunWaitDuration += TimeManager.TimeGlobal;
                 Mouse.SetPosition((int)stunPosition.X,(int)stunPosition.Y);
 
                 if(stunWaitDuration > stunDuration)
@@ -157,36 +217,39 @@ namespace Advencursor._Models
                     stunWaitDuration = 0f;
                 }
             }
+            else if (isStop)
+            {
+                collision = new();
+                Mouse.SetPosition((int)position.X, (int)position.Y);
+            }
+
 
             
-            if (animations.ContainsKey(finalIndicator))
-            {
-                animations[finalIndicator].Update();
-                collision = animations[finalIndicator].GetCollision(position);
-            }
             if (parryTimer > 0)
             {
-                parryTimer -= TimeManager.TotalSeconds;
+                parryTimer -= TimeManager.TimeGlobal;
             }
             if (cooldownTimer > 0)
             {
-                cooldownTimer -= TimeManager.TotalSeconds;
+                cooldownTimer -= TimeManager.TimeGlobal;
             }
 
             foreach (var skill in Skills.Values)
             {
-                skill.Update(TimeManager.TotalSeconds,this);
+                skill.Update(TimeManager.TimeGlobal,this);
             }
 
             if (Status.immunity)
             {
-                immuneDuration -= TimeManager.TotalSeconds;
+                immuneDuration -= TimeManager.TimeGlobal;
 
                 if(immuneDuration <= 0f)
                 {
                     Status.immunity = false;
                 }
             }
+
+            CheckEnemyCollision();
         }
 
         public override void Draw()

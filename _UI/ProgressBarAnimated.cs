@@ -25,7 +25,6 @@ namespace Advencursor._UI
             animationPosition = position;
             animationShade = Color.DarkGray;
             animationSpeed = (maxValue/5);
-            Trace.WriteLine(animationSpeed);
         }
 
         public override void Update(GameTime gameTime)
@@ -34,14 +33,14 @@ namespace Advencursor._UI
 
             if (targetValue < currentValue)
             {
-                currentValue -= animationSpeed * TimeManager.TotalSeconds;
+                currentValue -= animationSpeed * TimeManager.TimeGlobal;
                 if (currentValue < targetValue) currentValue = targetValue;
                 x = (int)(targetValue / maxValue * foreground.Width);
                 animationShade = Color.Gray;
             }
             else
             {
-                currentValue += animationSpeed * TimeManager.TotalSeconds;
+                currentValue += animationSpeed * TimeManager.TimeGlobal;
                 if (currentValue > targetValue) currentValue = targetValue;
                 x = (int)(currentValue / maxValue * foreground.Width);
                 animationShade = Color.DarkGray * 0.5f;

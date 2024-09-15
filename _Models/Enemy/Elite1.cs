@@ -80,11 +80,11 @@ namespace Advencursor._Models.Enemy
                 indicator = "Idle";
                 velocity = new(80, 80);
                 movementAI.Move(this);
-                slamCooldown += TimeManager.TotalSeconds;
+                slamCooldown += TimeManager.TimeGlobal;
             }
             if (isSlam)
             {
-                slamChargeTime += TimeManager.TotalSeconds;
+                slamChargeTime += TimeManager.TimeGlobal;
                 velocity = new(0, 0);
                 if (slamChargeTime > 0)
                 {
@@ -118,7 +118,7 @@ namespace Advencursor._Models.Enemy
             if (stunned)
             {
                 indicator = "Stun";
-                stuntimer += TimeManager.TotalSeconds;
+                stuntimer += TimeManager.TimeGlobal;
                 if (stuntimer > stunduration) stunned = false;
             }
         }

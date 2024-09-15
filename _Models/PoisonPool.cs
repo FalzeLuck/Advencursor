@@ -30,8 +30,8 @@ namespace Advencursor._Models
 
         public override void Update(GameTime gameTime)
         {
-            poolDuration += TimeManager.TotalSeconds;
-            burnCooldown += TimeManager.TotalSeconds;
+            poolDuration += TimeManager.TimeGlobal;
+            burnCooldown += TimeManager.TimeGlobal;
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();

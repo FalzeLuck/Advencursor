@@ -73,7 +73,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
             if (dash)
             {
-                dashTimer += TimeManager.TotalSeconds;
+                dashTimer += TimeManager.TimeGlobal;
                 dashCooldown = 0f;
 
                 if (dashTimer > 0f)
@@ -88,7 +88,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 }
                 if (dashTimer > 1.2f)
                 {
-                    position += dashDirection * TimeManager.TotalSeconds;
+                    position += dashDirection * TimeManager.TimeGlobal;
                     isAttacking = false;
                     isDashing = true;
                     indicator = "Attack";
@@ -105,7 +105,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 movementAI.Start();
                 isAttacking = false;
                 isDashing = false;
-                dashCooldown += TimeManager.TotalSeconds;
+                dashCooldown += TimeManager.TimeGlobal;
                 dashTimer = 0f;
             }
 
