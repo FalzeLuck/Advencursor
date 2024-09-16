@@ -26,8 +26,9 @@ namespace Advencursor._Scene
 
         private Inventory inventory = new Inventory();
         private Texture2D gridTexture;
+        private Texture2D gridTextureSelected;
         private int gridColumns = 5;
-        private int gridRows = 5;
+        private int gridRows = 6;
         private int totalVisibleItems;
         private float scrollOffset = 0f;
         private int currentScrollIndex = 0;
@@ -48,6 +49,9 @@ namespace Advencursor._Scene
         //Mouse Cot=ntrol
         private Rectangle mouseCollision;
 
+        //Player
+        private Player player;
+
 
         private int totalItems;
         private int totalPages;
@@ -66,13 +70,16 @@ namespace Advencursor._Scene
 
         public void Load()
         {
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X - 400, Globals.Bounds.Y / 2), OnPlayButtonClick);
+            player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 0, 0, 0, 0);
+
+            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, Globals.Bounds.Y / 2), OnEquipButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
-            uiManager.AddElement(playButton);
+            uiManager.AddElement(equipButton);
             uiManager.AddElement(exitButton);
 
             background = Globals.Content.Load<Texture2D>("Background/Stage1_1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
+            gridTextureSelected = Globals.Content.Load<Texture2D>("Item/GridSelected");
 
 
 
@@ -102,7 +109,7 @@ namespace Advencursor._Scene
         public void Update(GameTime gameTime)
         {
             Globals.Game.IsMouseVisible = true;
-            //uiManager.Update(gameTime);
+            uiManager.Update(gameTime);
 
             int currentScrollValue = Mouse.GetState().ScrollWheelValue;
             var scrollDelta = currentScrollValue - previousScrollValue;
@@ -162,6 +169,8 @@ namespace Advencursor._Scene
             }
 
             mouseCollision = new((int)mousePosition.X, (int)mousePosition.Y, 1, 1);
+
+            SelectedItem();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -182,15 +191,31 @@ namespace Advencursor._Scene
 
                         if (position.Y >= gridStartPos.Y - itemSize && position.Y < (gridStartPos.Y + gridRows * itemSize) + itemSize)
                         {
-                            if (itemCollide.Intersects(mouseCollision))
+                            if(itemIndex == selectedItemIndex)
                             {
-                                spriteBatch.Draw(gridTexture, position, Color.Yellow);
-                                spriteBatch.Draw(inventory.Items[itemIndex].texture, position, Color.White);
+                                if (itemCollide.Intersects(mouseCollision))
+                                {
+                                    spriteBatch.Draw(gridTextureSelected, position, Color.Yellow);
+                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, Color.White);
+                                }
+                                else
+                                {
+                                    spriteBatch.Draw(gridTextureSelected, position, Color.White);
+                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, Color.White);
+                                }
                             }
                             else
                             {
-                                spriteBatch.Draw(gridTexture, position, Color.White);
-                                spriteBatch.Draw(inventory.Items[itemIndex].texture, position, Color.White);
+                                if (itemCollide.Intersects(mouseCollision))
+                                {
+                                    spriteBatch.Draw(gridTexture, position, Color.Yellow);
+                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, Color.White);
+                                }
+                                else
+                                {
+                                    spriteBatch.Draw(gridTexture, position, Color.White);
+                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, Color.White);
+                                }
                             }
                         }
                     }
@@ -224,16 +249,20 @@ namespace Advencursor._Scene
 
                         if (position.Y >= gridStartPos.Y - itemSize && position.Y < (gridStartPos.Y + gridRows * itemSize) + itemSize)
                         {
-                            
+                            if (itemCollide.Intersects(mouseCollision) && Mouse.GetState().LeftButton == ButtonState.Pressed)
+                            {
+                                selectedItemIndex = itemIndex;
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void OnPlayButtonClick()
+        private void OnEquipButtonClick()
         {
-            sceneManager.AddScene(new Stage1(contentManager, sceneManager));
+            inventory.EquipItem(inventory.Items[selectedItemIndex],player);
+            Trace.WriteLine(inventory.Items[selectedItemIndex].name);
         }
 
         private void OnExitButtonClick()

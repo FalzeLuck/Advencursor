@@ -53,7 +53,7 @@ namespace Advencursor
             Globals.SpriteFont = _font;
 
 
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+            _sceneManager.AddScene(new InventoryScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

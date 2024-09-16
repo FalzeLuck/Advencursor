@@ -176,6 +176,18 @@
 /processorParam:TextureFormat=Compressed
 /build:basicFont.spritefont
 
+#begin Button/EquipButton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Button/EquipButton.png
+
 #begin Button/exitButton.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -278,6 +290,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Item/Grid.png
+
+#begin Item/GridSelected.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/GridSelected.png
 
 #begin Item/ScrollBarTexture.png
 /importer:TextureImporter
