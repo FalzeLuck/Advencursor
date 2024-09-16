@@ -16,7 +16,7 @@ namespace Advencursor._Managers
         private static float TimeDilation { get; set; } = 1.00f;
         public static float TotalSeconds { get; set; }
         public static float TimeGlobal { get; set; }
-        public static float GameSpeedParamiter { get; set; }
+        public static float GameSpeedParamiter { get; set; } = 1.0f;
 
         public static float framerate = 30;
 

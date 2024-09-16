@@ -27,13 +27,14 @@ namespace Advencursor._Skill
 
     public class Item
     {
-        Texture2D texture;
+        public Texture2D texture {  get; private set; }
         public string name { get; set; }
         public Skill skill { get; set; }
         public Keys keys { get; set; }
 
-        public Item(string name,Skill skill,Keys keys) 
+        public Item(Texture2D texture,string name,Skill skill,Keys keys) 
         {
+            this.texture = texture;
             this.name = name;
             this.skill = skill;
             this.keys = keys;

@@ -135,14 +135,14 @@ namespace Advencursor._Scene.Stage
             //Temporary Skill
             Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
             Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 2);
-            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 2, player);
+            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 2,player);
             Skill_R_IamStorm ThunderStorm = new Skill_R_IamStorm("I am the Storm", 2 , player);
             items = new List<Item>()
             {
-                new Item("ThunderCore book",ThunderCore,Keys.Q),
-                new Item("ThunderShuriken book",ThunderShuriken,Keys.W),
-                new Item("ThunderSpeed book",ThunderSpeed,Keys.E),
-                new Item("ThunderStorm book",ThunderStorm,Keys.R),
+                //new Item("ThunderCore book",ThunderCore,Keys.Q),
+                //new Item("ThunderShuriken book",ThunderShuriken,Keys.W),
+                //new Item("ThunderSpeed book",ThunderSpeed,Keys.E),
+                //new Item("ThunderStorm book",ThunderStorm,Keys.R),
             };
 
 

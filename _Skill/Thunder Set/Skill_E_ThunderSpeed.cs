@@ -31,7 +31,6 @@ namespace Advencursor._Skill.Thunder_Set
         private float skillMultiplier = 0.5f;
         public Skill_E_ThunderSpeed(string name, float cooldown, Player player) : base(name, cooldown)
         {
-            this.player = player;
             spriteEmitter = new SpriteEmitter(() => player.position);
 
             ped = new()
