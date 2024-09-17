@@ -33,15 +33,14 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 4f;
-        public Skill_R_IamStorm(string name, float cooldown, Player player) : base(name, cooldown)
+        public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
         {
-            this.player = player;
-            spriteEmitter = new SpriteEmitter(() => player.position);
+            
         }
 
-        public override void Use()
+        public override void Use(Player player)
         {
-            base.Use();
+            base.Use(player);
             lightningPed = new()
             {
                 particleData = new LightningParticleData()
@@ -60,6 +59,9 @@ namespace Advencursor._Skill.Thunder_Set
                 lifeSpanMin = 0.5f,
                 rotationMax = 360f,
             };
+
+            this.player = player;
+            spriteEmitter = new SpriteEmitter(() => player.position);
 
             pe = new(spriteEmitter, lightningPed);
             ParticleManager.AddParticleEmitter(pe);

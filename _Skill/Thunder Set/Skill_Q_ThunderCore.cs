@@ -16,9 +16,9 @@ namespace Advencursor._Skill.Thunder_Set
             buffTime = 8f;
         }
 
-        public override void Use()
+        public override void Use(Player player)
         {
-            base.Use();
+            base.Use(player);
             buffTime = 0f;
         }
 

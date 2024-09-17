@@ -1,4 +1,5 @@
 ﻿using Advencursor._Models;
+using Advencursor._SaveData;
 using Advencursor._Scene.Stage;
 using Advencursor._Skill;
 using Advencursor._Skill.Thunder_Set;
@@ -10,8 +11,11 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Advencursor._Scene
@@ -25,6 +29,10 @@ namespace Advencursor._Scene
         private Texture2D background;
 
         private Inventory inventory = new Inventory();
+        private string pathinventory = "inventory.json";
+        private Dictionary<Keys,Item> equippedItems = new Dictionary<Keys,Item>();
+
+
         private Texture2D gridTexture;
         private Texture2D gridTextureSelected;
         private int gridColumns = 5;
@@ -49,8 +57,9 @@ namespace Advencursor._Scene
         //Mouse Cot=ntrol
         private Rectangle mouseCollision;
 
-        //Player
+        //Player Save and Load
         private Player player;
+        private string pathplayer = "playerdata.json"; 
 
 
         private int totalItems;
@@ -70,12 +79,19 @@ namespace Advencursor._Scene
 
         public void Load()
         {
+            Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
+
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 0, 0, 0, 0);
+            //player = LoadPlayer(pathplayer);
+            //Trace.WriteLine(player.Status.MaxHP);
+            
 
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, Globals.Bounds.Y / 2), OnEquipButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 - 400, 200 + Globals.Bounds.Y / 2), OnPlayButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(0, 0), OnExitButtonClick);
             uiManager.AddElement(equipButton);
             uiManager.AddElement(exitButton);
+            uiManager.AddElement(playButton);
 
             background = Globals.Content.Load<Texture2D>("Background/Stage1_1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
@@ -83,21 +99,23 @@ namespace Advencursor._Scene
 
 
 
-            Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
-            Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 2);
-            //Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 2,player);
-            //Skill_R_IamStorm ThunderStorm = new Skill_R_IamStorm("I am the Storm", 2, player);
-            Texture2D temp = Globals.Content.Load<Texture2D>("UI/SkillUI");
-            Texture2D temp2 = Globals.Content.Load<Texture2D>("UI/HealthBarFull");
+            Skill ThunderCore = AllSkills.allSkills["Thunder Core"];
+            Skill ThunderShuriken = AllSkills.allSkills["Thunder Shuriken"];
+            Skill ThunderSpeed = AllSkills.allSkills["Thunder Speed"];
+            Skill ThunderStorm = AllSkills.allSkills["I am the Storm"];
 
-            inventory.Items.Add(new Item(temp,"ThunderCore book", ThunderCore, Keys.Q));
-            for (int i = 0; i < 41; i++)
-            {
-                inventory.Items.Add(new Item(temp, "Item " + i, null, Keys.None));
-            }
 
-            //inventory.Items.Add(new Item("ThunderSpeed book", ThunderSpeed, Keys.E));
-            //inventory.Items.Add(new Item("ThunderStorm book", ThunderStorm, Keys.R));
+            inventory.Items.Add(new Item(tempTexture, "ThunderCore book", ThunderCore, Keys.Q));
+            inventory.Items.Add(new Item(tempTexture, "ThunderShuriken book", ThunderShuriken, Keys.W));
+            inventory.Items.Add(new Item(tempTexture,"ThunderSpeed book", ThunderSpeed, Keys.E));
+            inventory.Items.Add(new Item(tempTexture, "ThunderStorm book", ThunderStorm, Keys.R));
+
+            Item test = new Item(tempTexture, "ThunderCore book", ThunderCore, Keys.Q);
+            inventory.Items.Add(test);
+
+            inventory.SaveInventory(pathinventory);
+
+            
 
 
             totalItems = inventory.Items.Count;
@@ -261,13 +279,51 @@ namespace Advencursor._Scene
 
         private void OnEquipButtonClick()
         {
-            inventory.EquipItem(inventory.Items[selectedItemIndex],player);
-            Trace.WriteLine(inventory.Items[selectedItemIndex].name);
+            player.EquipItem(inventory.Items[selectedItemIndex]);
+            Trace.WriteLine($"HP : {player.Status.MaxHP} Attack = {player.Status.Attack} Rate = {player.Status.CritRate} Damage = {player.Status.CritDam}");
+            SavePlayer(player);
+        }
+
+        private void OnPlayButtonClick()
+        {
+            sceneManager.AddScene(new Stage1(contentManager,sceneManager));
         }
 
         private void OnExitButtonClick()
         {
             Globals.Game.Exit();
+        }
+
+        private void SavePlayer(Player player)
+        {
+            PlayerData data = new()
+            {
+                Health = player.Status.MaxHP,
+                Attack = player.Status.Attack,
+                SkillNames = new Dictionary<Keys, string>()
+            };
+            foreach (var skill in player.Skills)
+            {
+                data.SkillNames[skill.Key] = skill.Value.name;
+            }
+
+            string serializedData = JsonSerializer.Serialize(data);
+            File.WriteAllText("playerdata.json",serializedData);
+        }
+
+        private Player LoadPlayer(string filepath)
+        {
+            string deserializedData = File.ReadAllText(filepath);
+            PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
+
+            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
+            Player player = new Player(playertexture,Vector2.Zero,data.Health,data.Attack,row :4,column:1);
+            foreach (var skill in data.SkillNames)
+            {
+                player.AddSkill(skill.Key, AllSkills.allSkills[skill.Value]);
+            }
+
+            return player;
         }
     }
 }

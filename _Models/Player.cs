@@ -16,11 +16,12 @@ using System.ComponentModel;
 
 namespace Advencursor._Models
 {
+    [Serializable]
     public class Player : Sprite
     {
         public Status Status { get; set; }
         public Dictionary<Keys, Skill> Skills {  get; private set; }
-        public Inventory Inventory { get; private set; }
+        public Inventory Inventory { get; set; }
 
 
         public float parryDuration = 0.1f;
@@ -69,11 +70,35 @@ namespace Advencursor._Models
             stunWaitDuration = 0f;
         }
 
-
         public void EquipItem(Item item)
         {
-            Inventory.EquipItem(item, this);
+            AddSkill(item.keys,item.skill);
+            CalculateStat(item);
+
         }
+
+        public void CalculateStat(Item item)
+        {
+            if(item == null) return;
+
+            if(item.statDesc == "Health")
+            {
+                Status.SetHP((int)(Status.BaseHP + item.statValue));
+            }
+            else if (item.statDesc == "Attack")
+            {
+                Status.SetAttack((int)(Status.BaseAttack + item.statValue));
+            }
+            else if (item.statDesc == "Critical Rate")
+            {
+                Status.SetCritRate(item.statValue);
+            }
+            else if (item.statDesc == "Critical Damage")
+            {
+                Status.SetCritDamage(item.statValue);
+            }
+        }
+
         public void AddSkill(Keys key,Skill skill)
         {
             Skills[key] = skill;
@@ -84,7 +109,7 @@ namespace Advencursor._Models
         {
             if (Skills.ContainsKey(key) && Skills[key].CanUse())
             {
-                Skills[key].Use();
+                Skills[key].Use(this);
             }
         }
 

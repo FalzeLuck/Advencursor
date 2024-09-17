@@ -23,6 +23,9 @@ using System.ComponentModel;
 using Advencursor._Particles;
 using System.Xml.Serialization;
 using Advencursor._Particles.Emitter;
+using Advencursor._SaveData;
+using System.Text.Json;
+using System.IO;
 
 
 namespace Advencursor._Scene.Stage
@@ -39,6 +42,7 @@ namespace Advencursor._Scene.Stage
 
 
         private Player player;
+        private Inventory inventory = new Inventory();
 
         List<Common1> commonEnemy;
         List<Elite1> eliteEnemy;
@@ -100,23 +104,24 @@ namespace Advencursor._Scene.Stage
 
         public void Load()
         {
-            
+            Texture2D tempTexture = Globals.Content.Load<Texture2D>("TestUI");
 
             //Load Background
             background = Globals.Content.Load<Texture2D>("Background/BG_Stage1");
 
             //Player
-            player = new(Globals.Content.Load<Texture2D>("playerTexture"), new(1000, 1000), health: 15000, attack: 800, row: 4, column: 1);
+            player = LoadPlayer("playerdata.json",4,1);
+            inventory.LoadInventory("inventory.json",tempTexture);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player, Color.Red);
 
-            //Load enemies(Temp)
+            //Load enemies
             commonEnemy = new List<Common1> ();
             eliteEnemy = new List<Elite1> ();
             specialEnemy = new List<Special1> ();
             poisonPool = new List<PoisonPool> ();
 
 
-            //boss
+            //Boss
             boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 100000,attack:3000,row: 3,column: 1)
             {
                 movementAI = new FollowMovementAI
@@ -135,8 +140,8 @@ namespace Advencursor._Scene.Stage
             //Temporary Skill
             Skill_Q_ThunderCore ThunderCore = new Skill_Q_ThunderCore("Thunder Core", 5);
             Skill_W_ThunderShuriken ThunderShuriken = new Skill_W_ThunderShuriken("Thunder Shuriken", 2);
-            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 2,player);
-            Skill_R_IamStorm ThunderStorm = new Skill_R_IamStorm("I am the Storm", 2 , player);
+            Skill_E_ThunderSpeed ThunderSpeed = new Skill_E_ThunderSpeed("Thunder Speed", 2);
+            Skill_R_IamStorm ThunderStorm = new Skill_R_IamStorm("I am the Storm", 2);
             items = new List<Item>()
             {
                 //new Item("ThunderCore book",ThunderCore,Keys.Q),
@@ -145,16 +150,20 @@ namespace Advencursor._Scene.Stage
                 //new Item("ThunderStorm book",ThunderStorm,Keys.R),
             };
 
+            
+
 
             //Load UI
             UIBackground uIBackground = new(Globals.Content.Load<Texture2D>("UI/SkillBackground"), new(Globals.Bounds.X / 2, 930));
             int startX = (int)uIBackground.position.X - (uIBackground.texture.Width/2);
             int space = uIBackground.texture.Width / 10;
             int skillY = 950;
-            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), ThunderCore);
-            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), ThunderShuriken);
-            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), ThunderSpeed);
-            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), ThunderStorm);
+
+
+            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), player.Skills[Keys.Q]);
+            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), player.Skills[Keys.W]);
+            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), player.Skills[Keys.E]);
+            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), player.Skills[Keys.R]);
             UIPlayerCheckPanel uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
 
             Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
@@ -348,11 +357,6 @@ namespace Advencursor._Scene.Stage
             if (animationManager.IsComplete("Sparkle"))
             {
                 animationManager.Stop("Sparkle");
-            }
-
-            foreach (var item in items)
-            {
-                player.EquipItem(item);
             }
 
 
@@ -714,6 +718,22 @@ namespace Advencursor._Scene.Stage
                 }
             }
             damageNumberManager.Update();
+        }
+
+        private Player LoadPlayer(string filepath,int row,int column)
+        {
+            string deserializedData = File.ReadAllText(filepath);
+            PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
+
+            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
+            Player player = new Player(playertexture, Vector2.Zero, data.Health, data.Attack, row, column);
+            foreach (var skill in data.SkillNames)
+            {
+                player.AddSkill(skill.Key, AllSkills.allSkills[skill.Value]);
+            }
+
+
+            return player;
         }
 
     }

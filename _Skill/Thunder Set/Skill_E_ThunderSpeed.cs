@@ -29,8 +29,14 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 0.5f;
-        public Skill_E_ThunderSpeed(string name, float cooldown, Player player) : base(name, cooldown)
+        public Skill_E_ThunderSpeed(string name, float cooldown) : base(name, cooldown)
         {
+            
+        }
+
+        public override void Use(Player player)
+        {
+            base.Use(player);
             spriteEmitter = new SpriteEmitter(() => player.position);
 
             ped = new()
@@ -53,11 +59,6 @@ namespace Advencursor._Skill.Thunder_Set
             };
 
             pe = new(spriteEmitter, ped);
-        }
-
-        public override void Use()
-        {
-            base.Use();
             ParticleManager.AddParticleEmitter(pe);
             bufftime = 2f;
 

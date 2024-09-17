@@ -43,9 +43,9 @@ namespace Advencursor._Skill.Thunder_Set
         {
         }
 
-        public override void Use()
+        public override void Use(Player player)
         {
-            base.Use();
+            base.Use(player);
             isUsing = true;
             stayDuration = 0f;
             int collisionCooldownindex = 0;

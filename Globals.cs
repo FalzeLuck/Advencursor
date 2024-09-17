@@ -3,6 +3,7 @@ using Advencursor._Models.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,7 @@ namespace Advencursor
         public static Random random { get; set; } = new Random();
 
         public static List<_Enemy> EnemyManager { get; set; } = new List<_Enemy>();
+
 
         public static void Update(GameTime gameTime)
         {

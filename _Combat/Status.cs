@@ -12,6 +12,7 @@ namespace Advencursor._Combat
     {
         public int MaxHP { get; private set; }
         public int CurrentHP { get; private set; }
+        public int BaseHP {  get; private set; }
         public int BaseAttack { get; private set; }
         public int Attack {  get; private set; }
         public int Shield { get; private set; }
@@ -34,8 +35,11 @@ namespace Advencursor._Combat
         {
             this.MaxHP = MaxHP;
             this.CurrentHP = MaxHP;
+            this.BaseHP = MaxHP;
             this.BaseAttack = Attack;
             this.Attack = Attack;
+            CritRate = 5;
+            CritDam = 50;
             immunity = false;
             Shield = 0;
         }
@@ -130,6 +134,24 @@ namespace Advencursor._Combat
                 paralysisTimer -= TimeManager.TimeGlobal;
                 if( paralysisTimer < 0 ) { isParalysis=false; }
             }
+        }
+
+        public void SetHP(int value)
+        {
+            CurrentHP = value;
+            MaxHP = value;
+        }
+        public void SetAttack(int value)
+        {
+            Attack = value;
+        }
+        public void SetCritRate(float value)
+        {
+            CritRate = 5 + value;
+        }
+        public void SetCritDamage(float value)
+        {
+            CritDam = 50 + value;
         }
     }
 }

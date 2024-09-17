@@ -29,7 +29,7 @@ namespace Advencursor._Skill
             return cooldownTimer <= 0;
         }
 
-        public virtual void Use()
+        public virtual void Use(Player player)
         {
             cooldownTimer = cooldown;
         }
