@@ -11,6 +11,7 @@ namespace Advencursor._Skill
     {
         public static Dictionary<string, Skill> allSkills = new Dictionary<string, Skill>
         {
+            {"null", new Skill("null",0.1f) },
             {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",5)},
             {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",6)},
             {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",7)},

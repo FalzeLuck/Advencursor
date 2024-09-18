@@ -149,6 +149,12 @@ namespace Advencursor._Animation
             }
         }
 
+        public void Flip(string name,bool isflip)
+        {
+            Animation animation = GetAnimation(name);
+            animation.IsFlip = isflip;
+        }
+
 
     }
 }

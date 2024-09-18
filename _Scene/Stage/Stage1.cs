@@ -131,7 +131,7 @@ namespace Advencursor._Scene.Stage
             };
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 8, fps: 30, false);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 5, false);
             animationManager.AddAnimation("Slash", slashAnimation);
             Animation sparkAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/Sparkle"), row: 1, column: 4, fps: 12, false);
             animationManager.AddAnimation("Sparkle", sparkAnimation);
@@ -326,7 +326,8 @@ namespace Advencursor._Scene.Stage
                 if (InputManager.MouseRightClicked && canClick)
                 {
                     animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
-                    player.ChangeAnimation("Attack");
+                    player.ChangeAnimation("Attack",true);
+                    animationManager.Flip("Slash", true);
                     animationManager.Play("Slash");
                     canClick = false;
                 }
@@ -334,6 +335,7 @@ namespace Advencursor._Scene.Stage
                 {
                     animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
                     player.ChangeAnimation("Attack");
+                    animationManager.Flip("Slash", false);
                     animationManager.Play("Slash");
                     canClick = false;
                 }

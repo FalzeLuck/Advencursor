@@ -45,8 +45,6 @@ namespace Advencursor._Skill.Thunder_Set
             {
                 particleData = new LightningParticleData()
                 {
-                    colorStart = Color.White,
-                    colorEnd = Color.Yellow,
                     sizeStart = 150,
                     sizeEnd = 150,
                 },

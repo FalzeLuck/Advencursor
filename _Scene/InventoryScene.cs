@@ -81,7 +81,7 @@ namespace Advencursor._Scene
         {
             Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
 
-            player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 0, 0, 0, 0);
+            player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
             //player = LoadPlayer(pathplayer);
             //Trace.WriteLine(player.Status.MaxHP);
             
@@ -110,8 +110,14 @@ namespace Advencursor._Scene
             inventory.Items.Add(new Item(tempTexture,"ThunderSpeed book", ThunderSpeed, Keys.E));
             inventory.Items.Add(new Item(tempTexture, "ThunderStorm book", ThunderStorm, Keys.R));
 
-            Item test = new Item(tempTexture, "ThunderCore book", ThunderCore, Keys.Q);
-            inventory.Items.Add(test);
+            Texture2D nullTexture = new(Globals.graphicsDevice, 1, 1);
+            Item nullItem = new Item(nullTexture, "null book", ThunderCore, Keys.None);
+            for (int i = 0; i < totalVisibleItems*2 ; i++)
+            {
+                inventory.Items.Add(nullItem);
+            }
+
+            Trace.WriteLine(inventory.Items.Count);
 
             inventory.SaveInventory(pathinventory);
 
@@ -281,11 +287,12 @@ namespace Advencursor._Scene
         {
             player.EquipItem(inventory.Items[selectedItemIndex]);
             Trace.WriteLine($"HP : {player.Status.MaxHP} Attack = {player.Status.Attack} Rate = {player.Status.CritRate} Damage = {player.Status.CritDam}");
-            SavePlayer(player);
+
         }
 
         private void OnPlayButtonClick()
         {
+            SavePlayer(player);
             sceneManager.AddScene(new Stage1(contentManager,sceneManager));
         }
 

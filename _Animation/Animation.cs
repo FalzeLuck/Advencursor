@@ -23,6 +23,7 @@ namespace Advencursor._Animation
         public bool IsComplete { get; set; }
         public bool IsCollide;
         public bool IsPause {  get; set; }
+        public bool IsFlip {  get; set; }
 
         public int currentFrame;
         public float timer;
@@ -111,6 +112,15 @@ namespace Advencursor._Animation
 
         public void Draw(Vector2 position)
         {
+            SpriteEffects flip;
+            if (IsFlip)
+            {
+                flip = SpriteEffects.FlipHorizontally;
+            }
+            else
+            {
+                flip = SpriteEffects.None;
+            }
             if (Startrow == 0)
             {
                 int frameWidth = Texture.Width / Column;
@@ -120,7 +130,7 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White, 0, origin - offset, 1, SpriteEffects.None, 1);
+                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White, 0, origin - offset, 1, flip, 1);
             }
             else if (Startrow != 0)
             {
@@ -131,7 +141,7 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White, 0, origin - offset, 1, SpriteEffects.None, 1);
+                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White, 0, origin - offset, 1, flip, 1);
             }
         }
 

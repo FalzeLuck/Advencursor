@@ -327,6 +327,30 @@
 /processorParam:TextureFormat=Color
 /build:Item/ScrollBarThumb.png
 
+#begin Item/SetThunder/R_Thunder_1.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetThunder/R_Thunder_1.PNG
+
+#begin Item/SetThunder/R_Thunder_2.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetThunder/R_Thunder_2.PNG
+
 #begin particle.png
 /importer:TextureImporter
 /processor:TextureProcessor

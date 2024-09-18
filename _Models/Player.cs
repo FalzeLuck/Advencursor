@@ -36,6 +36,7 @@ namespace Advencursor._Models
         public bool isStun;
         public float stunDuration;
         public float stunWaitDuration;
+        public bool isFlip;
         public Vector2 stunPosition;
 
         public bool isBuff;
@@ -68,6 +69,16 @@ namespace Advencursor._Models
             buffIndicator = "Normal_";
             finalIndicator =  buffIndicator + indicator;
             stunWaitDuration = 0f;
+
+            //default skill
+            Skill nullSkill = new Skill("null", 0);
+            Skills = new()
+            {
+                {Keys.Q,nullSkill},
+                {Keys.W,nullSkill},
+                {Keys.E,nullSkill},
+                {Keys.R,nullSkill},
+            };
         }
 
         public void EquipItem(Item item)
@@ -146,8 +157,9 @@ namespace Advencursor._Models
         {
             isStop = false;
         }
-        public void ChangeAnimation(string name)
+        public void ChangeAnimation(string name,bool flip = false)
         {
+            isFlip = flip;
             if (!isBuff)
             {
                 finalIndicator = buffIndicator + name;
@@ -281,6 +293,7 @@ namespace Advencursor._Models
         {
             if (animations.ContainsKey(finalIndicator))
             {
+                animations[finalIndicator].IsFlip = isFlip;
                 animations[finalIndicator].Draw(position);
             }
             foreach(var skill in Skills.Values)

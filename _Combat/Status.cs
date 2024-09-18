@@ -22,7 +22,6 @@ namespace Advencursor._Combat
         //Crit
         public float CritRate {  get; private set; }
         public float CritDam { get; private set; }
-        public bool isCrit {  get; private set; }
 
         //CC
         public float paralysisTimer;
@@ -47,6 +46,17 @@ namespace Advencursor._Combat
         public void TakeDamage(int damage)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
+
+            int tempDamage;
+            if (IsCrit(CritRate))
+            {
+                tempDamage = (int)(damage * (CritDam / 100));
+            }
+            else
+            {
+                tempDamage= damage;
+            }
+
 
             if (immunity == false)
             {
@@ -91,6 +101,18 @@ namespace Advencursor._Combat
             }
 
             if (CurrentHP < 0) { CurrentHP = 0; }
+        }
+
+        private bool IsCrit(float CritRate)
+        {
+            if (Globals.RandomFloat(0, 100) <= CritRate)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void Heal(int amount)
