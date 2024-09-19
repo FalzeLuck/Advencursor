@@ -104,13 +104,15 @@ namespace Advencursor._Scene.Stage
 
         public void Load()
         {
-            Texture2D tempTexture = Globals.Content.Load<Texture2D>("TestUI");
+            Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
 
             //Load Background
             background = Globals.Content.Load<Texture2D>("Background/BG_Stage1");
 
             //Player
-            player = LoadPlayer("playerdata.json",4,1);
+            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
+            player = new(playertexture, Vector2.Zero, 1, 1, 1, 1);
+            player.LoadPlayer(4,1);
             inventory.LoadInventory("inventory.json",tempTexture);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player, Color.Red);
 
@@ -233,7 +235,7 @@ namespace Advencursor._Scene.Stage
                     animationManager.Play("Sparkle");
                     player.Status.immunity = true;
                     elite.Stun(2.5f);
-                    elite.Status.TakeDamage(player.Status.Attack);
+                    elite.Status.TakeDamage(player.Status.Attack,player.Status);
                 }
             }
 
@@ -334,8 +336,8 @@ namespace Advencursor._Scene.Stage
                 if (InputManager.MouseLeftClicked && canClick)
                 {
                     animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
-                    player.ChangeAnimation("Attack");
-                    animationManager.Flip("Slash", false);
+                    player.ChangeAnimation("Attack",false);
+                    animationManager.Flip("Slash",false);
                     animationManager.Play("Slash");
                     canClick = false;
                 }
@@ -391,7 +393,7 @@ namespace Advencursor._Scene.Stage
                 if(elite.isSlamming && elite.slamRadius.Intersects(player.collision))
                 {
                     player.Stun(2);
-                    player.Status.TakeDamage(3000);
+                    player.Status.TakeDamage(3000,elite.Status);
                     player.Immunity(0.5f);
                 }
 
@@ -423,7 +425,8 @@ namespace Advencursor._Scene.Stage
                 if (pool.collision.Intersects(player.collision) && pool.canBurn)
                 {
                     pool.Burn();
-                    player.Status.TakeDamage(10);
+                    Common1 poolTemp = new Common1(new(Globals.graphicsDevice,1,1),Vector2.Zero,1,1,1,1);
+                    player.Status.TakeDamage(10,poolTemp.Status);
                 }
 
                 if(pool.poolDuration > 5f)
@@ -715,7 +718,7 @@ namespace Advencursor._Scene.Stage
             {
                 if(enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
                 {
-                    enemy.TakeDamage(player.Status.Attack, player);
+                    enemy.TakeDamage(1, player);
                     enemy.Status.immunity = true;
                 }
             }
@@ -728,12 +731,14 @@ namespace Advencursor._Scene.Stage
             PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
 
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
-            Player player = new Player(playertexture, Vector2.Zero, data.Health, data.Attack, row, column);
+            Player player = new Player(playertexture, Vector2.Zero, data.Health, data.Attack, row, column)
+            {
+
+            };
             foreach (var skill in data.SkillNames)
             {
                 player.AddSkill(skill.Key, AllSkills.allSkills[skill.Value]);
             }
-
 
             return player;
         }

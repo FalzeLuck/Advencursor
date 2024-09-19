@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
@@ -53,6 +54,10 @@ namespace Advencursor._Scene
         private float scrollbarThumbHeight = 50;
         private float scrollbarThumbPosition = 0f;
         private bool isDraggingThumb = false;
+        private int totalItems;
+        private int totalPages;
+        private float scrollbarTrackHeight;
+        private int previousScrollValue = 0;
 
         //Mouse Cot=ntrol
         private Rectangle mouseCollision;
@@ -60,12 +65,6 @@ namespace Advencursor._Scene
         //Player Save and Load
         private Player player;
         private string pathplayer = "playerdata.json"; 
-
-
-        private int totalItems;
-        private int totalPages;
-        private float scrollbarTrackHeight;
-        private int previousScrollValue = 0;
 
         public InventoryScene(ContentManager contentManager, SceneManager sceneManager)
         {
@@ -86,8 +85,8 @@ namespace Advencursor._Scene
             //Trace.WriteLine(player.Status.MaxHP);
             
 
-            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, Globals.Bounds.Y / 2), OnEquipButtonClick);
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 - 400, 200 + Globals.Bounds.Y / 2), OnPlayButtonClick);
+            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 300+ Globals.Bounds.Y / 2), OnEquipButtonClick);
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 - 400, 400 + Globals.Bounds.Y / 2), OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(0, 0), OnExitButtonClick);
             uiManager.AddElement(equipButton);
             uiManager.AddElement(exitButton);
@@ -103,21 +102,22 @@ namespace Advencursor._Scene
             Skill ThunderShuriken = AllSkills.allSkills["Thunder Shuriken"];
             Skill ThunderSpeed = AllSkills.allSkills["Thunder Speed"];
             Skill ThunderStorm = AllSkills.allSkills["I am the Storm"];
+            Skill nullSkill = AllSkills.allSkills["null"];
 
 
-            inventory.Items.Add(new Item(tempTexture, "ThunderCore book", ThunderCore, Keys.Q));
-            inventory.Items.Add(new Item(tempTexture, "ThunderShuriken book", ThunderShuriken, Keys.W));
-            inventory.Items.Add(new Item(tempTexture,"ThunderSpeed book", ThunderSpeed, Keys.E));
-            inventory.Items.Add(new Item(tempTexture, "ThunderStorm book", ThunderStorm, Keys.R));
+            inventory.Items.Add(new Item("ThunderCore book", ThunderCore, Keys.Q));
+            inventory.Items.Add(new Item("ThunderShuriken book", ThunderShuriken, Keys.W));
+            inventory.Items.Add(new Item("ThunderSpeed book", ThunderSpeed, Keys.E));
+            inventory.Items.Add(new Item("ThunderStorm book", ThunderStorm, Keys.R));
 
             Texture2D nullTexture = new(Globals.graphicsDevice, 1, 1);
-            Item nullItem = new Item(nullTexture, "null book", ThunderCore, Keys.None);
+            Item nullItem = new Item("null book", nullSkill, Keys.None);
             for (int i = 0; i < totalVisibleItems*2 ; i++)
             {
                 inventory.Items.Add(nullItem);
             }
 
-            Trace.WriteLine(inventory.Items.Count);
+            CheatInventory();
 
             inventory.SaveInventory(pathinventory);
 
@@ -164,11 +164,8 @@ namespace Advencursor._Scene
                     scrollOffset = 0;
                 }
             }
-            
-
 
             scrollbarThumbPosition = (float)currentScrollIndex / totalPages * scrollbarTrackHeight;
-
             Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
@@ -184,7 +181,19 @@ namespace Advencursor._Scene
                     float newThumbPosition = mousePosition.Y - scrollbarPosition.Y;
                     scrollbarThumbPosition = MathHelper.Clamp(newThumbPosition, 0, scrollbarTrackHeight);
 
-                    currentScrollIndex = (int)(scrollbarThumbPosition / scrollbarTrackHeight * totalPages);
+                    int tempIndex;
+                    tempIndex = (int)(scrollbarThumbPosition / scrollbarTrackHeight * totalPages);
+
+                    if (tempIndex % 5 == 0 && scrollbarThumbPosition + scrollbarThumbHeight >= scrollbarTrackHeight)
+                    {
+                        currentScrollIndex = tempIndex + gridColumns;
+                    }
+                    else if (tempIndex % 5 == 0)
+                    {
+                        currentScrollIndex = tempIndex;
+                    }
+                   
+
                 }
             }
             else
@@ -201,6 +210,8 @@ namespace Advencursor._Scene
         {
             Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
+
+            float itemScale = 0.5f;
 
             for (int row = 0; row < gridRows; row++)
             {
@@ -220,12 +231,12 @@ namespace Advencursor._Scene
                                 if (itemCollide.Intersects(mouseCollision))
                                 {
                                     spriteBatch.Draw(gridTextureSelected, position, Color.Yellow);
-                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, Color.White);
+                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                                 else
                                 {
                                     spriteBatch.Draw(gridTextureSelected, position, Color.White);
-                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, Color.White);
+                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                             }
                             else
@@ -233,12 +244,12 @@ namespace Advencursor._Scene
                                 if (itemCollide.Intersects(mouseCollision))
                                 {
                                     spriteBatch.Draw(gridTexture, position, Color.Yellow);
-                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, Color.White);
+                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                                 else
                                 {
                                     spriteBatch.Draw(gridTexture, position, Color.White);
-                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, Color.White);
+                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                             }
                         }
@@ -249,6 +260,25 @@ namespace Advencursor._Scene
             Texture2D scrollbar = Globals.Content.Load<Texture2D>("Item/scrollBarTexture");
             Texture2D thumb = Globals.Content.Load<Texture2D>("Item/scrollBarThumb");
             DrawScrollbar(spriteBatch,scrollbar,thumb);
+
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 position = new Vector2(50, gridStartPos.Y + (i * itemSize) + (i * 50));
+                Keys keyIndex = new Keys();
+                if(i == 0) { keyIndex = Keys.Q; }
+                else if(i == 1) { keyIndex = Keys.W; }
+                else if (i == 2) { keyIndex = Keys.E; }
+                else if (i == 3) { keyIndex = Keys.R; }
+                Texture2D equipItemTexture = AllSkills.allSkillTextures[player.Skills[keyIndex].name];
+
+                spriteBatch.Draw(gridTexture, position, Color.White);
+                spriteBatch.Draw(equipItemTexture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
+            }
+
+            //Draw Big Item
+            Vector2 bigItemOrigin = new( inventory.Items[selectedItemIndex].texture.Width / 2, inventory.Items[selectedItemIndex ].texture.Height / 2);
+            Vector2 bigItemPosition = new(Globals.Bounds.X / 4,Globals.Bounds.Y / 4);
+            spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, bigItemPosition, null, Color.White, 0f, bigItemOrigin, 1f, SpriteEffects.None, 0f);
         }
 
         private void DrawScrollbar(SpriteBatch spriteBatch, Texture2D scrollbarTexture, Texture2D thumbTexture)
@@ -283,6 +313,7 @@ namespace Advencursor._Scene
             }
         }
 
+
         private void OnEquipButtonClick()
         {
             player.EquipItem(inventory.Items[selectedItemIndex]);
@@ -292,7 +323,7 @@ namespace Advencursor._Scene
 
         private void OnPlayButtonClick()
         {
-            SavePlayer(player);
+            player.SavePlayer();
             sceneManager.AddScene(new Stage1(contentManager,sceneManager));
         }
 
@@ -301,36 +332,33 @@ namespace Advencursor._Scene
             Globals.Game.Exit();
         }
 
-        private void SavePlayer(Player player)
+        private void CheatInventory()
         {
-            PlayerData data = new()
+            Skill ThunderCore = AllSkills.allSkills["Thunder Core"];
+            Skill ThunderShuriken = AllSkills.allSkills["Thunder Shuriken"];
+            Skill ThunderSpeed = AllSkills.allSkills["Thunder Speed"];
+            Skill ThunderStorm = AllSkills.allSkills["I am the Storm"];
+            Skill nullSkill = AllSkills.allSkills["null"];
+            for (int i = 0; i < inventory.Items.Count; i++)
             {
-                Health = player.Status.MaxHP,
-                Attack = player.Status.Attack,
-                SkillNames = new Dictionary<Keys, string>()
-            };
-            foreach (var skill in player.Skills)
-            {
-                data.SkillNames[skill.Key] = skill.Value.name;
+                if(inventory.Items[i].name == "null book")
+                {
+                    inventory.Items[i] = new("Q_Cheat", ThunderCore, Keys.Q);
+                    inventory.Items[i+1] = new("W_Cheat", ThunderShuriken, Keys.W);
+                    inventory.Items[i+2] = new("E_Cheat", ThunderSpeed, Keys.E);
+                    inventory.Items[i+3] = new("R_Cheat", ThunderStorm, Keys.R);
+                    inventory.Items[i].GenerateStatCheat();
+                    inventory.Items[i + 1].GenerateStatCheat();
+                    inventory.Items[i + 2].GenerateStatCheat();
+                    inventory.Items[i + 3].GenerateStatCheat();
+                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"],Keys.None));
+                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"], Keys.None));
+                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"], Keys.None));
+                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"], Keys.None));
+                    break;
+                }
             }
 
-            string serializedData = JsonSerializer.Serialize(data);
-            File.WriteAllText("playerdata.json",serializedData);
-        }
-
-        private Player LoadPlayer(string filepath)
-        {
-            string deserializedData = File.ReadAllText(filepath);
-            PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
-
-            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
-            Player player = new Player(playertexture,Vector2.Zero,data.Health,data.Attack,row :4,column:1);
-            foreach (var skill in data.SkillNames)
-            {
-                player.AddSkill(skill.Key, AllSkills.allSkills[skill.Value]);
-            }
-
-            return player;
         }
     }
 }

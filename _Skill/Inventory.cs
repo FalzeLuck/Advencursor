@@ -46,7 +46,7 @@ namespace Advencursor._Skill
 
             foreach (var item in deserializedItems)
             {
-                item.SetTexture(defaultTexture);
+                item.SetTexture();
             }
 
             Items.Clear();
@@ -68,12 +68,13 @@ namespace Advencursor._Skill
         public string statDesc { get; set; }
         public float statValue { get; set; }
 
-        public Item(Texture2D texture,string name,Skill skill,Keys keys) 
+        public Item(string name,Skill skill,Keys keys) 
         {
-            this.texture = texture;
             this.name = name;
             this.skill = skill;
             this.keys = keys;
+            texture = AllSkills.allSkillTextures["null"];
+            SetTexture();
             GenerateStat();
         }
 
@@ -105,6 +106,36 @@ namespace Advencursor._Skill
             }
         }
 
-        public void SetTexture(Texture2D texture) { this.texture = texture; }
+        public void GenerateStatCheat()
+        {
+            if (keys == Keys.Q)
+            {
+                statDesc = "Health";
+                statValue = 10000;
+            }
+            else if (keys == Keys.W)
+            {
+                statDesc = "Attack";
+                statValue = 1000;
+            }
+            else if (keys == Keys.E)
+            {
+                int index = Globals.random.Next(1, 2);
+                if (index == 1)
+                {
+                    statDesc = "Critical Rate";
+                    statValue = 50;
+                }
+                else
+                {
+                    statDesc = "Critical Damage";
+                    statValue = 100;
+                }
+            }
+        }
+
+        public void SetTexture() { texture = AllSkills.allSkillTextures[skill.name]; }
+
+
     }
 }

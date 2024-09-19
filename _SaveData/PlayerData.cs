@@ -13,9 +13,11 @@ namespace Advencursor._SaveData
     [Serializable]
     public class PlayerData
     {
-        public int Health { get; set; }
-        public int Attack { get; set; }
+        public float Health { get; set; }
+        public float Attack { get; set; }
 
+        public float CritRate { get; set; }
+        public float CritDamage { get; set; }
         public Dictionary<Keys, string> SkillNames { get; set; }
     }
 }

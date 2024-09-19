@@ -1,7 +1,9 @@
 ﻿using Advencursor._Managers;
+using Advencursor._Models;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +12,12 @@ namespace Advencursor._Combat
 {
     public class Status
     {
-        public int MaxHP { get; private set; }
-        public int CurrentHP { get; private set; }
-        public int BaseHP {  get; private set; }
-        public int BaseAttack { get; private set; }
-        public int Attack {  get; private set; }
-        public int Shield { get; private set; }
+        public float MaxHP { get; private set; }
+        public float CurrentHP { get; private set; }
+        public float BaseHP {  get; private set; }
+        public float BaseAttack { get; private set; }
+        public float Attack {  get; private set; }
+        public float Shield { get; private set; }
 
         public bool immunity;
 
@@ -30,50 +32,54 @@ namespace Advencursor._Combat
         //Action
         public Action<string,Color> OnTakeDamage;
 
-        public Status(int MaxHP,int Attack) 
+        public Status(float MaxHP,float Attack) 
         {
             this.MaxHP = MaxHP;
             this.CurrentHP = MaxHP;
             this.BaseHP = MaxHP;
             this.BaseAttack = Attack;
             this.Attack = Attack;
-            CritRate = 5;
-            CritDam = 50;
+            CritRate = 0;
+            CritDam = 0;
             immunity = false;
             Shield = 0;
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(float damage,Status fromwho)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
 
-            int tempDamage;
-            if (IsCrit(CritRate))
+            float tempDamage;
+            Color tempColor;
+            if (IsCrit(fromwho.CritRate))
             {
-                tempDamage = (int)(damage * (CritDam / 100));
+                
+                tempDamage = (damage * ((fromwho.CritDam / 100) + 1));
+                tempColor = Color.Gold;
             }
             else
             {
                 tempDamage= damage;
+                tempColor = Color.White;
             }
 
 
             if (immunity == false)
             {
-                if (Shield >= damage)
+                if (Shield >= tempDamage)
                 {
-                    Shield -= damage;
+                    Shield -= tempDamage;
                 }
-                else if (Shield < damage)
+                else if (Shield < tempDamage)
                 {
-                    int remainDamage = (damage - Shield);
+                    float remainDamage = (tempDamage - Shield);
                     Shield = 0;
                     CurrentHP -= remainDamage;
                 }else if (Shield == 0)
                 {
-                    CurrentHP -= damage;
+                    CurrentHP -= tempDamage;
                 }
-                OnTakeDamage?.Invoke(damage.ToString(),Color.HotPink);
+                OnTakeDamage?.Invoke(tempDamage.ToString("F0"),tempColor);
             }
 
             if (CurrentHP < 0) {CurrentHP = 0; }
@@ -81,7 +87,7 @@ namespace Advencursor._Combat
             
         }
 
-        public void TakeDamageNoImmune(int damage)
+        public void TakeDamageNoImmune(float damage, Sprite who)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
 
@@ -91,7 +97,7 @@ namespace Advencursor._Combat
             }
             else if (Shield < damage)
             {
-                int remainDamage = (damage - Shield);
+                float remainDamage = (damage - Shield);
                 Shield = 0;
                 CurrentHP -= remainDamage;
             }
@@ -105,7 +111,8 @@ namespace Advencursor._Combat
 
         private bool IsCrit(float CritRate)
         {
-            if (Globals.RandomFloat(0, 100) <= CritRate)
+            float critTrigger = Globals.RandomFloat(0, 100);
+            if (critTrigger <= CritRate)
             {
                 return true;
             }
@@ -158,22 +165,22 @@ namespace Advencursor._Combat
             }
         }
 
-        public void SetHP(int value)
+        public void SetHP(float value)
         {
             CurrentHP = value;
             MaxHP = value;
         }
-        public void SetAttack(int value)
+        public void SetAttack(float value)
         {
             Attack = value;
         }
         public void SetCritRate(float value)
         {
-            CritRate = 5 + value;
+            CritRate = value;
         }
         public void SetCritDamage(float value)
         {
-            CritDam = 50 + value;
+            CritDam = value;
         }
     }
 }

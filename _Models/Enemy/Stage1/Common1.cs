@@ -128,14 +128,14 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             dash = false ;
         }
 
-        public override void TakeDamage(int damage,Player player, bool throughImmune = false)
+        public override void TakeDamage(float multiplier,Player player, bool throughImmune = false)
         {
             if(player.isBuff && player.buffIndicator == "Thunder_")
             {
                 Status.Paralysis(2f);
             }
 
-            base.TakeDamage(damage, player, throughImmune);
+            base.TakeDamage(multiplier, player, throughImmune);
         }
     }
 }

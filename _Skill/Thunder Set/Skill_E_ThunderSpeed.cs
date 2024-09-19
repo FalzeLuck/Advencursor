@@ -88,7 +88,7 @@ namespace Advencursor._Skill.Thunder_Set
                     {
                         if (collision.Any(collide => collide.Intersects(Globals.EnemyManager[i].collision)))
                         {
-                            Globals.EnemyManager[i].TakeDamage((int)(player.Status.Attack * skillMultiplier), player);
+                            Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
                             collisionCooldown[i] = 0.1f;
                         }
                     }

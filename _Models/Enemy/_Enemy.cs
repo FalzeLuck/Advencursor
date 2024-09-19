@@ -43,15 +43,15 @@ namespace Advencursor._Models.Enemy
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
         }
 
-        public virtual void TakeDamage(int damage, Player player, bool throughImmune = false)
+        public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false)
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(damage);
+                Status.TakeDamageNoImmune(multiplier * player.Status.Attack, player);
             }
             else
             {
-                Status.TakeDamage(damage);
+                Status.TakeDamage(multiplier * player.Status.Attack,player.Status);
             }
         }
 

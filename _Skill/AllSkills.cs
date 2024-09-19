@@ -1,4 +1,5 @@
 ﻿using Advencursor._Skill.Thunder_Set;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,15 @@ namespace Advencursor._Skill
             {"I am the Storm", new Skill_R_IamStorm("I am the Storm",8)},
         };
 
+        public static Dictionary<string, Texture2D> allSkillTextures = new Dictionary<string, Texture2D>
+        {
+            {"null", new Texture2D(Globals.graphicsDevice,1,1) },
+            {"Thunder Core", Globals.Content.Load<Texture2D>("Item/SetThunder/Q_Texture")},
+            {"Thunder Speed", Globals.Content.Load<Texture2D>("Item/SetThunder/W_Texture")},
+            {"Thunder Shuriken", Globals.Content.Load<Texture2D>("Item/SetThunder/E_Texture")},
+            {"I am the Storm", Globals.Content.Load<Texture2D>("Item/SetThunder/R_Texture")},
+
+        };
 
     }
 }

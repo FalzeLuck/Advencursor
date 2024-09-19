@@ -13,6 +13,9 @@ using Advencursor._Models.Enemy;
 using System.Xml.Linq;
 using Advencursor._Models.Enemy._CommonEnemy;
 using System.ComponentModel;
+using Advencursor._SaveData;
+using System.Text.Json;
+using System.IO;
 
 namespace Advencursor._Models
 {
@@ -49,7 +52,7 @@ namespace Advencursor._Models
         private float immuneDuration;
 
 
-        public Player(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position)
+        public Player(Texture2D texture, Vector2 position, float health,float attack, int row, int column) : base(texture, position)
         {
             animations = new Dictionary<string, Animation>
             {
@@ -61,6 +64,8 @@ namespace Advencursor._Models
             
             Skills = new Dictionary<Keys, Skill>();
             Status = new(health,attack);
+            Status.SetCritRate(5);
+            Status.SetCritDamage(50);
             Inventory = new Inventory();
 
             isStun = false;
@@ -157,7 +162,19 @@ namespace Advencursor._Models
         {
             isStop = false;
         }
-        public void ChangeAnimation(string name,bool flip = false)
+        public void ChangeAnimation(string name)
+        {
+            if (!isBuff)
+            {
+                finalIndicator = buffIndicator + name;
+            }
+            if (isBuff)
+            {
+                indicator = name;
+                finalIndicator = buffIndicator + indicator;
+            }
+        }
+        public void ChangeAnimation(string name,bool flip)
         {
             isFlip = flip;
             if (!isBuff)
@@ -171,11 +188,11 @@ namespace Advencursor._Models
             }
         }
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(float damage,_Enemy fromwho)
         {
             if (!Status.immunity)
             {
-                Status.TakeDamage(damage);
+                Status.TakeDamage(damage,fromwho.Status);
                 //Immunity(0.5f);
             }
         }
@@ -198,11 +215,11 @@ namespace Advencursor._Models
                         Common1 common1 = (Common1)enemy;
                         if (common1.isDashing)
                         {
-                            TakeDamage((int)(enemy.Status.Attack * 2.5f));
+                            TakeDamage((enemy.Status.Attack * 2.5f),enemy);
                         }
                         else
                         {
-                            TakeDamage((int)(enemy.Status.Attack));
+                            TakeDamage((enemy.Status.Attack),enemy);
                         }
                         enemy.CollisionCooldownReset(takeDamageCooldown);
                     }
@@ -210,7 +227,7 @@ namespace Advencursor._Models
                     {
                         Elite1 elite1 = (Elite1)enemy;
 
-                        TakeDamage(enemy.Status.Attack);
+                        TakeDamage(enemy.Status.Attack,elite1);
                         enemy.CollisionCooldownReset(takeDamageCooldown);
                     }
                     if (enemy is Boss1)
@@ -219,11 +236,11 @@ namespace Advencursor._Models
 
                         if (boss1.dashing)
                         {
-                            TakeDamage(enemy.Status.Attack + 2000);
+                            TakeDamage(enemy.Status.Attack + 2000,enemy);
                         }
                         else
                         {
-                            TakeDamage(enemy.Status.Attack);
+                            TakeDamage(enemy.Status.Attack, enemy);
                         }
                         enemy.CollisionCooldownReset(takeDamageCooldown);
                     }
@@ -241,6 +258,12 @@ namespace Advencursor._Models
                 {
                     animations[finalIndicator].Update();
                     collision = animations[finalIndicator].GetCollision(position);
+                    int decreaseamount = 75;
+                    int newX = collision.X + decreaseamount / 2;
+                    int newY = collision.Y + decreaseamount / 2;
+                    int newWidth = collision.Width - decreaseamount;
+                    int newHeight = collision.Height - decreaseamount;
+                    collision = new(newX, newY, newWidth, newHeight);
                 }
             }
             else if (isStun)
@@ -300,6 +323,47 @@ namespace Advencursor._Models
             {
                 skill.Draw();
             }
+        }
+
+        public void SavePlayer()
+        {
+            PlayerData data = new()
+            {
+                Health = Status.MaxHP,
+                Attack = Status.Attack,
+                CritRate = Status.CritRate,
+                CritDamage = Status.CritDam,
+                SkillNames = new Dictionary<Keys, string>()
+            };
+            foreach (var skill in Skills)
+            {
+                data.SkillNames[skill.Key] = skill.Value.name;
+            }
+
+            string serializedData = JsonSerializer.Serialize(data);
+            File.WriteAllText("playerdata.json", serializedData);
+        }
+
+        public void LoadPlayer(int row, int column)
+        {
+            string deserializedData = File.ReadAllText("playerdata.json");
+            PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
+
+            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
+            foreach (var anim in animations.Values)
+            {
+                anim.SetRowColumn(row, column);
+            }
+            Status.SetHP(data.Health);
+            Status.SetAttack(data.Attack);
+            Status.SetCritRate(data.CritRate);
+            Status.SetCritDamage(data.CritDamage);
+
+            foreach (var skill in data.SkillNames)
+            {
+                AddSkill(skill.Key, AllSkills.allSkills[skill.Value]);
+            }
+
         }
     }
 }

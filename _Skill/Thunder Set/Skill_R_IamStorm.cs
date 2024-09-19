@@ -38,7 +38,7 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 1f;
-        private int maxHit = 100;
+        private int maxHit = 20;
         private int countHit = 0;
         public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
         {
@@ -72,7 +72,7 @@ namespace Advencursor._Skill.Thunder_Set
 
             pe = new(spriteEmitter, lightningPed);
             ParticleManager.AddParticleEmitter(pe);
-            TimeManager.ChangeGameSpeed(0.2f);
+            TimeManager.ChangeGameSpeed(0.05f);
 
             //Star
             currentPoint = 0;
@@ -134,7 +134,7 @@ namespace Advencursor._Skill.Thunder_Set
                 {
                     foreach (var enemy in Globals.EnemyManager)
                     {
-                        enemy.TakeDamage((int)(player.Status.Attack * skillMultiplier), player);
+                        enemy.TakeDamage( skillMultiplier, player);
                     }
                     countHit++;
                 }

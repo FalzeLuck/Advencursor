@@ -1,21 +1,15 @@
 ﻿using Advencursor._Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Advencursor._Animation
 {
     public class Animation
     {
         public Texture2D Texture { get; }
-        public int Row { get; }
-        public int Column { get; }
+        public int Row { get; private set; }
+        public int Column { get; private set; }
         public int Startrow { get; }
         public int TotalFrame { get; }
         public float FrameTime { get; }
@@ -112,12 +106,12 @@ namespace Advencursor._Animation
 
         public void Draw(Vector2 position)
         {
-            SpriteEffects flip;
+            SpriteEffects flip = SpriteEffects.None;
             if (IsFlip)
             {
                 flip = SpriteEffects.FlipHorizontally;
             }
-            else
+            if(!IsFlip)
             {
                 flip = SpriteEffects.None;
             }
@@ -158,6 +152,10 @@ namespace Advencursor._Animation
 
         }
 
-        
+        public void SetRowColumn(int row, int column)
+        {
+            Row = row;
+            Column = column;
+        }
     }
 }
