@@ -260,7 +260,7 @@ namespace Advencursor._Scene.Stage
             UpdateSpecial(gameTime);
             UpdatePoisonPool(gameTime);
 
-
+            SceneManage();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -361,12 +361,6 @@ namespace Advencursor._Scene.Stage
             if (animationManager.IsComplete("Sparkle"))
             {
                 animationManager.Stop("Sparkle");
-            }
-
-
-            if (!player.Status.IsAlive())
-            {
-                sceneManager.RemoveScene(this);
             }
         }
         private void UpdateEnemies(GameTime gameTime)
@@ -624,16 +618,7 @@ namespace Advencursor._Scene.Stage
                 ProgressBarAnimated bossBar = new ProgressBarAnimated(bg, fg, boss_obj.Status.MaxHP, new(Globals.Bounds.X / 2, 100));
                 uiManager.AddElement("bossBar", bossBar);
             }
-            if (boss_spawned)
-            {
-                if (!boss_obj.Status.IsAlive())
-                {
-                    boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
-                    damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
-                    Globals.EnemyManager.Remove(boss_obj);
-                    sceneManager.RemoveScene(this);
-                }
-            }
+            
 
             if (boss_spawned && special_spawn_time > 10f)
             {
@@ -725,22 +710,35 @@ namespace Advencursor._Scene.Stage
             damageNumberManager.Update();
         }
 
-        private Player LoadPlayer(string filepath,int row,int column)
+        private void SceneManage()
         {
-            string deserializedData = File.ReadAllText(filepath);
-            PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
-
-            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
-            Player player = new Player(playertexture, Vector2.Zero, data.Health, data.Attack, row, column)
+            if (!player.Status.IsAlive() || !boss_obj.Status.IsAlive() && boss_spawned)
             {
-
-            };
-            foreach (var skill in data.SkillNames)
-            {
-                player.AddSkill(skill.Key, AllSkills.allSkills[skill.Value]);
+                UnloadScene();
             }
+                    
+        }
 
-            return player;
+        private void UnloadScene()
+        {
+            boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
+            damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
+            damageNumberManager.UnSubscribeToTakeDamageEvent(player.Status, player);
+            foreach(var enemy in Globals.EnemyManager)
+            {
+                damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+            }
+            Globals.EnemyManager.Clear();
+            player = null;
+            inventory.Items.Clear();
+            commonEnemy.Clear();
+            eliteEnemy.Clear();
+            specialEnemy.Clear();
+            poisonPool.Clear();
+            TimeManager.ChangeGameSpeed(1);
+            AllSkills.Reset();
+            ParticleManager.RemoveAll();
+            sceneManager.RemoveScene(this);
         }
 
     }

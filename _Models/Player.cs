@@ -107,11 +107,13 @@ namespace Advencursor._Models
             }
             else if (item.statDesc == "Critical Rate")
             {
-                Status.SetCritRate(item.statValue);
+                Status.SetCritDamage(50);
+                Status.SetCritRate(item.statValue + 5);
             }
             else if (item.statDesc == "Critical Damage")
             {
-                Status.SetCritDamage(item.statValue);
+                Status.SetCritRate(5);
+                Status.SetCritDamage(item.statValue + 50);
             }
         }
 

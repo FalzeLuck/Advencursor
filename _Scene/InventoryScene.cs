@@ -81,7 +81,7 @@ namespace Advencursor._Scene
             Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
 
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
-            //player = LoadPlayer(pathplayer);
+            player.LoadPlayer(4,1);
             //Trace.WriteLine(player.Status.MaxHP);
             
 
@@ -121,7 +121,6 @@ namespace Advencursor._Scene
 
             inventory.SaveInventory(pathinventory);
 
-            
 
 
             totalItems = inventory.Items.Count;
@@ -275,10 +274,7 @@ namespace Advencursor._Scene
                 spriteBatch.Draw(equipItemTexture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
             }
 
-            //Draw Big Item
-            Vector2 bigItemOrigin = new( inventory.Items[selectedItemIndex].texture.Width / 2, inventory.Items[selectedItemIndex ].texture.Height / 2);
-            Vector2 bigItemPosition = new(Globals.Bounds.X / 4,Globals.Bounds.Y / 4);
-            spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, bigItemPosition, null, Color.White, 0f, bigItemOrigin, 1f, SpriteEffects.None, 0f);
+            DrawCurrentItem();
         }
 
         private void DrawScrollbar(SpriteBatch spriteBatch, Texture2D scrollbarTexture, Texture2D thumbTexture)
@@ -286,6 +282,24 @@ namespace Advencursor._Scene
             spriteBatch.Draw(scrollbarTexture,new Rectangle((int)scrollbarPosition.X, (int)scrollbarPosition.Y, scrollbarWidth, scrollbarHeight),Color.Gray);
 
             spriteBatch.Draw(thumbTexture,new Rectangle((int)scrollbarPosition.X, (int)(scrollbarPosition.Y + scrollbarThumbPosition), scrollbarWidth, (int)scrollbarThumbHeight),Color.White);
+        }
+
+        private void DrawCurrentItem()
+        {
+            //Draw Big Item
+            Vector2 bigItemOrigin = new(inventory.Items[selectedItemIndex].texture.Width / 2, inventory.Items[selectedItemIndex].texture.Height / 2);
+            Vector2 bigItemPosition = new(Globals.Bounds.X / 4, Globals.Bounds.Y / 4);
+            Globals.SpriteBatch.Draw(inventory.Items[selectedItemIndex].texture, bigItemPosition, null, Color.White, 0f, bigItemOrigin, 1f, SpriteEffects.None, 0f);
+
+            SpriteFont spriteFont = Globals.Content.Load<SpriteFont>("basicFont");
+            string mainStat = inventory.Items[selectedItemIndex].statValue.ToString("F2");
+            string mainStatDesc = inventory.Items[selectedItemIndex].statDesc;
+            string mainStatString = $"{mainStatDesc} : {mainStat}";
+            Vector2 mainStatSize = spriteFont.MeasureString(mainStatString);
+            Vector2 mainStatOrigin = new(mainStatSize.X/2, mainStatSize.Y/2);
+            
+
+            Globals.SpriteBatch.DrawString(spriteFont,mainStatString,new(bigItemPosition.X,bigItemPosition.Y + 300),Color.Black,0,mainStatOrigin,1,SpriteEffects.None,0f);
         }
 
         private void SelectedItem()
@@ -324,6 +338,10 @@ namespace Advencursor._Scene
         private void OnPlayButtonClick()
         {
             player.SavePlayer();
+
+            Cleanup();
+
+            sceneManager.RemoveScene(this);
             sceneManager.AddScene(new Stage1(contentManager,sceneManager));
         }
 
@@ -358,7 +376,23 @@ namespace Advencursor._Scene
                     break;
                 }
             }
+        }
 
+        private void Cleanup()
+        {
+            background = null;
+            gridTexture = null;
+            gridTextureSelected = null;
+
+            if (inventory != null && inventory.Items != null)
+            {
+                inventory.Items.Clear();
+            }
+
+            player = null;
+
+            equippedItems.Clear();
+            mouseCollision = Rectangle.Empty;
         }
     }
 }

@@ -23,14 +23,6 @@ namespace Advencursor._Skill
             Items = new List<Item>();
         }
 
-        public void EquipItem(Item item,Player player)
-        {
-            //player.AddSkill(item.keys, item.skill);
-        }
-
-
-
-
         public void SaveInventory(string filePath)
         {
             string json = JsonSerializer.Serialize(Items);
@@ -116,7 +108,7 @@ namespace Advencursor._Skill
             else if (keys == Keys.W)
             {
                 statDesc = "Attack";
-                statValue = 1000;
+                statValue = 5000;
             }
             else if (keys == Keys.E)
             {

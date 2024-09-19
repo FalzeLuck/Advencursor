@@ -51,7 +51,7 @@ namespace Advencursor._Scene
 
         private void OnPlayButtonClick()
         {
-            sceneManager.AddScene(new Stage1(contentManager, sceneManager));
+            sceneManager.AddScene(new InventoryScene(contentManager, sceneManager));
         }
 
         private void OnExitButtonClick()

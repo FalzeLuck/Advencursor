@@ -119,16 +119,14 @@ namespace Advencursor._Skill.Thunder_Set
                 else
                 {
                     dir.Normalize();
-                    player.position += dir * speed * TimeManager.TotalSeconds;
+                    if (skillTime > 2f)
+                    {
+                        player.position += dir * speed * TimeManager.TotalSeconds;
+                    }
                     if(distance<100f)
                         targetPoint = starPoints[starOrder[0]];
                 }
                 
-                if(skillTime <= 2f)
-                {
-                    player.position = new Vector2(Globals.Bounds.X/2, Globals.Bounds.Y / 2);
-                    ParticleManager.RemoveParticleEmitter(pe);
-                }
                 
                 if(skillTime <= 1f && countHit < maxHit)
                 {
@@ -138,8 +136,15 @@ namespace Advencursor._Skill.Thunder_Set
                     }
                     countHit++;
                 }
+                else if (skillTime <= 2f && countHit < maxHit)
+                {
+                    float randomX = Globals.RandomFloat(Globals.Bounds.X / 2 - 10, Globals.Bounds.X / 2 + 10);
+                    float randomY = Globals.RandomFloat(Globals.Bounds.Y / 2 - 10, Globals.Bounds.Y / 2 + 10);
+                    player.position = new Vector2(randomX, randomY);
+                    ParticleManager.RemoveParticleEmitter(pe);
+                }
 
-                
+
                 if (skillTime <= 0)
                 {
                     isUsing = false;

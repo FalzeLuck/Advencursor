@@ -28,6 +28,12 @@ namespace Advencursor._Particles
             particleEmitters.Remove(emitter);
         }
 
+        public static void RemoveAll()
+        {
+            particleEmitters.Clear();
+            particles.Clear();
+        }
+
         public static void UpdateParticles()
         {
             foreach (var particle in particles)

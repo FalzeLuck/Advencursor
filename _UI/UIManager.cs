@@ -32,6 +32,7 @@ namespace Advencursor._UI
         }
 
 
+
         public void Update(GameTime gameTime)
         {
             foreach (var element in uiElements)
