@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Advencursor._Skill.Thunder_Set
 {
@@ -30,12 +31,20 @@ namespace Advencursor._Skill.Thunder_Set
         private float speed = 10000;
         Vector2 targetPoint;
 
+        Texture2D star1;
+        Texture2D star2;
+        Vector2 starOrigin;
+
         //For Multiplier
         private Player player;
-        private float skillMultiplier = 4f;
+        private float skillMultiplier = 1f;
+        private int maxHit = 100;
+        private int countHit = 0;
         public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
         {
-            
+            star1 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_1");
+            star2 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_2");
+            starOrigin =  new Vector2(star1.Width / 2, star1.Height / 2);
         }
 
         public override void Use(Player player)
@@ -76,6 +85,7 @@ namespace Advencursor._Skill.Thunder_Set
             targetPoint = starPoints[starOrder[1]];
 
             skillTime = 3f;
+            countHit = 0;
             player.Immunity(skillTime);
             player.Stop();
             isUsing = true;
@@ -114,19 +124,25 @@ namespace Advencursor._Skill.Thunder_Set
                         targetPoint = starPoints[starOrder[0]];
                 }
                 
-
+                if(skillTime <= 2f)
+                {
+                    player.position = new Vector2(Globals.Bounds.X/2, Globals.Bounds.Y / 2);
+                    ParticleManager.RemoveParticleEmitter(pe);
+                }
                 
-                
+                if(skillTime <= 1f && countHit < maxHit)
+                {
+                    foreach (var enemy in Globals.EnemyManager)
+                    {
+                        enemy.TakeDamage((int)(player.Status.Attack * skillMultiplier), player);
+                    }
+                    countHit++;
+                }
 
                 
                 if (skillTime <= 0)
                 {
                     isUsing = false;
-                    ParticleManager.RemoveParticleEmitter(pe);
-                    foreach (var enemy in Globals.EnemyManager)
-                    {
-                        enemy.TakeDamage((int)(player.Status.Attack * skillMultiplier),player);
-                    }
                     player.Immunity(0.5f);
                     player.position = new Vector2(Globals.Viewport.Width / 2, Globals.Viewport.Height / 2);
                     Mouse.SetPosition((int)(player.position.X), (int)(player.position.Y));
@@ -139,6 +155,18 @@ namespace Advencursor._Skill.Thunder_Set
                 TimeManager.ChangeGameSpeed(1f);
             }
 
+        }
+
+        public override void Draw()
+        {
+            if (isUsing && skillTime <= 2f)
+            {
+                Globals.SpriteBatch.Draw(star1,  new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2) , null, Color.White, 0, starOrigin, 1, SpriteEffects.None, 0f);
+            }
+            if (isUsing && skillTime <= 1f)
+            {
+                Globals.SpriteBatch.Draw(star2, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), null, Color.White, 0, starOrigin, 1, SpriteEffects.None, 0f);
+            }
         }
 
         public Vector2[] CalculateStar(Vector2 center, float radius)

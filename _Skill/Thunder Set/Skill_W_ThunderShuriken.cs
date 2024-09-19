@@ -28,7 +28,7 @@ namespace Advencursor._Skill.Thunder_Set
 
         private float radius = 200f;
         private List<double> angle = new List<double>();
-        private float rotation_speed = 0.1f;
+        private float rotation_speed = 0.15f;
         private List<Vector2> position = new List<Vector2>();
         private const float collisionCooldownTime = 0.5f;
         private List<float> collisionCooldown = new List<float>();

@@ -152,7 +152,7 @@ namespace Advencursor._Scene
             {
                 if (currentScrollIndex > 0)
                 {
-                    currentScrollIndex--;
+                    currentScrollIndex-=gridColumns;
                     scrollOffset = 0;
                 }
             }
@@ -160,7 +160,7 @@ namespace Advencursor._Scene
             {
                 if (currentScrollIndex < inventory.Items.Count - totalVisibleItems)
                 {
-                    currentScrollIndex++;
+                    currentScrollIndex+=gridColumns;
                     scrollOffset = 0;
                 }
             }
