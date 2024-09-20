@@ -1,4 +1,5 @@
-﻿using Advencursor._Managers;
+﻿using Advencursor._Combat;
+using Advencursor._Managers;
 using Advencursor._Models;
 using Advencursor._Scene;
 using Advencursor._Scene.Stage;
@@ -22,6 +23,7 @@ namespace Advencursor
         private SpriteBatch _spriteBatch;
         private SpriteFont _font;
         private readonly SceneManager _sceneManager;
+        private Camera camera;
 
 
         public Game1()
@@ -30,6 +32,7 @@ namespace Advencursor
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _sceneManager = new();
+            camera = new Camera();
         }
 
 
@@ -45,6 +48,7 @@ namespace Advencursor
             Globals.Game = this;
             Globals.graphicsDevice = GraphicsDevice; 
             Globals.Viewport = GraphicsDevice.Viewport;
+            Globals.Camera = camera;
 
             base.Initialize();
 
@@ -77,7 +81,7 @@ namespace Advencursor
         {
             GraphicsDevice.Clear(Color.White);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);
             _sceneManager.GetCurrScene().Draw(_spriteBatch);
             _spriteBatch.End();
 

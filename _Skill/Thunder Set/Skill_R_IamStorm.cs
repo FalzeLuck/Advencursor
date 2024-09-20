@@ -134,6 +134,7 @@ namespace Advencursor._Skill.Thunder_Set
                     {
                         enemy.TakeDamage( skillMultiplier, player);
                     }
+                    Globals.Camera.Shake(0.2f,5f);
                     countHit++;
                 }
                 else if (skillTime <= 2f && countHit < maxHit)
