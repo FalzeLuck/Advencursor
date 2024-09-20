@@ -51,7 +51,7 @@ namespace Advencursor._Skill.Thunder_Set
             int collisionCooldownindex = 0;
             for (int i = 0; i < maxAmount; i++)
             {
-                animations.Add(new(Globals.Content.Load<Texture2D>("Animation/LightningShuriken"), 1, 4, TimeManager.framerate, true));
+                animations.Add(new(Globals.Content.Load<Texture2D>("Item/SetThunder/W_Thunder"), 1, 4, TimeManager.framerate, true));
                 angle.Add((i * 90 * Math.PI)/180);
                 position.Add(Vector2.Zero);
                 collisionCooldownindex++;
