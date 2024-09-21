@@ -1,4 +1,5 @@
 ﻿using Advencursor._Animation;
+using Advencursor._Combat;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,8 +12,10 @@ namespace Advencursor._Models
 {
     public class Sprite
     {
+        public Status Status { get; set; }
+
         protected Texture2D texture;
-        protected Vector2 origin;
+        public Vector2 origin;
         public Vector2 position {  get; set; }
         public Vector2 velocity {  get; set; }
         public float rotation {  get; set; }
@@ -33,6 +36,11 @@ namespace Advencursor._Models
             this.position = position;
             origin = new Vector2(texture.Width/2, texture.Height/2);
             spriteEffects = SpriteEffects.None;
+            animations = new Dictionary<string, Animation>()
+            {
+                {"base",new Animation(texture,1,1,0,false)},
+            };
+            indicator = "base";
         }
 
         public virtual void Update(GameTime gameTime)
@@ -50,6 +58,11 @@ namespace Advencursor._Models
             {
                 animations[indicator].Draw(position);
             }
+        }
+
+        public void CollisionUpdate()
+        {
+            collision = animations[indicator].GetCollision(position);
         }
 
     }

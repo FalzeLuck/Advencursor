@@ -23,13 +23,12 @@ namespace Advencursor._Combat
 
         private bool isCrit;
 
-        Random random;
+        //Random random;
 
         public DamageNumber(string text, Vector2 position, Color color, float timeLive = 0.5f, Vector2? velocity = null)
         {
-            random = new Random();
             this.text = text;
-            this.position = position + new Vector2(random.Next(-20,20));
+            this.position = position + new Vector2(Globals.random.Next(-50,50), Globals.random.Next(-50, 50));
             this.color = color;
             this.timeLive = timeLive;
             elapsedTime = 0f;

@@ -1,4 +1,5 @@
-﻿using Advencursor._Models;
+﻿using Advencursor._Combat;
+using Advencursor._Models;
 using Advencursor._SaveData;
 using Advencursor._Scene.Stage;
 using Advencursor._Skill;
@@ -85,8 +86,8 @@ namespace Advencursor._Scene
             //Trace.WriteLine(player.Status.MaxHP);
             
 
-            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 300+ Globals.Bounds.Y / 2), OnEquipButtonClick);
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 - 400, 400 + Globals.Bounds.Y / 2), OnPlayButtonClick);
+            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 500 + Globals.Bounds.Y / 2), OnEquipButtonClick);
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 + 400, 400 + Globals.Bounds.Y / 2), OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(0, 0), OnExitButtonClick);
             uiManager.AddElement(equipButton);
             uiManager.AddElement(exitButton);
@@ -102,6 +103,10 @@ namespace Advencursor._Scene
             Skill ThunderShuriken = AllSkills.allSkills["Thunder Shuriken"];
             Skill ThunderSpeed = AllSkills.allSkills["Thunder Speed"];
             Skill ThunderStorm = AllSkills.allSkills["I am the Storm"];
+            Skill FoodTrap = AllSkills.allSkills["Food Trap"];
+            Skill PoisonTrap = AllSkills.allSkills["Poison Trap"];
+            Skill EmergencyFood = AllSkills.allSkills["Emergency Food"];
+            Skill Invincibility = AllSkills.allSkills["Invincibility"];
             Skill nullSkill = AllSkills.allSkills["null"];
 
 
@@ -109,6 +114,10 @@ namespace Advencursor._Scene
             inventory.Items.Add(new Item("ThunderShuriken book", ThunderShuriken, Keys.W));
             inventory.Items.Add(new Item("ThunderSpeed book", ThunderSpeed, Keys.E));
             inventory.Items.Add(new Item("ThunderStorm book", ThunderStorm, Keys.R));
+            inventory.Items.Add(new Item("Food Trap Book",FoodTrap,Keys.Q));
+            inventory.Items.Add(new Item("Poison Trap Book", PoisonTrap, Keys.W));
+            inventory.Items.Add(new Item("Emergency Food Book", EmergencyFood, Keys.E));
+            inventory.Items.Add(new Item("Invinc Book", Invincibility, Keys.R));
 
             Texture2D nullTexture = new(Globals.graphicsDevice, 1, 1);
             Item nullItem = new Item("null book", nullSkill, Keys.None);
@@ -117,7 +126,7 @@ namespace Advencursor._Scene
                 inventory.Items.Add(nullItem);
             }
 
-            CheatInventory();
+            //CheatInventory();
 
             inventory.SaveInventory(pathinventory);
 
@@ -294,12 +303,38 @@ namespace Advencursor._Scene
             SpriteFont spriteFont = Globals.Content.Load<SpriteFont>("basicFont");
             string mainStat = inventory.Items[selectedItemIndex].statValue.ToString("F2");
             string mainStatDesc = inventory.Items[selectedItemIndex].statDesc;
-            string mainStatString = $"{mainStatDesc} : {mainStat}";
+            string mainStatString;
+            if (mainStatDesc != null)
+            {
+                mainStatString = $"{mainStatDesc} : {mainStat}";
+            }
+            else
+            {
+                mainStatString = $"NaN";
+            }
             Vector2 mainStatSize = spriteFont.MeasureString(mainStatString);
             Vector2 mainStatOrigin = new(mainStatSize.X/2, mainStatSize.Y/2);
-            
+            Vector2 nameSize = spriteFont.MeasureString(inventory.Items[selectedItemIndex].name);
+            Vector2 nameOrigin = new(nameSize.X / 2, nameSize.Y / 2);
 
-            Globals.SpriteBatch.DrawString(spriteFont,mainStatString,new(bigItemPosition.X,bigItemPosition.Y + 300),Color.Black,0,mainStatOrigin,1,SpriteEffects.None,0f);
+            Globals.SpriteBatch.DrawString(spriteFont, inventory.Items[selectedItemIndex].name, new(bigItemPosition.X, bigItemPosition.Y + 200), Color.Black, 0, nameOrigin, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(spriteFont,mainStatString,new(bigItemPosition.X,bigItemPosition.Y + 250),Color.Black,0,mainStatOrigin,1,SpriteEffects.None,0f);
+
+
+            //Player Stat
+            string Header = "Player Status";
+            Vector2 HeaderSize = spriteFont.MeasureString(Header);
+            Vector2 HeaderOrigin = new(HeaderSize.X / 2, HeaderSize.Y / 2);
+            string HP = $"HP : {player.Status.MaxHP.ToString()}";
+            string Attack = $"Attack = {player.Status.Attack.ToString()}";
+            string CritRate = $"Critical Rate = {player.Status.CritRate.ToString("F2")}%";
+            string CritDam = $"Critical Damage = {player.Status.CritDam.ToString("F2")}%";
+            Globals.SpriteBatch.DrawString(spriteFont, Header, new(bigItemPosition.X, bigItemPosition.Y + 300), Color.Black, 0, HeaderOrigin, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(spriteFont, HP, new(bigItemPosition.X - 150, bigItemPosition.Y + 350), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(spriteFont, Attack, new(bigItemPosition.X - 150, bigItemPosition.Y + 400), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(spriteFont, CritRate, new(bigItemPosition.X - 150, bigItemPosition.Y + 450), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(spriteFont, CritDam, new(bigItemPosition.X - 150, bigItemPosition.Y + 500), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+
         }
 
         private void SelectedItem()

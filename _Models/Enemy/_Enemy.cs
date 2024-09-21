@@ -14,7 +14,7 @@ namespace Advencursor._Models.Enemy
 {
     public abstract class _Enemy : Sprite
     {
-        public Status Status { get; set; }
+        
         public MovementAI movementAI { get; set; }
         public Rectangle parryZone;
         public bool isAttacking;
@@ -51,7 +51,7 @@ namespace Advencursor._Models.Enemy
             }
             else
             {
-                Status.TakeDamage(multiplier * player.Status.Attack,player.Status);
+                Status.TakeDamage(multiplier * player.Status.Attack,player);
             }
         }
 

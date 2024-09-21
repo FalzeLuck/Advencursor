@@ -112,12 +112,12 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             
         }
 
-        public void Dash(Sprite target)
+        public void Dash()
         {
             if (canDash)
             {
                 dash = true;
-                var direction = target.position - position;
+                var direction = movementAI.target.position - position;
                 direction.Normalize();
                 dashDirection = direction * 600;
             }

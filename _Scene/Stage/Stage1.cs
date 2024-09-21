@@ -59,7 +59,7 @@ namespace Advencursor._Scene.Stage
 
 
         //Stage Timer & Controls
-        private bool canClick = true;
+        private bool canAttack = true;
         private float boss_spawn_time;
         private float boss_dash_cooldown;
         private bool boss_spawned;
@@ -114,7 +114,7 @@ namespace Advencursor._Scene.Stage
             player = new(playertexture, Vector2.Zero, 1, 1, 1, 1);
             player.LoadPlayer(4,1);
             inventory.LoadInventory("inventory.json",tempTexture);
-            damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player, Color.Red);
+            damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
 
             //Load enemies
             commonEnemy = new List<Common1> ();
@@ -235,7 +235,7 @@ namespace Advencursor._Scene.Stage
                     animationManager.Play("Sparkle");
                     player.Status.immunity = true;
                     elite.Stun(2.5f);
-                    elite.Status.TakeDamage(player.Status.Attack,player.Status);
+                    elite.Status.TakeDamage(player.Status.Attack,player);
                 }
             }
 
@@ -325,25 +325,27 @@ namespace Advencursor._Scene.Stage
 
 
 
-                if (InputManager.MouseRightClicked && canClick)
+                if (InputManager.MouseRightClicked && player.CanNormalAttack())
                 {
                     animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
                     player.ChangeAnimation("Attack",true);
                     animationManager.Flip("Slash", true);
                     animationManager.Play("Slash");
-                    canClick = false;
+                    canAttack = false;
+                    player.DoNormalAttack(player.normalAttackDelay);
                 }
-                if (InputManager.MouseLeftClicked && canClick)
+                if (InputManager.MouseLeftClicked && player.CanNormalAttack())
                 {
                     animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
                     player.ChangeAnimation("Attack",false);
                     animationManager.Flip("Slash",false);
                     animationManager.Play("Slash");
-                    canClick = false;
+                    canAttack=false;
+                    player.DoNormalAttack(player.normalAttackDelay);
                 }
             }
 
-            if (animationManager.IsComplete("Slash"))
+            if (player.CanNormalAttack())
             {
                 foreach (var enemy in commonEnemy)
                 {
@@ -355,7 +357,6 @@ namespace Advencursor._Scene.Stage
                 boss_obj.Status.immunity = false ;
                 player.ChangeAnimation("Idle");
                 animationManager.Stop("Slash");
-                canClick = true;
             }
 
             if (animationManager.IsComplete("Sparkle"))
@@ -367,9 +368,9 @@ namespace Advencursor._Scene.Stage
         {
             foreach (var enemy in commonEnemy)
             {
-                if (enemy.dashRadius.Intersects(player.collision))
+                if (enemy.dashRadius.Intersects(enemy.movementAI.target.collision))
                 {
-                    enemy.Dash(player);
+                    enemy.Dash();
                 }
             }
             
@@ -387,7 +388,7 @@ namespace Advencursor._Scene.Stage
                 if(elite.isSlamming && elite.slamRadius.Intersects(player.collision))
                 {
                     player.Stun(2);
-                    player.Status.TakeDamage(3000,elite.Status);
+                    player.Status.TakeDamage(3000,elite);
                     player.Immunity(0.5f);
                 }
 
@@ -420,7 +421,7 @@ namespace Advencursor._Scene.Stage
                 {
                     pool.Burn();
                     Common1 poolTemp = new Common1(new(Globals.graphicsDevice,1,1),Vector2.Zero,1,1,1,1);
-                    player.Status.TakeDamage(10,poolTemp.Status);
+                    player.Status.TakeDamage(10,poolTemp);
                 }
 
                 if(pool.poolDuration > 5f)
@@ -499,21 +500,22 @@ namespace Advencursor._Scene.Stage
                     int spawnDirection = Globals.random.Next(1, 5);
 
                     Vector2 spawnpoint = Vector2.Zero;
+                    int spawnExpand = 100;
                     if (spawnDirection == 1)
                     {
-                        spawnpoint = new(Globals.random.Next(0, 1920), -200);
+                        spawnpoint = new(Globals.random.Next(0, 1920), 0-spawnExpand);
                     }
                     else if (spawnDirection == 2)
                     {
-                        spawnpoint = new(Globals.random.Next(0, 1920), 1280);
+                        spawnpoint = new(Globals.random.Next(0, 1920), 1080+spawnExpand);
                     }
                     else if (spawnDirection == 3)
                     {
-                        spawnpoint = new(-200, Globals.random.Next(0, 1080));
+                        spawnpoint = new(0-spawnExpand, Globals.random.Next(0, 1080));
                     }
                     else if (spawnDirection == 4)
                     {
-                        spawnpoint = new(2120, Globals.random.Next(0, 1080));
+                        spawnpoint = new(1920+spawnExpand, Globals.random.Next(0, 1080));
                     }
 
 

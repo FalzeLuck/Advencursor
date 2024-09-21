@@ -10,7 +10,6 @@ namespace Advencursor._AI
 {
     public class KeepDistanceAI : MovementAI
     {
-        public Player target {  get; set; }
         public float distance { get; set; }
 
         public override void Move(Sprite bot)

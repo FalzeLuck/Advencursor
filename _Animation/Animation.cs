@@ -25,6 +25,9 @@ namespace Advencursor._Animation
         public Vector2 offset { get; set; }
         public Vector2 position { get; set; }
 
+        public float opacityValue {  get; set; }
+        public float blinkingDuration { get; set; } = 0f;
+
 
         public Animation(Texture2D texture,int row, int column,  float fps, bool IsLooping)
         {
@@ -41,6 +44,7 @@ namespace Advencursor._Animation
             IsPause = false;
             IsCollide = false;
             offset = Vector2.Zero;
+            opacityValue = 1f;
         }
 
         public Animation(Texture2D texture, int row, int column,int startrow, float fps, bool IsLooping)
@@ -58,6 +62,7 @@ namespace Advencursor._Animation
             IsPause = false;
             IsCollide = false;
             offset = Vector2.Zero;
+            opacityValue = 1f;
         }
 
 
@@ -102,6 +107,23 @@ namespace Advencursor._Animation
 
                 }
             }
+
+            if (blinkingDuration >= 0f)
+            {
+                blinkingDuration -= TimeManager.TimeGlobal;
+                if(opacityValue >= 0f)
+                {
+                    opacityValue -= 0.1f;
+                }
+                else if(opacityValue < 0f)
+                {
+                    opacityValue = 1f;
+                }
+            }
+            else
+            {
+                opacityValue = 1f;
+            }
         }
 
         public void Draw(Vector2 position)
@@ -124,7 +146,7 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White, 0, origin - offset, 1, flip, 1);
+                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White * opacityValue, 0, origin - offset, 1, flip, 1);
             }
             else if (Startrow != 0)
             {
@@ -135,7 +157,7 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White, 0, origin - offset, 1, flip, 1);
+                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White * opacityValue, 0, origin - offset, 1, flip, 1);
             }
         }
 
@@ -156,6 +178,11 @@ namespace Advencursor._Animation
         {
             Row = row;
             Column = column;
+        }
+
+        public void Blink(float duration)
+        {
+            blinkingDuration = duration;
         }
     }
 }

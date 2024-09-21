@@ -22,7 +22,6 @@ namespace Advencursor._Models
     [Serializable]
     public class Player : Sprite
     {
-        public Status Status { get; set; }
         public Dictionary<Keys, Skill> Skills {  get; private set; }
         public Inventory Inventory { get; set; }
 
@@ -34,6 +33,9 @@ namespace Advencursor._Models
         public float cooldownTimer {  get; private set; } = 0f;
         public bool isParrying => parryTimer > 0;
         public bool CanParry => cooldownTimer <= 0;
+
+        public float normalAttackCooldown;
+        public float normalAttackDelay = 0.2f;
 
 
         public bool isStun;
@@ -49,6 +51,7 @@ namespace Advencursor._Models
 
         public string finalIndicator {  get; private set; }
 
+        //Immune
         private float immuneDuration;
 
 
@@ -194,7 +197,7 @@ namespace Advencursor._Models
         {
             if (!Status.immunity)
             {
-                Status.TakeDamage(damage,fromwho.Status);
+                Status.TakeDamage(damage,fromwho);
                 //Immunity(0.5f);
             }
         }
@@ -203,6 +206,10 @@ namespace Advencursor._Models
         {
             Status.immunity = true;
             immuneDuration = duration;
+            foreach(var anim in animations.Values)
+            {
+                anim.Blink(duration);
+            }
         }
 
         public void CheckEnemyCollision()
@@ -248,6 +255,16 @@ namespace Advencursor._Models
                     }
                 }
             }
+        }
+        public void DoNormalAttack(float delay)
+        {
+            normalAttackCooldown = delay;
+        }
+
+        public bool CanNormalAttack()
+        {
+            if (normalAttackCooldown <= 0) { return true; }
+            else { return false; }
         }
 
 
@@ -304,11 +321,20 @@ namespace Advencursor._Models
             if (Status.immunity)
             {
                 immuneDuration -= TimeManager.TimeGlobal;
-
                 if(immuneDuration <= 0f)
                 {
                     Status.immunity = false;
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.blinkingDuration = 0f;
+                        anim.opacityValue = 1f;
+                    }
                 }
+            }
+
+            if (normalAttackCooldown >= 0f)
+            {
+                normalAttackCooldown -= TimeManager.TimeGlobal;
             }
 
             CheckEnemyCollision();

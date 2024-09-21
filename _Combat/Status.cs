@@ -1,5 +1,6 @@
 ﻿using Advencursor._Managers;
 using Advencursor._Models;
+using Advencursor._Models.Enemy;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -45,22 +46,28 @@ namespace Advencursor._Combat
             Shield = 0;
         }
 
-        public void TakeDamage(float damage,Status fromwho)
+        public void TakeDamage(float damage,Sprite fromwho)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
-
             float tempDamage;
             Color tempColor;
-            if (IsCrit(fromwho.CritRate))
+            if (IsCrit(fromwho.Status.CritRate))
             {
                 
-                tempDamage = (damage * ((fromwho.CritDam / 100) + 1));
+                tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
                 tempColor = Color.Gold;
             }
             else
             {
-                tempDamage= damage;
-                tempColor = Color.White;
+                if (fromwho is _Enemy)
+                {
+                    tempColor = Color.Red;
+                }
+                else
+                {
+                    tempColor = Color.White;
+                }
+                tempDamage = damage;
             }
 
 
@@ -122,11 +129,12 @@ namespace Advencursor._Combat
             }
         }
 
-        public void Heal(int amount)
+        public void Heal(float amount)
         {
             if (amount < 0) throw new ArgumentOutOfRangeException("Heal can't be negative");
 
             CurrentHP += amount;
+            OnTakeDamage?.Invoke(amount.ToString("F0"), Color.Green);
 
             if (CurrentHP > MaxHP) { CurrentHP = MaxHP; }
         }

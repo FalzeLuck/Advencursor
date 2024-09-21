@@ -12,7 +12,6 @@ namespace Advencursor._AI
 {
     public class FollowMovementAI : MovementAI
     {
-        public Player target {  get; set; }
 
         public override void Move(Sprite bot)
         {

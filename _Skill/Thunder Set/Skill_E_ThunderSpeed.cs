@@ -18,7 +18,9 @@ namespace Advencursor._Skill.Thunder_Set
         private SpriteEmitter spriteEmitter;
 
         private ParticleEmitterData ped;
+        private ParticleEmitterData ped1;
         private ParticleEmitter pe;
+        private ParticleEmitter pe1;
 
         private float bufftime;
         private bool isUsing = false;
@@ -38,27 +40,50 @@ namespace Advencursor._Skill.Thunder_Set
         {
             base.Use(player);
             spriteEmitter = new SpriteEmitter(() => player.position);
+            bufftime = 5f;
 
             ped = new()
             {
-                particleData = new LightningParticleData()
+                particleData = new ParticleData()
                 {
-                    sizeStart = 150,
-                    sizeEnd = 150,
+                    sizeStart = 12,
+                    sizeEnd = 12,
+                    colorStart = Color.Cyan,
+                    colorEnd = Color.White,
                 },
-                interval = 0.05f,
+                interval = 0.0001f,
                 emitCount = 1,
                 angleVariance = 180f,
-                speedMax = 0f,
-                speedMin = 0f,
-                lifeSpanMax = 1f,
-                lifeSpanMin = 0.5f,
-                rotationMax = 360f,
+                speedMax = 0.5f,
+                speedMin = 0.5f,
+                lifeSpanMax = bufftime,
+                lifeSpanMin = bufftime,
+                rotationMax = 180,
+            };
+            ped1 = new()
+            {
+                particleData = new LightningParticleData()
+                {
+                    sizeStart = 150f,
+                    sizeEnd = 150f,
+                    colorStart = Color.Cyan,
+                    colorEnd = Color.White,
+                },
+                interval = 0.03f,
+                emitCount = 1,
+                angleVariance = 180f,
+                speedMax = 0.5f,
+                speedMin = 0.5f,
+                lifeSpanMax = bufftime,
+                lifeSpanMin = bufftime,
+                rotationMax = 180,
             };
 
             pe = new(spriteEmitter, ped);
             ParticleManager.AddParticleEmitter(pe);
-            bufftime = 2f;
+            pe1 = new(spriteEmitter, ped1);
+            ParticleManager.AddParticleEmitter(pe1);
+            
 
             collisionCooldown = new List<float>(new float[100]);
 
@@ -77,6 +102,7 @@ namespace Advencursor._Skill.Thunder_Set
                 if(bufftime <= 0)
                 {
                     ParticleManager.RemoveParticleEmitter(pe);
+                    ParticleManager.RemoveParticleEmitter(pe1);
                     isUsing = false;
                 }
 
