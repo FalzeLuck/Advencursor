@@ -184,5 +184,11 @@ namespace Advencursor._Animation
         {
             blinkingDuration = duration;
         }
+
+        public void Reset()
+        {
+            currentFrame = (Column * Startrow) - Column;
+            IsComplete = false;
+        }
     }
 }

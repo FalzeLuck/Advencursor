@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         private float dashTimer;
         private float dashCooldown;
         private Vector2 dashDirection;
+        private float jumpTime = 0f;
 
         public bool isDashing;
         private bool canDash => dashCooldown > 5f;
@@ -27,10 +29,10 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  4, true) },
-                { "Attack", new(texture,row,column,2,12,true) },
-                { "Parry", new(texture,row,column,3,12,true) }
-                
+                { "Idle", new(texture, row, column,1,  8, true) },
+                { "Attack", new(texture,row,column,1,8,true) },
+                { "Parry", new(texture,row,column,1,8,true) },
+                { "Die", new(texture,row,column,1,4,false) },
             };
             indicator = "Idle";
 
@@ -47,69 +49,89 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 collision = animations[indicator].GetCollision(position);
             }
             UpdateParryZone();
-
-            //Update Radius
-            dashRadius = collision;
-            int increaseamount = 300;
-            int newX = dashRadius.X - increaseamount / 2;
-            int newY = dashRadius.Y - increaseamount / 2;
-            int newWidth = dashRadius.Width + increaseamount;
-            int newHeight = dashRadius.Height + increaseamount;
-            dashRadius = new Rectangle(newX, newY, newWidth, newHeight);
-
-            movementAI.Move(this);
-            Status.Update();
-
-
-
-            if (Status.isParalysis && !dash)
+            if (Status.IsAlive())
             {
-                velocity = new Vector2(25, 25);
-            }
-            else if(!Status.isParalysis && !dash)
-            {
-                velocity = new(50, 50);
-            }
+                //Update Radius
+                dashRadius = collision;
+                int increaseamount = 300;
+                int newX = dashRadius.X - increaseamount / 2;
+                int newY = dashRadius.Y - increaseamount / 2;
+                int newWidth = dashRadius.Width + increaseamount;
+                int newHeight = dashRadius.Height + increaseamount;
+                dashRadius = new Rectangle(newX, newY, newWidth, newHeight);
 
-            if (dash)
-            {
-                dashTimer += TimeManager.TimeGlobal;
-                dashCooldown = 0f;
+                movementAI.Move(this);
+                Status.Update();
 
-                if (dashTimer > 0f)
+                int defaultSpeed = 100;
+
+
+
+                if (dash)
                 {
-                    dash = true;
-                    movementAI.Stop();
+                    dashTimer += TimeManager.TimeGlobal;
+                    dashCooldown = 0f;
+
+                    if (dashTimer > 0f)
+                    {
+                        dash = true;
+                        movementAI.Stop();
+                    }
+                    if (dashTimer > 0.7f)
+                    {
+                        isAttacking = true;
+                        indicator = "Parry";
+                    }
+                    if (dashTimer > 1.2f)
+                    {
+                        position += dashDirection * TimeManager.TimeGlobal;
+                        isAttacking = false;
+                        isDashing = true;
+                        indicator = "Attack";
+                    }
+                    if (dashTimer > 1.7f)
+                    {
+                        isDashing = false;
+                        dash = false;
+                    }
                 }
-                if(dashTimer > 0.7f)
+                else if (!dash)
                 {
-                    isAttacking = true;
-                    indicator = "Parry";
-                }
-                if (dashTimer > 1.2f)
-                {
-                    position += dashDirection * TimeManager.TimeGlobal;
+                    indicator = "Idle";
+                    //movementAI.Start();
                     isAttacking = false;
-                    isDashing = true;
-                    indicator = "Attack";
-                }
-                if(dashTimer > 1.7f)
-                {
                     isDashing = false;
-                    dash = false;
+                    dashCooldown += TimeManager.TimeGlobal;
+                    dashTimer = 0f;
+                    if (Status.isParalysis)
+                    {
+                        velocity = new Vector2(defaultSpeed / 2);
+                    }
+                    else if (!Status.isParalysis)
+                    {
+                        velocity = new(defaultSpeed);
+                    }
+
+                    jumpTime -= TimeManager.TimeGlobal;
+
+                    if (jumpTime <= 0.625f)
+                    {
+                        velocity = Vector2.Zero;
+                    }
+                    else if (jumpTime < 1)
+                    {
+                        velocity = new(300);
+                    }
+                    if (jumpTime <= 0)
+                    {
+                        jumpTime = 1f;
+                    }
+
                 }
-            }
-            else if (!dash)
-            {
-                indicator = "Idle";
-                movementAI.Start();
-                isAttacking = false;
-                isDashing = false;
-                dashCooldown += TimeManager.TimeGlobal;
-                dashTimer = 0f;
+
             }
 
-            
+
         }
 
         public void Dash()

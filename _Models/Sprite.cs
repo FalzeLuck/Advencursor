@@ -22,7 +22,7 @@ namespace Advencursor._Models
 
         public SpriteEffects spriteEffects;
 
-        protected Dictionary<string ,Animation> animations;
+        public Dictionary<string ,Animation> animations;
         public string indicator;
         protected int row;
         protected int column;

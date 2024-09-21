@@ -60,5 +60,11 @@ namespace Advencursor._Models.Enemy
             collisionCooldown = timer;
         }
 
+        public virtual void Die()
+        {
+            indicator = "Die";
+            //animations["Die"].Reset();
+        }
+
     }
 }

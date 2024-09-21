@@ -33,7 +33,8 @@ namespace Advencursor._Models.Enemy
                 { "Idle", new(texture, row, column,1,  1, true) },
                 { "Attack", new(texture,row,column,2,1,true) },
                 { "Charge",new(texture,row,column,3,1,true) },
-                { "Stun",new(texture,row,column,4,1,true) }
+                { "Stun",new(texture,row,column,4,1,true) },
+                { "Die",new(texture,row,column,4,1,false) }
 
             };
             indicator = "Idle";

@@ -22,107 +22,129 @@ namespace Advencursor._Models.Enemy
         public float stunduration;
         public float stuntimer;
         public bool stunned;
-        
+
         public Rectangle checkRadius;
         public float charge_duration;
 
-        public Boss1(Texture2D texture, Vector2 position, int health,int attack, int row, int column) : base(texture, position, health,attack)
+        public Boss1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  1, true) },
-                { "Attack", new(texture,row,column,2,1,true) },
-                {"Stun", new(texture,row,column,3,1,true) }
+                { "Idle", new(texture, row, column,1,  0, true) },
+                { "Attack", new(texture,row,column,1,0,true) },
+                {"Stun", new(texture,row,column,1,0,true) },
+                {"Die", new(texture,row,column,2,8,false) },
 
             };
             indicator = "Idle";
 
 
-
-            checkRadius = new Rectangle(9999,9999,0,0);
+            checkRadius = new Rectangle(9999, 9999, 0, 0);
             charge = false;
             dashing = false;
             dashed = false;
             stunned = false;
-            
+
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            movementAI.Move(this);
+
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
 
-            UpdateParryZone();
 
-            //Update Radius
-            checkRadius = collision;
-            int increaseamount = 300;
-            int newX = checkRadius.X - increaseamount / 2;
-            int newY = checkRadius.Y - increaseamount / 2;
-            int newWidth = checkRadius.Width + increaseamount;
-            int newHeight = checkRadius.Height + increaseamount;
-            checkRadius = new Rectangle(newX, newY, newWidth, newHeight);
 
-            //Limit Movement
-            if (!dashing && !stunned)
+            if (Status.IsAlive())
             {
-                int topBound = 0;
-                int bottomBound = 1080;
-                int leftBound = 0;
-                int rightBound = 1920;
-                indicator = "Idle";
 
-                if (collision.X > leftBound && collision.X + collision.Width < rightBound && collision.Y > topBound && collision.Y + collision.Height < bottomBound)
+
+
+                UpdateParryZone();
+
+                //Update Radius
+                checkRadius = collision;
+                int increaseamount = 300;
+                int newX = checkRadius.X - increaseamount / 2;
+                int newY = checkRadius.Y - increaseamount / 2;
+                int newWidth = checkRadius.Width + increaseamount;
+                int newHeight = checkRadius.Height + increaseamount;
+                checkRadius = new Rectangle(newX, newY, newWidth, newHeight);
+                //Limit Movement
+
+                //Dashing
+                if (dashing)
                 {
-                    velocity = new(50, 50);
+                    indicator = "Attack";
+                    position += velocity * TimeManager.TimeGlobal;
+
+                    if (collision.X + collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y + collision.Height >= Globals.Bounds.Y || collision.Y <= 0)
+                    {
+                        dashing = false;
+                    }
                 }
-                else if (collision.X <= leftBound)
+
+                //Stun
+                if (stunned)
                 {
-                    velocity = new(0,50);
-                    position += new Vector2(1,0);
+                    indicator = "Stun";
+                    stuntimer += TimeManager.TimeGlobal;
+                    if (stuntimer > stunduration) stunned = false;
                 }
-                else if (collision.Y <= topBound)
+
+                if (!dashing && !stunned && !charge && movementAI != null)
                 {
-                    velocity = new(50, 0);
-                    position += new Vector2(0, 1);
+
+                    movementAI.Move(this);
+
+
+                    int topBound = 0;
+                    int bottomBound = 1080;
+                    int leftBound = 0;
+                    int rightBound = 1920;
+                    indicator = "Idle";
+
+                    int speed = 100;
+                    if (collision.X > leftBound && collision.X + collision.Width < rightBound && collision.Y > topBound && collision.Y + collision.Height < bottomBound)
+                    {
+                        velocity = new(speed);
+                    }
+                    else if (collision.X <= leftBound)
+                    {
+                        velocity = new(0, speed);
+                        position += new Vector2(1, 0);
+                    }
+                    else if (collision.Y <= topBound)
+                    {
+                        velocity = new(speed, 0);
+                        position += new Vector2(0, 1);
+                    }
+                    else if (collision.X + collision.Width >= rightBound)
+                    {
+                        velocity = new(0, speed);
+                        position -= new Vector2(1, 0);
+                    }
+                    else if (collision.Y + collision.Height >= bottomBound)
+                    {
+                        velocity = new(speed, 0);
+                        position -= new Vector2(0, 1);
+                    }
+
                 }
-                else if (collision.X + collision.Width >= rightBound)
-                {
-                    velocity = new(0, 50);
-                    position -= new Vector2(1, 0);
-                }
-                else if (collision.Y + collision.Height >= bottomBound)
-                {
-                    velocity = new(50, 0);
-                    position -= new Vector2(0, 1);
-                }
+
+
 
             }
-
-            //Dashing
-            if (dashing)
+            else
             {
-                indicator = "Attack";
-                position += velocity * TimeManager.TimeGlobal;
-
-                if(collision.X+collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y+collision.Height >= Globals.Bounds.Y || collision.Y <= 0)
-                {
-                    dashing = false;
-                }
+                checkRadius = new();
+                collision = new();
             }
 
-            //Stun
-            if (stunned)
-            {
-                indicator = "Stun";
-                stuntimer += TimeManager.TimeGlobal;
-                if(stuntimer > stunduration) stunned = false;
-            }
         }
 
         public void Dash(Sprite target)
@@ -139,5 +161,7 @@ namespace Advencursor._Models.Enemy
             stuntimer = 0f;
             this.stunduration = stunduration;
         }
+
+
     }
 }

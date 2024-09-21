@@ -246,6 +246,7 @@ namespace Advencursor._Models
                         if (boss1.dashing)
                         {
                             TakeDamage(enemy.Status.Attack + 2000,enemy);
+                            Immunity(0.5f);
                         }
                         else
                         {

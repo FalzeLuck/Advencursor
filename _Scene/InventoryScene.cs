@@ -126,7 +126,7 @@ namespace Advencursor._Scene
                 inventory.Items.Add(nullItem);
             }
 
-            //CheatInventory();
+            CheatInventory();
 
             inventory.SaveInventory(pathinventory);
 

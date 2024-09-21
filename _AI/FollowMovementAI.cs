@@ -20,10 +20,12 @@ namespace Advencursor._AI
 
             var direction = target.position - bot.position;
 
-            if (direction.Length() > 4){
+            if (direction.Length() > 4)
+            {
                 direction.Normalize();
                 bot.position += direction * bot.velocity * TimeManager.TimeGlobal;
             }
+
         }
 
         public override void Stop()

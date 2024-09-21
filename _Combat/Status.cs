@@ -143,6 +143,11 @@ namespace Advencursor._Combat
         {
             return CurrentHP > 0;
         }
+
+        public void Kill()
+        {
+            CurrentHP = 0;
+        }
             
         public void AddShield(int amount)
         {
