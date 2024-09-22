@@ -19,7 +19,7 @@ namespace Advencursor._Models.Enemy
         public Rectangle parryZone;
         public bool isAttacking;
 
-        public float collisionCooldown {  get; private set; }
+        public float collisionCooldown {  get; set; }
 
         public _Enemy(Texture2D texture, Vector2 position, int health,int attack) : base(texture, position)
         {
@@ -30,6 +30,22 @@ namespace Advencursor._Models.Enemy
         public override void Update(GameTime gameTime)
         {
             collisionCooldown -= TimeManager.TimeGlobal;
+            Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
+
+            if (playerPosition.X > position.X)
+            {
+                foreach (var anim in animations.Values)
+                {
+                    anim.IsFlip = false;
+                }
+            }
+            else
+            {
+                foreach (var anim in animations.Values)
+                {
+                    anim.IsFlip = true;
+                }
+            }
         }
 
         public void UpdateParryZone()
@@ -43,7 +59,7 @@ namespace Advencursor._Models.Enemy
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
         }
 
-        public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false)
+        public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
         {
             if (throughImmune)
             {
@@ -52,6 +68,23 @@ namespace Advencursor._Models.Enemy
             else
             {
                 Status.TakeDamage(multiplier * player.Status.Attack,player);
+            }
+        }
+
+        public virtual void TakeDamage(float multiplier, Player player, float fixedDamage, bool throughImmune = false,bool NoCrit = false)
+        {
+            if (throughImmune)
+            {
+                Status.TakeDamageNoImmune(fixedDamage, player);
+            }
+            else
+            {
+                if (NoCrit)
+                {
+                    Status.TakeDamageNoCrit(fixedDamage, player);
+                }
+                else
+                Status.TakeDamage(fixedDamage, player);
             }
         }
 

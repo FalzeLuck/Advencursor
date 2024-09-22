@@ -24,6 +24,7 @@ namespace Advencursor._Skill.Food_Set
         {
             base.Use(player);
             tauntFood.position = player.position;
+            tauntFood.SetOpacity(0.5f);
             buffTime = 5f;
             
         }

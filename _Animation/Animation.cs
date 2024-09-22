@@ -10,6 +10,7 @@ namespace Advencursor._Animation
         public Texture2D Texture { get; }
         public int Row { get; private set; }
         public int Column { get; private set; }
+        public int maxColumn { get; private set; }
         public int Startrow { get; }
         public int TotalFrame { get; }
         public float FrameTime { get; }
@@ -34,6 +35,7 @@ namespace Advencursor._Animation
             this.Texture = texture;
             this.Row = row;
             this.Column = column;
+            maxColumn = column;
             Startrow = 0;
             TotalFrame = row * column;
             this.FrameTime = 1 / fps;
@@ -52,6 +54,26 @@ namespace Advencursor._Animation
             this.Texture = texture;
             this.Row = row;
             this.Column = column;
+            maxColumn = column;
+            Startrow = startrow;
+            TotalFrame = row * column;
+            this.FrameTime = 1 / fps;
+            this.IsLooping = IsLooping;
+            currentFrame = (column * Startrow) - column;
+            timer = 0f;
+            IsComplete = false;
+            IsPause = false;
+            IsCollide = false;
+            offset = Vector2.Zero;
+            opacityValue = 1f;
+        }
+
+        public Animation(Texture2D texture, int row, int column,int maxColumn, int startrow, float fps, bool IsLooping)
+        {
+            this.Texture = texture;
+            this.Row = row;
+            this.Column = column;
+            this.maxColumn = maxColumn;
             Startrow = startrow;
             TotalFrame = row * column;
             this.FrameTime = 1 / fps;
@@ -69,42 +91,44 @@ namespace Advencursor._Animation
         public void Update()
         {
             timer += TimeManager.TimeGlobal;
-
-            if(timer >= FrameTime  && Startrow == 0)
+            if (!IsPause)
             {
-                timer = 0f;
-                currentFrame++;
-
-                if(currentFrame >= TotalFrame)
+                if (timer >= FrameTime && Startrow == 0)
                 {
-                    if (IsLooping) 
-                    { 
-                        currentFrame = 0;
-                    }
-                    else
+                    timer = 0f;
+                    currentFrame++;
+
+                    if (currentFrame >= TotalFrame)
                     {
-                        currentFrame = TotalFrame - 1;
-                        IsComplete = true;
+                        if (IsLooping)
+                        {
+                            currentFrame = 0;
+                        }
+                        else
+                        {
+                            currentFrame = TotalFrame - 1;
+                            IsComplete = true;
+                        }
+
                     }
-                    
                 }
-            }else if( timer >= FrameTime && Startrow != 0)
-            {
-                timer = 0f;
-                currentFrame++;
-
-                if (currentFrame >= Column * Startrow)
+                else if (timer >= FrameTime && Startrow != 0)
                 {
-                    if (IsLooping)
+                    timer = 0f;
+                    currentFrame++;
+                    if (currentFrame >= (Column - (Column-maxColumn)) * Startrow)
                     {
-                        currentFrame = (Column*Startrow) - Column;
-                    }
-                    else
-                    {
-                        currentFrame = TotalFrame - 1;
-                        IsComplete = true;
-                    }
+                        if (IsLooping)
+                        {
+                            currentFrame = (Column * Startrow) - Column;
+                        }
+                        else
+                        {
+                            currentFrame = TotalFrame - 1;
+                            IsComplete = true;
+                        }
 
+                    }
                 }
             }
 
@@ -189,6 +213,28 @@ namespace Advencursor._Animation
         {
             currentFrame = (Column * Startrow) - Column;
             IsComplete = false;
+        }
+
+        public void PauseFrame(int frame)
+        {
+            currentFrame = ((Column * Startrow) - Column) + (frame-1);
+            IsComplete = false;
+            IsPause = true;
+        }
+
+        public void Play()
+        {
+            IsPause = false;
+        }
+
+        public void SetOpacity(float value)
+        {
+            opacityValue = value;
+        }
+
+        public void SetFlip(bool flip)
+        {
+            IsFlip = flip;
         }
     }
 }

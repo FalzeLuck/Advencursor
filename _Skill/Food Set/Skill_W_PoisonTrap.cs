@@ -27,6 +27,7 @@ namespace Advencursor._Skill.Food_Set
         {
             base.Use(player);
             poisonFood.position = player.position;
+            poisonFood.SetOpacity(0.5f);
             buffTime = 3f;
 
             collisionCooldown = new List<float>(new float[100]);

@@ -16,16 +16,17 @@ namespace Advencursor._AI
         public override void Move(Sprite bot)
         {
             if (target == null) return;
-            if (stop) return;
-
-            var direction = target.position - bot.position;
-
-            if (direction.Length() > 4)
+            if (!stop)
             {
-                direction.Normalize();
-                bot.position += direction * bot.velocity * TimeManager.TimeGlobal;
-            }
 
+                var direction = target.position - bot.position;
+
+                if (direction.Length() > 4)
+                {
+                    direction.Normalize();
+                    bot.position += direction * bot.velocity * TimeManager.TimeGlobal;
+                }
+            }
         }
 
         public override void Stop()

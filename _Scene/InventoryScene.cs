@@ -306,11 +306,18 @@ namespace Advencursor._Scene
             string mainStatString;
             if (mainStatDesc != null)
             {
-                mainStatString = $"{mainStatDesc} : {mainStat}";
+                if (mainStatDesc == "Health")
+                {
+                    mainStatString = $"{mainStatDesc} : {mainStat}";
+                }
+                else
+                {
+                    mainStatString = $"{mainStatDesc} : {mainStat}%";
+                }
             }
             else
             {
-                mainStatString = $"NaN";
+                mainStatString = $"";
             }
             Vector2 mainStatSize = spriteFont.MeasureString(mainStatString);
             Vector2 mainStatOrigin = new(mainStatSize.X/2, mainStatSize.Y/2);

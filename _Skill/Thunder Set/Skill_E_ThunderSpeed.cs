@@ -44,24 +44,6 @@ namespace Advencursor._Skill.Thunder_Set
 
             ped = new()
             {
-                particleData = new ParticleData()
-                {
-                    sizeStart = 12,
-                    sizeEnd = 12,
-                    colorStart = Color.Cyan,
-                    colorEnd = Color.White,
-                },
-                interval = 0.0001f,
-                emitCount = 1,
-                angleVariance = 180f,
-                speedMax = 0.5f,
-                speedMin = 0.5f,
-                lifeSpanMax = bufftime,
-                lifeSpanMin = bufftime,
-                rotationMax = 180,
-            };
-            ped1 = new()
-            {
                 particleData = new LightningParticleData()
                 {
                     sizeStart = 150f,
@@ -81,8 +63,6 @@ namespace Advencursor._Skill.Thunder_Set
 
             pe = new(spriteEmitter, ped);
             ParticleManager.AddParticleEmitter(pe);
-            pe1 = new(spriteEmitter, ped1);
-            ParticleManager.AddParticleEmitter(pe1);
             
 
             collisionCooldown = new List<float>(new float[100]);
@@ -102,7 +82,6 @@ namespace Advencursor._Skill.Thunder_Set
                 if(bufftime <= 0)
                 {
                     ParticleManager.RemoveParticleEmitter(pe);
-                    ParticleManager.RemoveParticleEmitter(pe1);
                     isUsing = false;
                 }
 
@@ -112,8 +91,9 @@ namespace Advencursor._Skill.Thunder_Set
                 {
                     if (collisionCooldown[i] <= 0)
                     {
-                        if (collision.Any(collide => collide.Intersects(Globals.EnemyManager[i].collision)))
+                        if (collision.Any(collide => collide.Intersects(Globals.EnemyManager[i].collision)) && Globals.EnemyManager[i].Status.IsAlive())
                         {
+                            
                             Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
                             collisionCooldown[i] = 0.1f;
                         }

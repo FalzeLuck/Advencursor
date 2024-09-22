@@ -94,6 +94,38 @@ namespace Advencursor._Combat
             
         }
 
+        public void TakeDamageNoCrit(float damage, Sprite fromwho)
+        {
+            if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
+            float tempDamage = damage;
+            Color tempColor = Color.White;
+            
+
+
+            if (immunity == false)
+            {
+                if (Shield >= tempDamage)
+                {
+                    Shield -= tempDamage;
+                }
+                else if (Shield < tempDamage)
+                {
+                    float remainDamage = (tempDamage - Shield);
+                    Shield = 0;
+                    CurrentHP -= remainDamage;
+                }
+                else if (Shield == 0)
+                {
+                    CurrentHP -= tempDamage;
+                }
+                OnTakeDamage?.Invoke(tempDamage.ToString("F0"), tempColor);
+            }
+
+            if (CurrentHP < 0) { CurrentHP = 0; }
+
+
+        }
+
         public void TakeDamageNoImmune(float damage, Sprite who)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
@@ -112,9 +144,11 @@ namespace Advencursor._Combat
             {
                 CurrentHP -= damage;
             }
+            OnTakeDamage?.Invoke(damage.ToString("F0"),Color.White);
 
             if (CurrentHP < 0) { CurrentHP = 0; }
         }
+
 
         private bool IsCrit(float CritRate)
         {

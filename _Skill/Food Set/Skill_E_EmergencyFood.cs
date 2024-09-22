@@ -20,9 +20,9 @@ namespace Advencursor._Skill.Food_Set
         public override void Use(Player player)
         {
             base.Use(player);
-            player.Status.Heal(player.Status.MaxHP * 20 / 100);
+            player.Status.Heal(player.Status.MaxHP * 5 / 100);
             oldAttack = player.Status.Attack;
-            player.Status.SetAttack(oldAttack * 1.5f);
+            player.Status.SetAttack(oldAttack * 1.7f);
             isusing = true;
             buffTime = 5f;
         }

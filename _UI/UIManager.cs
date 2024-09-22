@@ -31,6 +31,15 @@ namespace Advencursor._UI
             progressBarDictionary.Add(barName, progressBar);
         }
 
+        public void RemoveElement(UIElement element)
+        {
+            uiElements.Remove(element);
+        }
+
+        public void RemoveElement(string barName)
+        {
+            progressBarDictionary.Remove(barName);
+        }
 
 
         public void Update(GameTime gameTime)

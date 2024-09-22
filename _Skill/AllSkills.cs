@@ -15,28 +15,28 @@ namespace Advencursor._Skill
         {
             //Please Copy All to Reset function Below when changing this or you will encounter logic error. - from Past Chotayakorn to Future Chotayakorn
             {"null", new Skill("null",0.1f) },
-            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 22)},
-            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:45)},
-            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:34)},
-            {"I am the Storm", new Skill_R_IamStorm("I am the Storm",cooldown:2.5f * 60)},
-            {"Food Trap",new Skill_Q_FoodTrap("Food Trap",cooldown:30) },
-            {"Poison Trap",new Skill_W_PoisonTrap("Poison Trap",cooldown : 20) },
-            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 50) },
-            {"Invincibility",new Skill_R_Invincibility("Invincibility",cooldown : 3 * 60) },
+            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 18)},
+            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:20)},
+            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:15)},
+            {"I am the Storm", new Skill_R_IamStorm("I am the Storm",cooldown:60)},
+            {"Food Trap",new Skill_Q_FoodTrap("Food Trap",cooldown:12) },
+            {"Poison Trap",new Skill_W_PoisonTrap("Poison Trap",cooldown : 15) },
+            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 14) },
+            {"Invincibility",new Skill_R_Invincibility("Invincibility",cooldown : 60) },
         };
         public static void Reset()
         {
             allSkills = new Dictionary<string, Skill>
             {
             {"null", new Skill("null",0.1f) },
-            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 22)},
-            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:45)},
-            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:34)},
-            {"I am the Storm", new Skill_R_IamStorm("I am the Storm",cooldown:2.5f * 60)},
-            {"Food Trap",new Skill_Q_FoodTrap("Food Trap",cooldown:30) },
-            {"Poison Trap",new Skill_W_PoisonTrap("Poison Trap",cooldown : 20) },
-            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 50) },
-            {"Invincibility",new Skill_R_Invincibility("Invincibility",cooldown : 3 * 60) },
+            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 18)},
+            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:20)},
+            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:15)},
+            {"I am the Storm", new Skill_R_IamStorm("I am the Storm",cooldown:60)},
+            {"Food Trap",new Skill_Q_FoodTrap("Food Trap",cooldown:12) },
+            {"Poison Trap",new Skill_W_PoisonTrap("Poison Trap",cooldown : 15) },
+            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 14) },
+            {"Invincibility",new Skill_R_Invincibility("Invincibility",cooldown : 60) },
             };
         }
 

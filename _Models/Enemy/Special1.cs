@@ -24,10 +24,12 @@ namespace Advencursor._Models.Enemy
             animations = new Dictionary<string, Animation>
             {
                 { "Right", new(texture, row, column,1,  4, true) },
-                { "Left", new(texture,row,column,2,4,true) },
-                { "Bomb", new(texture,row,column,3,30,true) }
+                { "Left", new(texture,row,column,1,4,true) },
+                { "Bomb", new(texture,row,column,1,30,true) }
 
             };
+            animations["Left"].SetFlip(false);
+            animations["Right"].SetFlip(true);
 
             indicator = "Left";
             walkTimer = 0;
@@ -36,7 +38,7 @@ namespace Advencursor._Models.Enemy
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            collisionCooldown -= TimeManager.TimeGlobal;
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();

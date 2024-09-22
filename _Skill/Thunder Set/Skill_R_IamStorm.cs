@@ -38,7 +38,7 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 1f;
-        private int maxHit = 20;
+        private int maxHit = 9;
         private int countHit = 0;
         public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
         {
@@ -50,6 +50,12 @@ namespace Advencursor._Skill.Thunder_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            foreach (var enemy in Globals.EnemyManager)
+            {
+                enemy.TakeDamage(skillMultiplier, player,(enemy.Status.MaxHP*30)/100,true,true);
+                enemy.Status.Paralysis(5f);
+            }
+
             lightningPed = new()
             {
                 particleData = new LightningParticleData()
@@ -132,15 +138,16 @@ namespace Advencursor._Skill.Thunder_Set
                 {
                     foreach (var enemy in Globals.EnemyManager)
                     {
-                        enemy.TakeDamage( skillMultiplier, player);
+                        enemy.TakeDamage( 2, player);
                     }
                     Globals.Camera.Shake(0.2f,5f);
                     countHit++;
                 }
                 else if (skillTime <= 2f && countHit < maxHit)
                 {
-                    float randomX = Globals.RandomFloat(Globals.Bounds.X / 2 - 10, Globals.Bounds.X / 2 + 10);
-                    float randomY = Globals.RandomFloat(Globals.Bounds.Y / 2 - 10, Globals.Bounds.Y / 2 + 10);
+                    int randomRange = 300;
+                    float randomX = Globals.RandomFloat(Globals.Bounds.X / 2 - randomRange, Globals.Bounds.X / 2 + randomRange);
+                    float randomY = Globals.RandomFloat(Globals.Bounds.Y / 2 - randomRange, Globals.Bounds.Y / 2 + randomRange);
                     player.position = new Vector2(randomX, randomY);
                     ParticleManager.RemoveParticleEmitter(pe);
                 }

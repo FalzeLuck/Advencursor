@@ -65,5 +65,34 @@ namespace Advencursor._Models
             collision = animations[indicator].GetCollision(position);
         }
 
+        public void SetOpacity(float value)
+        {
+            foreach (var animation in animations.Values)
+            {
+                animation.SetOpacity(value);
+            }
+        }
+
+        protected Rectangle ChangeRectangleSize(Rectangle rectangle,int value,bool decrease = false)
+        {
+            if (decrease)
+            {
+                int decreaseamount = value;
+                int newX = rectangle.X + decreaseamount / 2;
+                int newY = rectangle.Y + decreaseamount / 2;
+                int newWidth = rectangle.Width - decreaseamount;
+                int newHeight = rectangle.Height - decreaseamount;
+                return new(newX, newY, newWidth, newHeight);
+            }
+            else
+            {
+                int increaseamount = value;
+                int newX = rectangle.X - increaseamount / 2;
+                int newY = rectangle.Y - increaseamount / 2;
+                int newWidth = rectangle.Width + increaseamount;
+                int newHeight = rectangle.Height + increaseamount;
+                return new Rectangle(newX, newY, newWidth, newHeight);
+            }
+        }
     }
 }

@@ -30,9 +30,9 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  8, true) },
-                { "Attack", new(texture,row,column,1,8,true) },
-                { "Parry", new(texture,row,column,1,8,true) },
-                { "Die", new(texture,row,column,1,4,false) },
+                { "Attack", new(texture,row,column,2,8,true) },
+                { "Parry", new(texture,row,column,2,8,true) },
+                { "Die", new(texture,row,column,2,4,false) },
             };
             indicator = "Idle";
 
@@ -63,7 +63,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 movementAI.Move(this);
                 Status.Update();
 
-                int defaultSpeed = 100;
+                int defaultSpeed = 200;
 
 
 
@@ -71,11 +71,10 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 {
                     dashTimer += TimeManager.TimeGlobal;
                     dashCooldown = 0f;
-
+                    velocity = Vector2.Zero;
                     if (dashTimer > 0f)
                     {
                         dash = true;
-                        movementAI.Stop();
                     }
                     if (dashTimer > 0.7f)
                     {
@@ -98,7 +97,6 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 else if (!dash)
                 {
                     indicator = "Idle";
-                    //movementAI.Start();
                     isAttacking = false;
                     isDashing = false;
                     dashCooldown += TimeManager.TimeGlobal;
@@ -114,17 +112,25 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
                     jumpTime -= TimeManager.TimeGlobal;
 
-                    if (jumpTime <= 0.625f)
+                    if (jumpTime <= 0.5f)
                     {
                         velocity = Vector2.Zero;
                     }
-                    else if (jumpTime < 1)
+                    else if (jumpTime <= 1f)
                     {
-                        velocity = new(300);
+                        animations["Idle"].Play();
+                        velocity = new(defaultSpeed);
                     }
+                    else if (jumpTime <= 1.5f)
+                    {
+                        animations["Idle"].PauseFrame(1);
+                        velocity = Vector2.Zero;
+                    }
+                    
+                    
                     if (jumpTime <= 0)
                     {
-                        jumpTime = 1f;
+                        jumpTime = 1.5f;
                     }
 
                 }
@@ -150,7 +156,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             dash = false ;
         }
 
-        public override void TakeDamage(float multiplier,Player player, bool throughImmune = false)
+        public override void TakeDamage(float multiplier,Player player, bool throughImmune = false, bool NoCrit = false)
         {
             if(player.isBuff && player.buffIndicator == "Thunder_")
             {

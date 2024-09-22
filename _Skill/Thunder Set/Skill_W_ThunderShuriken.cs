@@ -33,12 +33,12 @@ namespace Advencursor._Skill.Thunder_Set
         private const float collisionCooldownTime = 0.5f;
         private List<float> collisionCooldown = new List<float>();
 
-        private float maxDuration = 1.5f;
+        private float maxDuration = 8f;
         private float stayDuration;
 
         //For Multiplier
         private Player player;
-        private float skillMultiplier = 1.2f;
+        private float skillMultiplier = 0.5f;
         public Skill_W_ThunderShuriken(string name, float cooldown) : base(name, cooldown)
         {
         }
@@ -57,7 +57,7 @@ namespace Advencursor._Skill.Thunder_Set
                 collisionCooldownindex++;
             }
 
-            collisionCooldown = new List<float>(new float[(Globals.EnemyManager.Count * collisionCooldownindex) + 100]);
+            collisionCooldown = new List<float>(new float[(Globals.EnemyManager.Count * collisionCooldownindex) + 500]);
         }
 
         public override void Update(float deltaTime, Player player)
@@ -111,10 +111,17 @@ namespace Advencursor._Skill.Thunder_Set
                     int index = (animations.Count * i) + j;
                     if (collisionCooldown[index] <= 0)
                     {
-                        if (Globals.EnemyManager[i].collision.Intersects(animations[j].GetCollision(position[j])))
+                        if (Globals.EnemyManager[i].collision.Intersects(animations[j].GetCollision(position[j])) && Globals.EnemyManager[i].Status.IsAlive())
                         {
                             Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
                             Globals.EnemyManager[i].Status.Paralysis(1.5f);
+
+                            if (!(Globals.EnemyManager[i] is Boss1))
+                            {
+                                Vector2 dir = Globals.EnemyManager[i].position - position[j];
+                                dir.Normalize();
+                                Globals.EnemyManager[i].position += dir * 2500 * TimeManager.TimeGlobal;
+                            }
                             collisionCooldown[index] = collisionCooldownTime;
                         }
                     }

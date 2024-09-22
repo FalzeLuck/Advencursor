@@ -75,12 +75,12 @@ namespace Advencursor._Skill
             if (keys == Keys.Q)
             {
                 statDesc =  "Health";
-                statValue = Globals.RandomFloat(3000,10000);
+                statValue = Globals.RandomFloat(1000,3000);
             }
             else if (keys == Keys.W)
             {
                 statDesc = "Attack";
-                statValue = Globals.RandomFloat(500, 1000);
+                statValue = Globals.RandomFloat(20, 40);
             }
             else if(keys == Keys.E)
             {
@@ -88,12 +88,12 @@ namespace Advencursor._Skill
                 if(index == 1)
                 {
                     statDesc = "Critical Rate";
-                    statValue = Globals.RandomFloat(5, 40);
+                    statValue = Globals.RandomFloat(4.7f,31.3f);
                 }
                 else
                 {
                     statDesc = "Critical Damage";
-                    statValue = Globals.RandomFloat(0, 100);
+                    statValue = Globals.RandomFloat(9.3f, 62.2f);
                 }
             }
         }

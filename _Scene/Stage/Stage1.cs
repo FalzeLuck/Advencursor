@@ -70,8 +70,8 @@ namespace Advencursor._Scene.Stage
         private int elite_count = 0;
         private int special_count = 0;
         private int enemy_max = 40;
-        private int elite_max = 2;
-        private int special_max = 2;
+        private int elite_max = 0;
+        private int special_max = 3;
         private int enemy_killed = 0;
 
         //UI
@@ -510,7 +510,7 @@ namespace Advencursor._Scene.Stage
                         spawnpoint,
                         health: 2000,
                         attack: 100,
-                        row: 1,
+                        row: 2,
                         column: 8
                         )
                     {
@@ -552,25 +552,28 @@ namespace Advencursor._Scene.Stage
             //Elite1
             if (elite_spawn_time > 15f && !boss_spawned)
             {
-                Elite1 enemy = (new Elite1(
-                    Globals.Content.Load<Texture2D>("Enemies/Elite1"),
-                    new(1920 / 2, 0),
-                    health: 20000,
-                    attack: 1500,
-                    row: 4,
-                    column: 1
-                    )
+                if (elite_count < elite_max)
                 {
-                    movementAI = new FollowMovementAI
+                    Elite1 enemy = (new Elite1(
+                        Globals.Content.Load<Texture2D>("Enemies/Elite1"),
+                        new(1920 / 2, 0),
+                        health: 20000,
+                        attack: 1500,
+                        row: 4,
+                        column: 1
+                        )
                     {
-                        target = player,
-                    }
-                });
-                eliteEnemy.Add(enemy);
-                Globals.EnemyManager.Add(enemy);
-                damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
+                        movementAI = new FollowMovementAI
+                        {
+                            target = player,
+                        }
+                    });
+                    eliteEnemy.Add(enemy);
+                    Globals.EnemyManager.Add(enemy);
+                    damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
 
-                elite_spawn_time = 0f;
+                    elite_spawn_time = 0f;
+                }
             }
             foreach (var enemy in eliteEnemy)
             {
@@ -580,7 +583,7 @@ namespace Advencursor._Scene.Stage
                     enemy.Die();
                     if (enemy.animations["Die"].IsComplete)
                     {
-                        player.Status.AddAttack(20);
+                        elite_count--;
                         damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
                         Globals.EnemyManager.Remove(enemy);
                         eliteEnemy.Remove(enemy);
@@ -633,7 +636,14 @@ namespace Advencursor._Scene.Stage
 
             if (boss_obj.animations["Die"].IsComplete)
             {
+                boss_spawned = false;
                 boss_obj.position = new(9999, 9999);
+                uiManager.RemoveElement("bossBar");
+                enemy_max = 0;
+                foreach (var enemy in Globals.EnemyManager)
+                {
+                    enemy.Die();
+                }
             }
 
 
@@ -646,7 +656,7 @@ namespace Advencursor._Scene.Stage
                         new(boss_obj.position.X, boss_obj.position.Y + random.Next(100, 300)),
                         health: 600,
                         attack: 1,
-                        row: 3,
+                        row: 1,
                         column: 4
                         )
                     {

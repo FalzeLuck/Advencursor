@@ -63,17 +63,12 @@ namespace Advencursor._Models.Enemy
             {
 
 
-
                 UpdateParryZone();
 
                 //Update Radius
                 checkRadius = collision;
-                int increaseamount = 300;
-                int newX = checkRadius.X - increaseamount / 2;
-                int newY = checkRadius.Y - increaseamount / 2;
-                int newWidth = checkRadius.Width + increaseamount;
-                int newHeight = checkRadius.Height + increaseamount;
-                checkRadius = new Rectangle(newX, newY, newWidth, newHeight);
+                checkRadius = ChangeRectangleSize(checkRadius,300,false);
+                collision = ChangeRectangleSize(collision,125,true);
                 //Limit Movement
 
                 //Dashing

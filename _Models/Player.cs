@@ -106,7 +106,7 @@ namespace Advencursor._Models
             }
             else if (item.statDesc == "Attack")
             {
-                Status.SetAttack((int)(Status.BaseAttack + item.statValue));
+                Status.SetAttack((int)(Status.BaseAttack + (item.statValue/100)* Status.BaseAttack));
             }
             else if (item.statDesc == "Critical Rate")
             {
@@ -217,43 +217,48 @@ namespace Advencursor._Models
             float takeDamageCooldown = 1f;
             foreach (var enemy in Globals.EnemyManager)
             {
-                if (enemy.collision.Intersects(collision) && enemy.collisionCooldown <= 0)
+                if (enemy.Status.IsAlive())
                 {
-                    if (enemy is Common1)
-                    {
-                        Common1 common1 = (Common1)enemy;
-                        if (common1.isDashing)
-                        {
-                            TakeDamage((enemy.Status.Attack * 2.5f),enemy);
-                        }
-                        else
-                        {
-                            TakeDamage((enemy.Status.Attack),enemy);
-                        }
-                        enemy.CollisionCooldownReset(takeDamageCooldown);
-                    }
-                    if (enemy is Elite1)
-                    {
-                        Elite1 elite1 = (Elite1)enemy;
 
-                        TakeDamage(enemy.Status.Attack,elite1);
-                        enemy.CollisionCooldownReset(takeDamageCooldown);
-                    }
-                    if (enemy is Boss1)
+                    if (enemy.collision.Intersects(collision) && enemy.collisionCooldown <= 0)
                     {
-                        Boss1 boss1 = (Boss1)enemy;
+                        if (enemy is Common1)
+                        {
+                            Common1 common1 = (Common1)enemy;
+                            if (common1.isDashing)
+                            {
+                                TakeDamage((enemy.Status.Attack * 2.5f), enemy);
+                            }
+                            else
+                            {
+                                TakeDamage((enemy.Status.Attack), enemy);
+                            }
+                            enemy.CollisionCooldownReset(takeDamageCooldown);
+                        }
+                        if (enemy is Elite1)
+                        {
+                            Elite1 elite1 = (Elite1)enemy;
 
-                        if (boss1.dashing)
-                        {
-                            TakeDamage(enemy.Status.Attack + 2000,enemy);
-                            Immunity(0.5f);
+                            TakeDamage(enemy.Status.Attack, elite1);
+                            enemy.CollisionCooldownReset(takeDamageCooldown);
                         }
-                        else
+                        if (enemy is Boss1)
                         {
-                            TakeDamage(enemy.Status.Attack, enemy);
+                            Boss1 boss1 = (Boss1)enemy;
+
+                            if (boss1.dashing)
+                            {
+                                TakeDamage(enemy.Status.Attack + 2000, enemy);
+                                Immunity(0.5f);
+                            }
+                            else
+                            {
+                                TakeDamage(enemy.Status.Attack, enemy);
+                            }
+                            enemy.CollisionCooldownReset(takeDamageCooldown);
                         }
-                        enemy.CollisionCooldownReset(takeDamageCooldown);
                     }
+
                 }
             }
         }
