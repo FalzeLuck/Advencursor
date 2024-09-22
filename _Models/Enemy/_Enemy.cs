@@ -96,7 +96,6 @@ namespace Advencursor._Models.Enemy
         public virtual void Die()
         {
             indicator = "Die";
-            //animations["Die"].Reset();
         }
 
     }

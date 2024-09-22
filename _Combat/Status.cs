@@ -22,6 +22,8 @@ namespace Advencursor._Combat
 
         public bool immunity;
 
+        private float numberScale = 0.75f;
+
         //Crit
         public float CritRate {  get; private set; }
         public float CritDam { get; private set; }
@@ -31,7 +33,7 @@ namespace Advencursor._Combat
         public bool isParalysis { get; private set; } = false;
 
         //Action
-        public Action<string,Color> OnTakeDamage;
+        public Action<string,Color,float> OnTakeDamage;
 
         public Status(float MaxHP,float Attack) 
         {
@@ -51,11 +53,14 @@ namespace Advencursor._Combat
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
             float tempDamage;
             Color tempColor;
+            float tempScale;
+            string tempString;
             if (IsCrit(fromwho.Status.CritRate))
             {
-                
+                tempScale = numberScale * 1.75f;
                 tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
-                tempColor = Color.Gold;
+                tempString = $"{tempDamage.ToString("F0")}!";
+                tempColor = new Color(255, 16, 240);
             }
             else
             {
@@ -65,9 +70,11 @@ namespace Advencursor._Combat
                 }
                 else
                 {
-                    tempColor = Color.White;
+                    tempColor = new Color(248,228,249,1);
                 }
+                tempScale = numberScale;
                 tempDamage = damage;
+                tempString = tempDamage.ToString("F0");
             }
 
 
@@ -86,7 +93,7 @@ namespace Advencursor._Combat
                 {
                     CurrentHP -= tempDamage;
                 }
-                OnTakeDamage?.Invoke(tempDamage.ToString("F0"),tempColor);
+                OnTakeDamage?.Invoke(tempString,tempColor,tempScale);
             }
 
             if (CurrentHP < 0) {CurrentHP = 0; }
@@ -118,7 +125,7 @@ namespace Advencursor._Combat
                 {
                     CurrentHP -= tempDamage;
                 }
-                OnTakeDamage?.Invoke(tempDamage.ToString("F0"), tempColor);
+                OnTakeDamage?.Invoke(tempDamage.ToString("F0"), tempColor, numberScale);
             }
 
             if (CurrentHP < 0) { CurrentHP = 0; }
@@ -144,7 +151,7 @@ namespace Advencursor._Combat
             {
                 CurrentHP -= damage;
             }
-            OnTakeDamage?.Invoke(damage.ToString("F0"),Color.White);
+            OnTakeDamage?.Invoke(damage.ToString("F0"),Color.White, numberScale);
 
             if (CurrentHP < 0) { CurrentHP = 0; }
         }
@@ -168,7 +175,7 @@ namespace Advencursor._Combat
             if (amount < 0) throw new ArgumentOutOfRangeException("Heal can't be negative");
 
             CurrentHP += amount;
-            OnTakeDamage?.Invoke(amount.ToString("F0"), Color.Green);
+            OnTakeDamage?.Invoke(amount.ToString("F0"), Color.Green, numberScale);
 
             if (CurrentHP > MaxHP) { CurrentHP = MaxHP; }
         }

@@ -42,8 +42,8 @@ namespace Advencursor._Scene.Stage
             
 
 
-            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X / 2 - 400, 500 + Globals.Bounds.Y / 2), OnEquipButtonClick);
-            uiManager.AddElement(equipButton);
+            UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 - 400, 500 + Globals.Bounds.Y / 2), OnEquipButtonClick);
+            uiManager.AddElement(stage1Button);
 
             background = Globals.Content.Load<Texture2D>("Background/Stage1_2");
             

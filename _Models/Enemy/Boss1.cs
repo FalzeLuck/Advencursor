@@ -25,13 +25,14 @@ namespace Advencursor._Models.Enemy
 
         public Rectangle checkRadius;
         public float charge_duration;
+        public float stand_time;
 
         public Boss1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  0, true) },
-                { "Attack", new(texture,row,column,1,0,true) },
+                { "Attack", new(texture,row,column,3,8,false) },
                 {"Stun", new(texture,row,column,1,0,true) },
                 {"Die", new(texture,row,column,2,8,false) },
 
@@ -49,7 +50,10 @@ namespace Advencursor._Models.Enemy
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            collisionCooldown -= TimeManager.TimeGlobal;
+            Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
+
+            
 
             if (animations.ContainsKey(indicator))
             {
@@ -77,9 +81,26 @@ namespace Advencursor._Models.Enemy
                     indicator = "Attack";
                     position += velocity * TimeManager.TimeGlobal;
 
+                    if (animations["Attack"].currentFrame == 21  && stand_time >= 0.5f)
+                    {
+                        animations["Attack"].PauseFrame(5);
+                    }
+
                     if (collision.X + collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y + collision.Height >= Globals.Bounds.Y || collision.Y <= 0)
                     {
+                        if (!animations["Attack"].IsComplete)
+                        {
+                            animations["Attack"].Play();
+                            Globals.Camera.Shake(0.2f, 5);
+                        }
+                        velocity = Vector2.Zero;
+                        stand_time -= TimeManager.TimeGlobal;
+                    }
+
+                    if(stand_time <= 0f)
+                    {
                         dashing = false;
+                        stand_time = 0.5f;
                     }
                 }
 
@@ -93,7 +114,20 @@ namespace Advencursor._Models.Enemy
 
                 if (!dashing && !stunned && !charge && movementAI != null)
                 {
-
+                    if (playerPosition.X < position.X)
+                    {
+                        foreach (var anim in animations.Values)
+                        {
+                            anim.IsFlip = false;
+                        }
+                    }
+                    else
+                    {
+                        foreach (var anim in animations.Values)
+                        {
+                            anim.IsFlip = true;
+                        }
+                    }
                     movementAI.Move(this);
 
 
@@ -144,10 +178,12 @@ namespace Advencursor._Models.Enemy
 
         public void Dash(Sprite target)
         {
+            stand_time = 0.5f;
+            animations["Attack"].Reset();
             dashing = true;
             var direction = target.position - position;
             direction.Normalize();
-            velocity = direction * 2000;
+            velocity = direction * 1000;
         }
 
         public void Stun(float stunduration)

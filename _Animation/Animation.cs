@@ -116,7 +116,7 @@ namespace Advencursor._Animation
                 {
                     timer = 0f;
                     currentFrame++;
-                    if (currentFrame >= (Column - (Column-maxColumn)) * Startrow)
+                    if (currentFrame >= (Column * Startrow) )
                     {
                         if (IsLooping)
                         {
@@ -217,7 +217,7 @@ namespace Advencursor._Animation
 
         public void PauseFrame(int frame)
         {
-            currentFrame = ((Column * Startrow) - Column) + (frame-1);
+            currentFrame = ((Column * Startrow) - (Column - maxColumn)) - (Column-(frame-1));
             IsComplete = false;
             IsPause = true;
         }

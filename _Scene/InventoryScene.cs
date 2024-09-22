@@ -86,7 +86,7 @@ namespace Advencursor._Scene
             //Trace.WriteLine(player.Status.MaxHP);
             
 
-            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 500 + Globals.Bounds.Y / 2), OnEquipButtonClick);
+            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 400 + Globals.Bounds.Y / 2), OnEquipButtonClick);
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 + 400, 400 + Globals.Bounds.Y / 2), OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(0, 0), OnExitButtonClick);
             uiManager.AddElement(equipButton);

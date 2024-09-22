@@ -86,7 +86,7 @@ namespace Advencursor._Scene.Stage
             Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             font = Globals.Content.Load<SpriteFont>("basicFont");
 
-            damageNumberManager = new(Globals.Content.Load<SpriteFont>("DamageFont"));
+            damageNumberManager = new(Globals.Content.Load<SpriteFont>("Font/DamageNumber"));
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
                 font,
@@ -184,6 +184,7 @@ namespace Advencursor._Scene.Stage
 
 
             //Parry Control
+            /*
             if (player.TryParryAttack(boss_obj))
             {
                 boss_obj.Stun(5f);
@@ -219,7 +220,7 @@ namespace Advencursor._Scene.Stage
                     elite.Stun(2.5f);
                     elite.Status.TakeDamage(player.Status.Attack,player);
                 }
-            }
+            }*/
 
             foreach (var enemy in Globals.EnemyManager)
             {
@@ -229,6 +230,12 @@ namespace Advencursor._Scene.Stage
             CollisionManage(gameTime);
 
             //Mash Update
+            UpdatePlayer();
+            UpdateEnemies(gameTime);
+            UpdateElites(gameTime);
+            UpdateSpecial(gameTime);
+            UpdatePoisonPool(gameTime);
+
             timer.Update();
             player.Update(gameTime);
             animationManager.Update(gameTime);
@@ -236,11 +243,7 @@ namespace Advencursor._Scene.Stage
             ParticleManager.Update();
             
             
-            UpdatePlayer();
-            UpdateEnemies(gameTime);
-            UpdateElites(gameTime);
-            UpdateSpecial(gameTime);
-            UpdatePoisonPool(gameTime);
+            
 
             SceneManage();
         }
@@ -596,7 +599,7 @@ namespace Advencursor._Scene.Stage
             if (boss_spawn_time > 135f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
             {
                 special_spawn_time = 10f;
-                boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 100000, attack: 3000, row: 2, column: 8)
+                boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 100000, attack: 3000, row: 3, column: 8)
                 {
                     movementAI = new FollowMovementAI
                     {
@@ -634,26 +637,27 @@ namespace Advencursor._Scene.Stage
                 boss_obj.Die();
             }
 
-            if (boss_obj.animations["Die"].IsComplete)
+            if (boss_obj.animations["Die"].currentFrame == 15)
             {
+                soundManager.StopAllSounds();
                 boss_spawned = false;
                 boss_obj.position = new(9999, 9999);
                 uiManager.RemoveElement("bossBar");
                 enemy_max = 0;
                 foreach (var enemy in Globals.EnemyManager)
                 {
-                    enemy.Die();
+                    enemy.Status.Kill();
                 }
             }
 
 
-            if (boss_spawned && special_spawn_time > 10f)
+            if (boss_spawned && special_spawn_time > 5f)
             {
                 if (special_count < special_max)
                 {
                      Special1 enemy = new Special1(
                         Globals.Content.Load<Texture2D>("Enemies/Special1"),
-                        new(boss_obj.position.X, boss_obj.position.Y + random.Next(100, 300)),
+                        new(boss_obj.position.X, boss_obj.position.Y + random.Next(-300, 300)),
                         health: 600,
                         attack: 1,
                         row: 1,

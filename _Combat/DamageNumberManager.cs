@@ -21,24 +21,24 @@ namespace Advencursor._Combat
             this.font = font;
         }
 
-        public void AddDamageNumber(string text, Sprite whotake, Color color)
+        public void AddDamageNumber(string text, Sprite whotake, Color color, float scale)
         {
-            damageNumbers.Add(new DamageNumber(text, whotake.position, color));
+            damageNumbers.Add(new DamageNumber(text, whotake.position, color, scale));
         }
 
         public void SubscribeToTakeDamageEvent(Status status, Sprite whotake)
         {
-            status.OnTakeDamage += (text, color) => AddDamageNumber(text, whotake, color);
+            status.OnTakeDamage += (text, color, scale) => AddDamageNumber(text, whotake, color, scale);
         }
 
         public void SubscribeToTakeDamageEvent(Status status, Sprite whotake, Color wantColor)
         {
-            status.OnTakeDamage += (text, color) => AddDamageNumber(text, whotake, wantColor);
+            status.OnTakeDamage += (text, color, scale) => AddDamageNumber(text, whotake, wantColor, scale);
         }
 
         public void UnSubscribeToTakeDamageEvent(Status status, Sprite whotake)
         {
-            status.OnTakeDamage -= (text, color) => AddDamageNumber(text, whotake, color);
+            status.OnTakeDamage -= (text, color, scale) => AddDamageNumber(text, whotake, color, scale);
         }
 
         public void Update()

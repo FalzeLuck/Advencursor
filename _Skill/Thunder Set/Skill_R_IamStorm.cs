@@ -78,7 +78,7 @@ namespace Advencursor._Skill.Thunder_Set
 
             pe = new(spriteEmitter, lightningPed);
             ParticleManager.AddParticleEmitter(pe);
-            TimeManager.ChangeGameSpeed(0.05f);
+            TimeManager.ChangeGameSpeed(0.01f);
 
             //Star
             currentPoint = 0;
