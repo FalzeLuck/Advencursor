@@ -47,10 +47,10 @@ namespace Advencursor._Skill
             {"Thunder Shuriken", Globals.Content.Load<Texture2D>("Item/SetThunder/W_Texture")},
             {"Thunder Speed", Globals.Content.Load<Texture2D>("Item/SetThunder/E_Texture")},
             {"I am the Storm", Globals.Content.Load<Texture2D>("Item/SetThunder/R_Texture")},
-            {"Food Trap",Globals.Content.Load<Texture2D>("Item/SetThunder/Q_Texture")},
-            {"Poison Trap",Globals.Content.Load<Texture2D>("Item/SetThunder/W_Texture")},
-            {"Emergency Food",Globals.Content.Load<Texture2D>("Item/SetThunder/E_Texture")},
-            {"Invincibility",Globals.Content.Load<Texture2D>("Item/SetThunder/R_Texture")},
+            {"Food Trap",Globals.Content.Load<Texture2D>("Item/SetFood/Q_Texture")},
+            {"Poison Trap",Globals.Content.Load<Texture2D>("Item/SetFood/W_Texture")},
+            {"Emergency Food",Globals.Content.Load<Texture2D>("Item/SetFood/E_Texture")},
+            {"Invincibility",Globals.Content.Load<Texture2D>("Item/SetFood/R_Texture")},
         };
 
         

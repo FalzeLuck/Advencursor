@@ -31,7 +31,7 @@ namespace Advencursor._Models.Enemy
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  0, true) },
+                { "Idle", new(texture, row, column,4,1,  2, true) },
                 { "Attack", new(texture,row,column,3,8,false) },
                 {"Stun", new(texture,row,column,1,0,true) },
                 {"Die", new(texture,row,column,2,8,false) },
@@ -73,7 +73,21 @@ namespace Advencursor._Models.Enemy
                 checkRadius = collision;
                 checkRadius = ChangeRectangleSize(checkRadius,300,false);
                 collision = ChangeRectangleSize(collision,125,true);
-                //Limit Movement
+                //Change Flip Cuz art do wrong side
+                if (playerPosition.X < position.X)
+                {
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.IsFlip = false;
+                    }
+                }
+                else
+                {
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.IsFlip = true;
+                    }
+                }
 
                 //Dashing
                 if (dashing)
@@ -114,20 +128,7 @@ namespace Advencursor._Models.Enemy
 
                 if (!dashing && !stunned && !charge && movementAI != null)
                 {
-                    if (playerPosition.X < position.X)
-                    {
-                        foreach (var anim in animations.Values)
-                        {
-                            anim.IsFlip = false;
-                        }
-                    }
-                    else
-                    {
-                        foreach (var anim in animations.Values)
-                        {
-                            anim.IsFlip = true;
-                        }
-                    }
+                    
                     movementAI.Move(this);
 
 

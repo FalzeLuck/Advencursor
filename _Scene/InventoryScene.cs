@@ -83,7 +83,7 @@ namespace Advencursor._Scene
 
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
             player.LoadPlayer(4,1);
-            //Trace.WriteLine(player.Status.MaxHP);
+            
             
 
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 400 + Globals.Bounds.Y / 2), OnEquipButtonClick);

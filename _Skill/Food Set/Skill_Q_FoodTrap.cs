@@ -17,14 +17,16 @@ namespace Advencursor._Skill.Food_Set
         public Skill_Q_FoodTrap(string name, float cooldown) : base(name, cooldown)
         {
             buffTime = 0f;
-            tauntFood = new(Globals.Content.Load<Texture2D>("Item/SetThunder/R_Texture"), Vector2.Zero);
+            tauntFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/Q_Texture"), Vector2.Zero);
+            tauntFood.animations["base"] = new(Globals.Content.Load<Texture2D>("Item/SetFood/Q_Effect"), 1, 8, 8, true);
+
         }
 
         public override void Use(Player player)
         {
             base.Use(player);
             tauntFood.position = player.position;
-            tauntFood.SetOpacity(0.5f);
+            tauntFood.SetOpacity(0.8f);
             buffTime = 5f;
             
         }
@@ -37,6 +39,10 @@ namespace Advencursor._Skill.Food_Set
             {
                 buffTime -= deltaTime;
                 tauntFood.CollisionUpdate();
+                foreach(var anim in tauntFood.animations.Values)
+                {
+                    anim.Update();
+                }
                 foreach (var enemy in Globals.EnemyManager)
                 {
                     enemy.movementAI = new FollowMovementAI()

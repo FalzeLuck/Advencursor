@@ -42,13 +42,11 @@ namespace Advencursor._Scene.Stage
             
 
 
-            UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 - 400, 500 + Globals.Bounds.Y / 2), OnEquipButtonClick);
+            UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 - 400, 500 + Globals.Bounds.Y / 2), OnStageButtonClick);
             uiManager.AddElement(stage1Button);
 
             background = Globals.Content.Load<Texture2D>("Background/Stage1_2");
             
-
-            inventory.LoadInventory(pathinventory, nullTexture);
 
 
 
@@ -70,7 +68,6 @@ namespace Advencursor._Scene.Stage
             Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
 
-           
         }
 
         
@@ -78,7 +75,7 @@ namespace Advencursor._Scene.Stage
         
 
 
-        private void OnEquipButtonClick()
+        private void OnStageButtonClick()
         {
             
 

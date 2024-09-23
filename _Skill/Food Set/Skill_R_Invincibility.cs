@@ -1,4 +1,7 @@
-﻿using Advencursor._Models;
+﻿using Advencursor._Animation;
+using Advencursor._Models;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +17,14 @@ namespace Advencursor._Skill.Food_Set
         private float oldCritRate;
         private float oldCritDam;
         private bool isusing = false;
+
+        private Animation aura;
+        private Animation auraDamage;
+        private Vector2 position;
         public Skill_R_Invincibility(string name, float cooldown) : base(name, cooldown)
         {
-
+            aura = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/R_Effect"), 1, 4, 8, true);
+            auraDamage = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/E_Effect1"), 2, 4, 2, 8, true);
         }
 
         public override void Use(Player player)
@@ -27,6 +35,8 @@ namespace Advencursor._Skill.Food_Set
             oldCritRate = player.Status.CritRate;
             oldCritDam = player.Status.CritDam;
             player.Status.SetAttack(oldAttack + 800);
+            player.Status.SetCritRate(oldCritRate + 20);
+            player.Status.SetCritDamage(oldCritDam + 200);
             isusing = true;
             buffTime = 15f;
         }
@@ -35,13 +45,28 @@ namespace Advencursor._Skill.Food_Set
         {
             base.Update(deltaTime, player);
             buffTime -= deltaTime;
-
-            if (buffTime <= 0f && isusing)
+            if (buffTime > 0)
             {
+                position = player.position;
+                aura.Update();
+                auraDamage.Update();
+            }
+            else if (buffTime <= 0f && isusing)
+            {
+                
                 player.Status.SetAttack(oldAttack);
                 player.Status.SetCritRate(oldCritRate);
                 player.Status.SetCritDamage(oldCritDam);
                 isusing = false;
+            }
+        }
+
+        public override void Draw()
+        {
+            if (buffTime > 0)
+            {
+                //auraDamage.Draw(position);
+                aura.Draw(position);
             }
         }
     }

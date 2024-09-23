@@ -28,6 +28,7 @@ namespace Advencursor._Animation
 
         public float opacityValue {  get; set; }
         public float blinkingDuration { get; set; } = 0f;
+        public bool IsBlinking { get; private set; } = false;
 
 
         public Animation(Texture2D texture,int row, int column,  float fps, bool IsLooping)
@@ -116,7 +117,7 @@ namespace Advencursor._Animation
                 {
                     timer = 0f;
                     currentFrame++;
-                    if (currentFrame >= (Column * Startrow) )
+                    if (currentFrame >= (Column * Startrow) - (Column-maxColumn))
                     {
                         if (IsLooping)
                         {
@@ -131,22 +132,25 @@ namespace Advencursor._Animation
                     }
                 }
             }
-
-            if (blinkingDuration >= 0f)
+            if (IsBlinking)
             {
-                blinkingDuration -= TimeManager.TimeGlobal;
-                if(opacityValue >= 0f)
+                if (blinkingDuration >= 0f)
                 {
-                    opacityValue -= 0.1f;
+                    blinkingDuration -= TimeManager.TimeGlobal;
+                    if (opacityValue >= 0f)
+                    {
+                        opacityValue -= 0.1f;
+                    }
+                    else if (opacityValue < 0f)
+                    {
+                        opacityValue = 1f;
+                    }
                 }
-                else if(opacityValue < 0f)
+                else
                 {
                     opacityValue = 1f;
+                    IsBlinking = false;
                 }
-            }
-            else
-            {
-                opacityValue = 1f;
             }
         }
 
@@ -207,6 +211,7 @@ namespace Advencursor._Animation
         public void Blink(float duration)
         {
             blinkingDuration = duration;
+            IsBlinking = true;
         }
 
         public void Reset()

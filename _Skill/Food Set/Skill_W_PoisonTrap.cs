@@ -1,4 +1,5 @@
 ﻿using Advencursor._AI;
+using Advencursor._Animation;
 using Advencursor._Managers;
 using Advencursor._Models;
 using Microsoft.Xna.Framework;
@@ -20,14 +21,15 @@ namespace Advencursor._Skill.Food_Set
         public Skill_W_PoisonTrap(string name, float cooldown) : base(name, cooldown)
         {
             buffTime = 0f;
-            poisonFood = new(Globals.Content.Load<Texture2D>("Item/SetThunder/W_Texture"), Vector2.Zero);
+            poisonFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/W_Texture"), Vector2.Zero);
+            poisonFood.animations["base"] = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/W_Effect"),1,8,8,true);
         }
 
         public override void Use(Player player)
         {
             base.Use(player);
             poisonFood.position = player.position;
-            poisonFood.SetOpacity(0.5f);
+            poisonFood.SetOpacity(0.9f);
             buffTime = 3f;
 
             collisionCooldown = new List<float>(new float[100]);
@@ -41,6 +43,10 @@ namespace Advencursor._Skill.Food_Set
             {
                 buffTime -= deltaTime;
                 poisonFood.CollisionUpdate();
+                foreach (var item in poisonFood.animations.Values)
+                {
+                    item.Update();
+                }
                 for (int i = 0; i < Globals.EnemyManager.Count; i++)
                 {
                     if (collisionCooldown[i] <= 0)

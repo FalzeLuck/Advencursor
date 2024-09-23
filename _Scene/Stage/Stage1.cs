@@ -69,8 +69,8 @@ namespace Advencursor._Scene.Stage
         private int enemy_count = 0;
         private int elite_count = 0;
         private int special_count = 0;
-        private int enemy_max = 40;
-        private int elite_max = 0;
+        private int enemy_max =30;
+        private int elite_max =0;
         private int special_max = 3;
         private int enemy_killed = 0;
 
@@ -513,7 +513,7 @@ namespace Advencursor._Scene.Stage
                         spawnpoint,
                         health: 2000,
                         attack: 100,
-                        row: 2,
+                        row: 3,
                         column: 8
                         )
                     {
@@ -562,7 +562,7 @@ namespace Advencursor._Scene.Stage
                         new(1920 / 2, 0),
                         health: 20000,
                         attack: 1500,
-                        row: 4,
+                        row: 1,
                         column: 1
                         )
                     {
@@ -574,7 +574,7 @@ namespace Advencursor._Scene.Stage
                     eliteEnemy.Add(enemy);
                     Globals.EnemyManager.Add(enemy);
                     damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
-
+                    elite_count++;
                     elite_spawn_time = 0f;
                 }
             }
