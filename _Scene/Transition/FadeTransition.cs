@@ -21,14 +21,14 @@ namespace Advencursor._Scene.Transition
 
         public FadeTransition(float speed = 1f)
         {
-            
             transitionSpeed = speed;
-            transitionTexture = Globals.Content.Load<Texture2D>("blackTexture");
+            
             opacity = 1f; 
         }
 
         public void Start(bool isInTransition)
         {
+            transitionTexture = Globals.Content.Load<Texture2D>("blackTexture");
             this.isInTransition = isInTransition;
             opacity = isInTransition? 1f : 0f;
         }
@@ -56,7 +56,10 @@ namespace Advencursor._Scene.Transition
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(transitionTexture, Globals.fullScreenRectangle, Color.Black * opacity);
+            if (transitionTexture != null)
+            {
+                spriteBatch.Draw(transitionTexture, Globals.fullScreenRectangle, Color.Black * opacity);
+            }
         }
     }
 }

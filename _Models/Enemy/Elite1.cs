@@ -31,14 +31,13 @@ namespace Advencursor._Models.Enemy
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  1, true) },
-                { "Attack", new(texture,row,column,2,1,true) },
-                { "Charge",new(texture,row,column,3,1,true) },
-                { "Stun",new(texture,row,column,4,1,true) },
-                { "Die",new(texture,row,column,4,1,false) }
+                { "Attack", new(texture,row,column,1,1,true) },
+                { "Charge",new(texture,row,column,1,1,true) },
+                { "Stun",new(texture,row,column,1,1,true) },
+                { "Die",new(texture,row,column,1,1,false) }
 
             };
             indicator = "Idle";
-
             Texture2D slamFile = Globals.Content.Load<Texture2D>("Animation/slamTexture");
             slamTexture = new Dictionary<string, Animation>
             {
@@ -130,6 +129,7 @@ namespace Advencursor._Models.Enemy
             {
                 slamTexture[slamIndicator].Draw(position);
             }
+
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Draw(position);

@@ -51,10 +51,10 @@ namespace Advencursor
 
             Globals.Content = Content;
             Globals.Game = this;
-            Globals.graphicsDevice = GraphicsDevice; 
+            Globals.graphicsDevice = GraphicsDevice;
             Globals.Viewport = GraphicsDevice.Viewport;
             Globals.Camera = camera;
-            Globals.fullScreenRectangle = new Rectangle(0,0,Globals.Bounds.X,Globals.Bounds.Y);
+            Globals.fullScreenRectangle = new Rectangle(0, 0, Globals.Bounds.X, Globals.Bounds.Y);
 
             base.Initialize();
 
@@ -82,6 +82,7 @@ namespace Advencursor
             TimeManager.Update(gameTime);
             _sceneManager.Update(gameTime);
             base.Update(gameTime);
+
         }
 
 
