@@ -28,6 +28,8 @@ namespace Advencursor._Scene
         private SceneManager sceneManager;
         private UIManager uiManager;
 
+        private GameData gameData;
+
         private Texture2D background;
 
         private Inventory inventory = new Inventory();
@@ -72,6 +74,7 @@ namespace Advencursor._Scene
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
             uiManager = new UIManager();
+            gameData = new GameData();
 
             totalVisibleItems = gridColumns * gridRows;
             scrollbarPosition = new Vector2((itemSize*gridColumns) + gridStartPos.X, gridStartPos.Y);
@@ -80,6 +83,7 @@ namespace Advencursor._Scene
         public void Load()
         {
             Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
+            gameData.LoadData();
 
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
             player.LoadPlayer(4,1);
@@ -89,9 +93,9 @@ namespace Advencursor._Scene
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 400 + Globals.Bounds.Y / 2), OnEquipButtonClick);
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 + 400, 400 + Globals.Bounds.Y / 2), OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(0, 0), OnExitButtonClick);
-            uiManager.AddElement(equipButton);
-            uiManager.AddElement(exitButton);
-            uiManager.AddElement(playButton);
+            uiManager.AddElement("equipButton",equipButton);
+            uiManager.AddElement("exitButton",exitButton);
+            uiManager.AddElement("playButton",playButton);
 
             background = Globals.Content.Load<Texture2D>("Background/Stage1_1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
@@ -384,12 +388,15 @@ namespace Advencursor._Scene
             Cleanup();
 
             sceneManager.RemoveScene(this);
-            sceneManager.AddScene(new Stage1(contentManager,sceneManager));
+            if (gameData.stage == 1)
+            {
+                sceneManager.AddScene(new Stage1(contentManager, sceneManager));
+            }
         }
 
         private void OnExitButtonClick()
         {
-            Globals.Game.Exit();
+            sceneManager.RemoveScene(this);
         }
 
         private void CheatInventory()

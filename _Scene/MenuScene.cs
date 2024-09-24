@@ -31,8 +31,8 @@ namespace Advencursor._Scene
         {
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X - 400 ,Globals.Bounds.Y/2),OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
-            uiManager.AddElement(playButton);
-            uiManager.AddElement(exitButton);
+            uiManager.AddElement("playButton",playButton);
+            uiManager.AddElement("exitButton",exitButton);
 
             background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
@@ -51,7 +51,7 @@ namespace Advencursor._Scene
 
         private void OnPlayButtonClick()
         {
-            sceneManager.AddScene(new InventoryScene(contentManager, sceneManager));
+            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 
         private void OnExitButtonClick()

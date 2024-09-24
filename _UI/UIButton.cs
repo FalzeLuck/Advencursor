@@ -13,7 +13,7 @@ namespace Advencursor._Models
 {
     public class UIButton : UIElement
     {
-        private readonly Rectangle _rect;
+        private Rectangle _rect;
         private Action onClick;
         public UIButton(Texture2D texture, Vector2 position, Action onClick) : base(texture, position)
         {
@@ -37,6 +37,8 @@ namespace Advencursor._Models
             {
                 onClick?.Invoke();
             }
+
+            _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
         }
 
         public override void Draw(SpriteBatch spritebatch)

@@ -12,57 +12,50 @@ namespace Advencursor._UI
 {
     public class UIManager
     {
-        private List<UIElement> uiElements;
+        private Dictionary<string,UIElement> uiElements;
         private Dictionary<string, ProgressBar> progressBarDictionary;
 
         public UIManager()
         {
-            uiElements = new List<UIElement>();
+            uiElements = new Dictionary<string, UIElement>();
             progressBarDictionary = new Dictionary<string, ProgressBar>();
         }
 
-        public void AddElement(UIElement element)
+        public void AddElement(string name,UIElement element)
         {
-            uiElements.Add(element);
+            uiElements.Add(name,element);
         }
 
-        public void AddElement(string barName, ProgressBar progressBar)
+
+        public void RemoveElement(string name)
         {
-            progressBarDictionary.Add(barName, progressBar);
+            uiElements.Remove(name);
         }
 
-        public void RemoveElement(UIElement element)
+        public Vector2 GetElementPosition(string name)
         {
-            uiElements.Remove(element);
+            return uiElements[name].position;
         }
 
-        public void RemoveElement(string barName)
+        public void SetElementPosition(Vector2 position, string name)
         {
-            progressBarDictionary.Remove(barName);
+            uiElements[name].position = position;
         }
 
 
         public void Update(GameTime gameTime)
         {
-            foreach (var element in uiElements)
+            foreach (var element in uiElements.Values)
             {
                 element.Update(gameTime);
-            }
-            foreach (var value in progressBarDictionary.Values)
-            {
-                value.Update(gameTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var element in uiElements)
+            foreach (var element in uiElements.Values)
             {
                 element.Draw(spriteBatch);
-            }
-            foreach (var value in progressBarDictionary.Values)
-            {
-                value.Draw(spriteBatch);
             }
         }
 
@@ -76,28 +69,17 @@ namespace Advencursor._UI
 
         public void SetAllOpacity(float opacity)
         {
-            foreach (var element in uiElements)
+            foreach (var element in uiElements.Values)
             {
                 element.opacity = opacity;
-            }
-            foreach (var value in progressBarDictionary.Values)
-            {
-                value.opacity = opacity;
             }
         }
 
         public bool CheckCollide(Sprite sprite)
         {
-            foreach (var element in uiElements)
+            foreach (var element in uiElements.Values)
             {
                 if (sprite.collision.Intersects(element.collision))
-                {
-                    return true;
-                }
-            }
-            foreach (var value in progressBarDictionary.Values)
-            {
-                if (sprite.collision.Intersects(value.collision))
                 {
                     return true;
                 }

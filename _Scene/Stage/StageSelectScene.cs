@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Advencursor._SaveData;
+using Advencursor._Managers;
 
 namespace Advencursor._Scene.Stage
 {
@@ -21,35 +23,45 @@ namespace Advencursor._Scene.Stage
         private SceneManager sceneManager;
         private UIManager uiManager;
 
+        private GameData gameData;
+
         private Texture2D background;
 
-        private Inventory inventory = new Inventory();
-        private string pathinventory = "inventory.json";
-        
+        private Vector2 screenCenter;
+        private int moveButtonSpeed = 500;
+        private Vector2 posStage1;
+        private Vector2 posStage1des;
+
+        private enum Stage
+        {
+            Stage1 = 1,
+            Stage2,
+            Stage3
+        }
+
 
         public StageSelectScene(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
             uiManager = new UIManager();
-
+            gameData = new GameData();
         }
 
         public void Load()
         {
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
+            gameData.LoadData();
+            screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
 
-            
+
+            UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 + 400, Globals.Bounds.Y / 2), OnStage1ButtonClick);
+            uiManager.AddElement("stage1Button", stage1Button);
 
 
-            UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 - 400, 500 + Globals.Bounds.Y / 2), OnStageButtonClick);
-            uiManager.AddElement(stage1Button);
-
+            posStage1 = uiManager.GetElementPosition("stage1Button");
+            posStage1des = uiManager.GetElementPosition("stage1Button");
             background = Globals.Content.Load<Texture2D>("Background/Stage1_2");
-            
-
-
-
 
         }
 
@@ -61,36 +73,78 @@ namespace Advencursor._Scene.Stage
 
             Rectangle mouseCollision = new((int)mousePosition.X, (int)mousePosition.Y, 1, 1);
 
+
+            Vector2 direction = GetVectorDirection(posStage1, posStage1des);
+            if (direction.X < 0)
+            {
+                if (posStage1.X > posStage1des.X)
+                {
+                    posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+                    uiManager.SetElementPosition(posStage1, "stage1Button");
+                }
+                else
+                {
+                    moveButtonSpeed -= 50;
+                }
+            }
+            if (direction.X > 0)
+            {
+                if (posStage1.X < posStage1des.X)
+                {
+                    posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+                    uiManager.SetElementPosition(posStage1, "stage1Button");
+                }
+                else
+                {
+                    moveButtonSpeed -= 50;
+                }
+            }
+
+
+
+            if (moveButtonSpeed == 0)
+            {
+                posStage1 = posStage1des;
+                uiManager.SetElementPosition(posStage1, "stage1Button");
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
-
         }
 
-        
-
-        
 
 
-        private void OnStageButtonClick()
+
+
+
+        private void OnStage1ButtonClick()
         {
-            
-
+            if (uiManager.GetElementPosition("stage1Button") == screenCenter)
+            {
+                gameData.stage = (int)Stage.Stage1;
+                gameData.SaveData();
+                sceneManager.AddScene(new InventoryScene(contentManager, sceneManager));
+            }
+            else if (uiManager.GetElementPosition("stage1Button").X > screenCenter.X)
+            {
+                posStage1des = screenCenter;
+            }
         }
 
+        private Vector2 GetVectorDirection(Vector2 start, Vector2 destination)
+        {
+            Vector2 direction = destination - start;
+            direction.Normalize();
+
+            return direction;
+        }
 
         private void Cleanup()
         {
             background = null;
-            
-
-            if (inventory != null && inventory.Items != null)
-            {
-                inventory.Items.Clear();
-            }
 
         }
     }

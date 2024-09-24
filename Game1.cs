@@ -1,6 +1,7 @@
 ﻿using Advencursor._Combat;
 using Advencursor._Managers;
 using Advencursor._Models;
+using Advencursor._SaveData;
 using Advencursor._Scene;
 using Advencursor._Scene.Stage;
 using Microsoft.Xna.Framework;
@@ -25,6 +26,8 @@ namespace Advencursor
         private readonly SceneManager _sceneManager;
         private Camera camera;
 
+        private GameData gameData;
+
 
         public Game1()
         {
@@ -33,6 +36,7 @@ namespace Advencursor
             IsMouseVisible = true;
             _sceneManager = new();
             camera = new Camera();
+            gameData = new GameData();
         }
 
 
@@ -60,8 +64,10 @@ namespace Advencursor
             Globals.SpriteBatch = _spriteBatch;
             Globals.SpriteFont = _font;
 
+            gameData.LoadData();
 
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+
+            _sceneManager.AddScene(new StageSelectScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

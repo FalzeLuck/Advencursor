@@ -157,13 +157,12 @@ namespace Advencursor._Scene.Stage
             ProgressBarAnimated playerHpBar = new ProgressBarAnimated(bg, fg, player.Status.MaxHP, new(Globals.Bounds.X / 2, uIBackground.position.Y - 75));
             
 
-            uiManager.AddElement(uIBackground);
+            uiManager.AddElement("uiBackground",uIBackground);
             uiManager.AddElement("playerBar", playerHpBar);
-            uiManager.AddElement(skillUI_Q);
-            uiManager.AddElement(skillUI_W);
-            uiManager.AddElement(skillUI_E);
-            uiManager.AddElement(skillUI_R);
-            uiManager.AddElement(uIPanel);
+            uiManager.AddElement("skillUI_Q",skillUI_Q);
+            uiManager.AddElement("skillUI_W",skillUI_W);
+            uiManager.AddElement("skillUI_E",skillUI_E);
+            uiManager.AddElement("skillUI_R",skillUI_R);
 
             //Load Sound
             SoundEffect beep = Globals.Content.Load<SoundEffect>("Sound/Beep");
