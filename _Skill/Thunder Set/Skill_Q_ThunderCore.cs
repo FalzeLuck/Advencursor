@@ -19,13 +19,14 @@ namespace Advencursor._Skill.Thunder_Set
         Animation aura;
         public  Skill_Q_ThunderCore(string name, float cooldown) : base(name, cooldown)
         {
-            aura = new(Globals.Content.Load<Texture2D>("Item/SetThunder/Q_Thunder"),1,4,8,true);
+            
             buffTime = 8f;
         }
 
         public override void Use(Player player)
         {
             base.Use(player);
+            aura = new(Globals.Content.Load<Texture2D>("Item/SetThunder/Q_Thunder"), 1, 4, 8, true);
             buffTime = 0f;
         }
 
@@ -34,7 +35,7 @@ namespace Advencursor._Skill.Thunder_Set
             base.Update(deltaTime, player);
             buffTime += deltaTime;
 
-            if (buffTime > 0f)
+            if (buffTime > 0f && aura != null)
             {
                 aura.Update();
                 aura.SetOpacity(1f);
@@ -51,7 +52,7 @@ namespace Advencursor._Skill.Thunder_Set
 
         public override void Draw()
         {
-            if (buffTime <= 8f)
+            if (buffTime <= 8f && aura != null)
             aura.Draw(position);
         }
     }

@@ -2,6 +2,7 @@
 using Advencursor._Models;
 using Advencursor._SaveData;
 using Advencursor._Scene.Stage;
+using Advencursor._Scene.Transition;
 using Advencursor._Skill;
 using Advencursor._Skill.Thunder_Set;
 using Advencursor._UI;
@@ -30,13 +31,11 @@ namespace Advencursor._Scene
 
         private GameData gameData;
 
-        private Texture2D background;
-
         private Inventory inventory = new Inventory();
         private string pathinventory = "inventory.json";
         private Dictionary<Keys,Item> equippedItems = new Dictionary<Keys,Item>();
 
-
+        private Texture2D backgroundInventory;
         private Texture2D gridTexture;
         private Texture2D gridTextureSelected;
         private int gridColumns = 5;
@@ -97,7 +96,7 @@ namespace Advencursor._Scene
             uiManager.AddElement("exitButton",exitButton);
             uiManager.AddElement("playButton",playButton);
 
-            background = Globals.Content.Load<Texture2D>("Background/Stage1_1");
+            backgroundInventory = Globals.Content.Load<Texture2D>("Background/Stage1_1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
             gridTextureSelected = Globals.Content.Load<Texture2D>("Item/GridSelected");
 
@@ -220,7 +219,7 @@ namespace Advencursor._Scene
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
+            Globals.SpriteBatch.Draw(backgroundInventory, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
 
             float itemScale = 0.5f;
@@ -385,16 +384,15 @@ namespace Advencursor._Scene
         {
             player.SavePlayer();
 
-            Cleanup();
             if (gameData.stage == 1)
             {
-                sceneManager.AddScene(new Stage1(contentManager, sceneManager));
+                sceneManager.AddScene(new Stage1(contentManager, sceneManager),new CircleTransition(Globals.graphicsDevice));
             }
         }
 
         private void OnExitButtonClick()
         {
-            sceneManager.RemoveScene();
+            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 
         private void CheatInventory()
@@ -425,21 +423,5 @@ namespace Advencursor._Scene
             }
         }
 
-        private void Cleanup()
-        {
-            background = null;
-            gridTexture = null;
-            gridTextureSelected = null;
-
-            if (inventory != null && inventory.Items != null)
-            {
-                inventory.Items.Clear();
-            }
-
-            player = null;
-
-            equippedItems.Clear();
-            mouseCollision = Rectangle.Empty;
-        }
     }
 }

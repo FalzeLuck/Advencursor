@@ -118,8 +118,6 @@ namespace Advencursor._Scene.Stage
 
         private void OnStage1ButtonClick()
         {
-            Trace.WriteLine($"button : {uiManager.GetElementPosition("stage1Button")}");
-            Trace.WriteLine(screenCenter);
             if (uiManager.GetElementPosition("stage1Button") == screenCenter)
             {
                 gameData.stage = (int)Stage.Stage1;

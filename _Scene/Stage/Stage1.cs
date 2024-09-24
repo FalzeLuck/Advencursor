@@ -52,6 +52,7 @@ namespace Advencursor._Scene.Stage
         List<Item> items;
 
 
+
         private readonly Timer timer;
         private Texture2D background;
 
@@ -69,8 +70,8 @@ namespace Advencursor._Scene.Stage
         private int enemy_count = 0;
         private int elite_count = 0;
         private int special_count = 0;
-        private int enemy_max =30;
-        private int elite_max =0;
+        private int enemy_max = 30;
+        private int elite_max = 1;
         private int special_max = 3;
         private int enemy_killed = 0;
 
@@ -83,14 +84,13 @@ namespace Advencursor._Scene.Stage
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
             Globals.Game.IsMouseVisible = false;
-            Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             font = Globals.Content.Load<SpriteFont>("basicFont");
 
             damageNumberManager = new(Globals.Content.Load<SpriteFont>("Font/DamageNumber"));
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
                 font,
-                new(1920/2, 0)
+                new(1920 / 2, 0)
                 );
 
             timer.StartStop();
@@ -111,37 +111,35 @@ namespace Advencursor._Scene.Stage
 
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
-            player = new(playertexture, Vector2.Zero, 1, 1, 1, 1);
-            player.LoadPlayer(4,1);
-            inventory.LoadInventory("inventory.json",tempTexture);
+            player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 1, 1);
+            player.LoadPlayer(4, 1);
+            inventory.LoadInventory("inventory.json", tempTexture);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
 
             //Load enemies
-            commonEnemy = new List<Common1> ();
-            eliteEnemy = new List<Elite1> ();
-            specialEnemy = new List<Special1> ();
-            poisonPool = new List<PoisonPool> ();
+            commonEnemy = new List<Common1>();
+            eliteEnemy = new List<Elite1>();
+            specialEnemy = new List<Special1>();
+            poisonPool = new List<PoisonPool>();
 
 
             //Boss
             boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 100000, attack: 3000, row: 2, column: 8)
             {
-                
+
             };
-            
+
 
             //Load Animation
             Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 5, false);
             animationManager.AddAnimation("Slash", slashAnimation);
-            Animation sparkAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/Sparkle"), row: 1, column: 4, fps: 12, false);
-            animationManager.AddAnimation("Sparkle", sparkAnimation);
 
-            
+
 
 
             //Load UI
             UIBackground uIBackground = new(Globals.Content.Load<Texture2D>("UI/SkillBackground"), new(Globals.Bounds.X / 2, 930));
-            int startX = (int)uIBackground.position.X - (uIBackground.texture.Width/2);
+            int startX = (int)uIBackground.position.X - (uIBackground.texture.Width / 2);
             int space = uIBackground.texture.Width / 10;
             int skillY = 950;
 
@@ -155,23 +153,24 @@ namespace Advencursor._Scene.Stage
             Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
             Texture2D fg = Globals.Content.Load<Texture2D>("UI/HealthBarFull");
             ProgressBarAnimated playerHpBar = new ProgressBarAnimated(bg, fg, player.Status.MaxHP, new(Globals.Bounds.X / 2, uIBackground.position.Y - 75));
-            
 
-            uiManager.AddElement("uiBackground",uIBackground);
+
+            uiManager.AddElement("uiBackground", uIBackground);
             uiManager.AddElement("playerBar", playerHpBar);
-            uiManager.AddElement("skillUI_Q",skillUI_Q);
-            uiManager.AddElement("skillUI_W",skillUI_W);
-            uiManager.AddElement("skillUI_E",skillUI_E);
-            uiManager.AddElement("skillUI_R",skillUI_R);
+            uiManager.AddElement("skillUI_Q", skillUI_Q);
+            uiManager.AddElement("skillUI_W", skillUI_W);
+            uiManager.AddElement("skillUI_E", skillUI_E);
+            uiManager.AddElement("skillUI_R", skillUI_R);
 
             //Load Sound
             SoundEffect beep = Globals.Content.Load<SoundEffect>("Sound/Beep");
-            soundManager.LoadSound("Beep",beep);
+            soundManager.LoadSound("Beep", beep);
             SoundEffect charge = Globals.Content.Load<SoundEffect>("Sound/Boss1Charge");
             soundManager.LoadSound("Charge", charge);
             soundManager.SetVolume("Charge", 0.2f);
             SoundEffect parry = Globals.Content.Load<SoundEffect>("Sound/Parry");
             soundManager.LoadSound("Parry", parry);
+            Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
         }
 
         public void Update(GameTime gameTime)
@@ -238,20 +237,20 @@ namespace Advencursor._Scene.Stage
             timer.Update();
             player.Update(gameTime);
             animationManager.Update(gameTime);
-            animationManager.UpdatePosition("Slash",player.position);
+            animationManager.UpdatePosition("Slash", player.position);
             ParticleManager.Update();
-            
-            
-            
+
+
+
 
             SceneManage();
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
             timer.Draw();
-            
             foreach (var enemy in commonEnemy)
             {
                 enemy.Draw();
@@ -274,10 +273,11 @@ namespace Advencursor._Scene.Stage
             }
             uiManager.Draw(spriteBatch);
             player.Draw();
-            
+
             animationManager.Draw();
             ParticleManager.Draw();
             damageNumberManager.Draw();
+
         }
 
         private void UpdatePlayer()
@@ -312,7 +312,7 @@ namespace Advencursor._Scene.Stage
                 if (InputManager.MouseRightClicked && player.CanNormalAttack())
                 {
                     animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
-                    player.ChangeAnimation("Attack",true);
+                    player.ChangeAnimation("Attack", true);
                     animationManager.Flip("Slash", true);
                     animationManager.Play("Slash");
                     canAttack = false;
@@ -321,10 +321,10 @@ namespace Advencursor._Scene.Stage
                 if (InputManager.MouseLeftClicked && player.CanNormalAttack())
                 {
                     animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
-                    player.ChangeAnimation("Attack",false);
-                    animationManager.Flip("Slash",false);
+                    player.ChangeAnimation("Attack", false);
+                    animationManager.Flip("Slash", false);
                     animationManager.Play("Slash");
-                    canAttack=false;
+                    canAttack = false;
                     player.DoNormalAttack(player.normalAttackDelay);
                 }
             }
@@ -338,7 +338,7 @@ namespace Advencursor._Scene.Stage
                         enemy.Status.immunity = false;
                     }
                 }
-                boss_obj.Status.immunity = false ;
+                boss_obj.Status.immunity = false;
                 player.ChangeAnimation("Idle");
                 animationManager.Stop("Slash");
             }
@@ -357,22 +357,22 @@ namespace Advencursor._Scene.Stage
                     enemy.Dash();
                 }
             }
-            
+
         }
         private void UpdateElites(GameTime gameTime)
         {
             foreach (var elite in eliteEnemy)
             {
-               
+
                 if (elite.slamRadius.Intersects(player.collision) && !elite.isSlam)
                 {
                     elite.Slam();
                 }
 
-                if(elite.isSlamming && elite.slamRadius.Intersects(player.collision))
+                if (elite.isSlamming && elite.slamRadius.Intersects(player.collision))
                 {
                     player.Stun(2);
-                    player.Status.TakeDamage(3000,elite);
+                    player.Status.TakeDamage(3000, elite);
                     player.Immunity(0.5f);
                 }
 
@@ -381,7 +381,7 @@ namespace Advencursor._Scene.Stage
                     elite.Status.immunity = false;
                 }
 
-                
+
             }
         }
         private void UpdateSpecial(GameTime gameTime)
@@ -404,11 +404,11 @@ namespace Advencursor._Scene.Stage
                 if (pool.collision.Intersects(player.collision) && pool.canBurn)
                 {
                     pool.Burn();
-                    Common1 poolTemp = new Common1(new(Globals.graphicsDevice,1,1),Vector2.Zero,1,1,1,1);
-                    player.Status.TakeDamage(10,poolTemp);
+                    Common1 poolTemp = new Common1(new(Globals.graphicsDevice, 1, 1), Vector2.Zero, 1, 1, 1, 1);
+                    player.Status.TakeDamage(10, poolTemp);
                 }
 
-                if(pool.poolDuration > 5f)
+                if (pool.poolDuration > 5f)
                 {
                     poisonPool.Remove(pool);
                     break;
@@ -429,7 +429,7 @@ namespace Advencursor._Scene.Stage
                     soundManager.PlaySound("Charge");
                 }
 
-                
+
 
                 if (boss_obj.charge)
                 {
@@ -445,7 +445,7 @@ namespace Advencursor._Scene.Stage
                         boss_obj.Dash(player);
                         boss_obj.charge = false;
                         boss_obj.isAttacking = false;
-                        
+
                     }
                 }
                 if (!boss_obj.dashing && !boss_obj.charge && !boss_obj.stunned && boss_obj.Status.IsAlive())
@@ -455,8 +455,8 @@ namespace Advencursor._Scene.Stage
                 }
             }
 
-            
-            
+
+
         }
 
         private void EnemyManage()
@@ -491,19 +491,19 @@ namespace Advencursor._Scene.Stage
                     int spawnExpand = 100;
                     if (spawnDirection == 1)
                     {
-                        spawnpoint = new(Globals.random.Next(0, 1920), 0-spawnExpand);
+                        spawnpoint = new(Globals.random.Next(0, 1920), 0 - spawnExpand);
                     }
                     else if (spawnDirection == 2)
                     {
-                        spawnpoint = new(Globals.random.Next(0, 1920), 1080+spawnExpand);
+                        spawnpoint = new(Globals.random.Next(0, 1920), 1080 + spawnExpand);
                     }
                     else if (spawnDirection == 3)
                     {
-                        spawnpoint = new(0-spawnExpand, Globals.random.Next(0, 1080));
+                        spawnpoint = new(0 - spawnExpand, Globals.random.Next(0, 1080));
                     }
                     else if (spawnDirection == 4)
                     {
-                        spawnpoint = new(1920+spawnExpand, Globals.random.Next(0, 1080));
+                        spawnpoint = new(1920 + spawnExpand, Globals.random.Next(0, 1080));
                     }
 
 
@@ -532,23 +532,19 @@ namespace Advencursor._Scene.Stage
             {
                 if (!enemy.Status.IsAlive())
                 {
-                    
+
                     enemy.Die();
                     if (enemy.animations["Die"].IsComplete)
                     {
                         enemy_killed++;
                         enemy_count--;
-                        if (enemy_killed % 40 == 0)
-                        {
-                            player.Status.AddShield(200);
-                        }
                         damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
                         Globals.EnemyManager.Remove(enemy);
                         commonEnemy.Remove(enemy);
                         break; //Don't remove. If remove = crash
                     }
                 }
-                
+
             }
 
             //Elite1
@@ -581,7 +577,7 @@ namespace Advencursor._Scene.Stage
             {
                 if (!enemy.Status.IsAlive())
                 {
-                    
+
                     enemy.Die();
                     if (enemy.animations["Die"].IsComplete)
                     {
@@ -613,9 +609,9 @@ namespace Advencursor._Scene.Stage
                 {
                     boss_obj.position = new Vector2(1920 - 150, boss_obj.position.Y);
                 }
-                
+
                 boss_spawned = true;
-                
+
                 commonEnemy.Clear();
                 eliteEnemy.Clear();
                 Globals.EnemyManager.Clear();
@@ -654,14 +650,14 @@ namespace Advencursor._Scene.Stage
             {
                 if (special_count < special_max)
                 {
-                     Special1 enemy = new Special1(
-                        Globals.Content.Load<Texture2D>("Enemies/Special1"),
-                        new(boss_obj.position.X, boss_obj.position.Y + random.Next(-300, 300)),
-                        health: 600,
-                        attack: 1,
-                        row: 1,
-                        column: 4
-                        )
+                    Special1 enemy = new Special1(
+                       Globals.Content.Load<Texture2D>("Enemies/Special1"),
+                       new(boss_obj.position.X, boss_obj.position.Y + random.Next(-300, 300)),
+                       health: 600,
+                       attack: 1,
+                       row: 1,
+                       column: 4
+                       )
                     {
                         movementAI = new FollowMovementAI
                         {
@@ -731,7 +727,7 @@ namespace Advencursor._Scene.Stage
         {
             foreach (var enemy in Globals.EnemyManager)
             {
-                if(enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
+                if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
                 {
                     enemy.TakeDamage(1, player);
                     enemy.Status.immunity = true;
@@ -746,7 +742,7 @@ namespace Advencursor._Scene.Stage
             {
                 UnloadScene();
             }
-                    
+
         }
 
         private void UnloadScene()
@@ -754,12 +750,11 @@ namespace Advencursor._Scene.Stage
             boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
             damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
             damageNumberManager.UnSubscribeToTakeDamageEvent(player.Status, player);
-            foreach(var enemy in Globals.EnemyManager)
+            foreach (var enemy in Globals.EnemyManager)
             {
                 damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
             }
             Globals.EnemyManager.Clear();
-            player = null;
             inventory.Items.Clear();
             commonEnemy.Clear();
             eliteEnemy.Clear();
@@ -768,7 +763,7 @@ namespace Advencursor._Scene.Stage
             TimeManager.ChangeGameSpeed(1);
             AllSkills.Reset();
             ParticleManager.RemoveAll();
-            sceneManager.RemoveScene();
+            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 
     }

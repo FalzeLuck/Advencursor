@@ -176,6 +176,18 @@
 /processorParam:TextureFormat=Compressed
 /build:basicFont.spritefont
 
+#begin blackTexture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:blackTexture.png
+
 #begin Button/EquipButton.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -687,4 +699,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/SkillUI.PNG
+
+#begin whiteTexture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:whiteTexture.png
 

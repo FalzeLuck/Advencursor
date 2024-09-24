@@ -4,6 +4,7 @@ using Advencursor._Models;
 using Advencursor._SaveData;
 using Advencursor._Scene;
 using Advencursor._Scene.Stage;
+using Advencursor._Scene.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -53,6 +54,7 @@ namespace Advencursor
             Globals.graphicsDevice = GraphicsDevice; 
             Globals.Viewport = GraphicsDevice.Viewport;
             Globals.Camera = camera;
+            Globals.fullScreenRectangle = new Rectangle(0,0,Globals.Bounds.X,Globals.Bounds.Y);
 
             base.Initialize();
 
@@ -78,7 +80,6 @@ namespace Advencursor
             Globals.Update(gameTime);
             InputManager.Update();
             TimeManager.Update(gameTime);
-            //_sceneManager.GetCurrScene().Update(gameTime);
             _sceneManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -89,7 +90,6 @@ namespace Advencursor
             GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);
-            //_sceneManager.GetCurrScene().Draw(_spriteBatch);
             _sceneManager.Draw(_spriteBatch);
             _spriteBatch.End();
 

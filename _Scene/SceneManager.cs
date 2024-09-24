@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Advencursor._Scene.Transition;
 
 namespace Advencursor._Scene
 {
@@ -12,36 +13,29 @@ namespace Advencursor._Scene
     {
         private readonly Stack<IScene> sceneStack;
         private IScene currentScene;
+        private IScene nextScene;
+        private ITransition transition;
         private bool isTransitioning;
+        private bool transitionStart;
 
         public SceneManager()
         {
             sceneStack = new();
             isTransitioning = false;
+            transitionStart = false;
         }
 
-        public void AddScene(IScene scene)
+        public void AddScene(IScene scene, ITransition transition = null)
         {
-            isTransitioning = true;
-
-            if (currentScene != null)
-            {
-                RemoveScene();
-            }
-
-            scene.Load();
-            sceneStack.Push(scene);
-            currentScene = scene;
-            isTransitioning = false;
+            nextScene = scene;
+            this.transition = transition ?? new FadeTransition();
+            transitionStart = true;
+            isTransitioning = true;  
         }
 
         public void RemoveScene()
         {
-            if (sceneStack.Count > 0)
-            {
-                sceneStack.Pop();
-            }
-
+            sceneStack.Pop();
             currentScene = sceneStack.Count > 0 ? sceneStack.Peek() : null;
         }
 
@@ -52,18 +46,44 @@ namespace Advencursor._Scene
 
         public void Update(GameTime gameTime)
         {
-            if (!isTransitioning && currentScene != null)
+            if (transitionStart)
             {
-                currentScene.Update(gameTime);
+                transition.Start(false);
+                transitionStart = false;
+            }
+
+            if (isTransitioning)
+            {
+                transition.Update(gameTime);
+
+                if (transition.IsComplete && !transition.IsInTransition)
+                {
+                    sceneStack.Push(nextScene);
+                    nextScene.Load();
+                    currentScene = nextScene;
+
+                    transition.Start(true);
+                }
+                else if (transition.IsComplete && transition.IsInTransition)
+                {
+                    isTransitioning = false;
+                }
+            }
+            else
+            {
+                currentScene?.Update(gameTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (!isTransitioning && currentScene != null)
+            currentScene?.Draw(spriteBatch);
+
+            if (isTransitioning)
             {
-                currentScene.Draw(spriteBatch);
+                transition.Draw(spriteBatch);
             }
         }
+
     }
 }
