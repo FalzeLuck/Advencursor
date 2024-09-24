@@ -67,7 +67,7 @@ namespace Advencursor
             gameData.LoadData();
 
 
-            _sceneManager.AddScene(new StageSelectScene(Content, _sceneManager));
+            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
@@ -78,7 +78,8 @@ namespace Advencursor
             Globals.Update(gameTime);
             InputManager.Update();
             TimeManager.Update(gameTime);
-            _sceneManager.GetCurrScene().Update(gameTime);
+            //_sceneManager.GetCurrScene().Update(gameTime);
+            _sceneManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -88,7 +89,8 @@ namespace Advencursor
             GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);
-            _sceneManager.GetCurrScene().Draw(_spriteBatch);
+            //_sceneManager.GetCurrScene().Draw(_spriteBatch);
+            _sceneManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

@@ -26,10 +26,15 @@ namespace Advencursor._UI
             uiElements.Add(name,element);
         }
 
+        public void AddElement(string name, ProgressBarAnimated bossbar)
+        {
+            progressBarDictionary.Add(name,bossbar);
+        }
 
         public void RemoveElement(string name)
         {
             uiElements.Remove(name);
+            progressBarDictionary?.Remove(name);
         }
 
         public Vector2 GetElementPosition(string name)
@@ -49,11 +54,19 @@ namespace Advencursor._UI
             {
                 element.Update(gameTime);
             }
+            foreach (var element in progressBarDictionary.Values)
+            {
+                element.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var element in uiElements.Values)
+            {
+                element.Draw(spriteBatch);
+            }
+            foreach(var element in progressBarDictionary.Values)
             {
                 element.Draw(spriteBatch);
             }

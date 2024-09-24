@@ -768,7 +768,7 @@ namespace Advencursor._Scene.Stage
             TimeManager.ChangeGameSpeed(1);
             AllSkills.Reset();
             ParticleManager.RemoveAll();
-            sceneManager.RemoveScene(this);
+            sceneManager.RemoveScene();
         }
 
     }

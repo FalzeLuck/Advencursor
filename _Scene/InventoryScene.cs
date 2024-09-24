@@ -40,7 +40,7 @@ namespace Advencursor._Scene
         private Texture2D gridTexture;
         private Texture2D gridTextureSelected;
         private int gridColumns = 5;
-        private int gridRows = 6;
+        private int gridRows = 4;
         private int totalVisibleItems;
         private float scrollOffset = 0f;
         private int currentScrollIndex = 0;
@@ -386,8 +386,6 @@ namespace Advencursor._Scene
             player.SavePlayer();
 
             Cleanup();
-
-            sceneManager.RemoveScene(this);
             if (gameData.stage == 1)
             {
                 sceneManager.AddScene(new Stage1(contentManager, sceneManager));
@@ -396,7 +394,7 @@ namespace Advencursor._Scene
 
         private void OnExitButtonClick()
         {
-            sceneManager.RemoveScene(this);
+            sceneManager.RemoveScene();
         }
 
         private void CheatInventory()

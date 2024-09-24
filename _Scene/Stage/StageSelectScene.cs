@@ -28,7 +28,7 @@ namespace Advencursor._Scene.Stage
         private Texture2D background;
 
         private Vector2 screenCenter;
-        private int moveButtonSpeed = 500;
+        private int moveButtonSpeed = 1000;
         private Vector2 posStage1;
         private Vector2 posStage1des;
 
@@ -77,26 +77,22 @@ namespace Advencursor._Scene.Stage
             Vector2 direction = GetVectorDirection(posStage1, posStage1des);
             if (direction.X < 0)
             {
-                if (posStage1.X > posStage1des.X)
+                posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+                uiManager.SetElementPosition(posStage1, "stage1Button");
+                if(posStage1.X <= posStage1des.X)
                 {
-                    posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+                    posStage1 = screenCenter;
                     uiManager.SetElementPosition(posStage1, "stage1Button");
-                }
-                else
-                {
-                    moveButtonSpeed -= 50;
                 }
             }
-            if (direction.X > 0)
+            else if (direction.X > 0)
             {
-                if (posStage1.X < posStage1des.X)
+                posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+                uiManager.SetElementPosition(posStage1, "stage1Button");
+                if (posStage1.X >= posStage1des.X)
                 {
-                    posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+                    posStage1 = screenCenter;
                     uiManager.SetElementPosition(posStage1, "stage1Button");
-                }
-                else
-                {
-                    moveButtonSpeed -= 50;
                 }
             }
 
@@ -122,6 +118,8 @@ namespace Advencursor._Scene.Stage
 
         private void OnStage1ButtonClick()
         {
+            Trace.WriteLine($"button : {uiManager.GetElementPosition("stage1Button")}");
+            Trace.WriteLine(screenCenter);
             if (uiManager.GetElementPosition("stage1Button") == screenCenter)
             {
                 gameData.stage = (int)Stage.Stage1;
@@ -131,6 +129,7 @@ namespace Advencursor._Scene.Stage
             else if (uiManager.GetElementPosition("stage1Button").X > screenCenter.X)
             {
                 posStage1des = screenCenter;
+                uiManager.SetElementPosition(posStage1, "stage1Button");
             }
         }
 

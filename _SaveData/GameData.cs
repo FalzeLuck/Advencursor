@@ -17,7 +17,7 @@ namespace Advencursor._SaveData
     public class GameData
     {
         public bool isFirstTime {  get; set; } = true;
-        public int stage {  get; set; }
+        public int stage { get; set; } = 1;
 
         public void SaveData()
         {
