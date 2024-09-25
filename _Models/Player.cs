@@ -380,6 +380,7 @@ namespace Advencursor._Models
 
         public void LoadPlayer(int row, int column)
         {
+            if (!File.Exists("playerdata.json")) return;
             string deserializedData = File.ReadAllText("playerdata.json");
             PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
 
