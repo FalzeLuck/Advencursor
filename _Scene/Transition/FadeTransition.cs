@@ -19,7 +19,7 @@ namespace Advencursor._Scene.Transition
 
         private Texture2D transitionTexture;
 
-        public FadeTransition(float speed = 1f)
+        public FadeTransition(float speed = 3f)
         {
             transitionSpeed = speed;
             

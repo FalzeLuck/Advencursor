@@ -67,7 +67,7 @@ namespace Advencursor._Models
             
             Skills = new Dictionary<Keys, Skill>();
             Status = new(health,attack);
-            Status.SetCritRate(5);
+            Status.SetCritRate(10);
             Status.SetCritDamage(50);
             Inventory = new Inventory();
 

@@ -68,12 +68,8 @@ namespace Advencursor._Models.Enemy
 
             //Update Slam Radius
             slamRadius = collision;
-            int increaseamount = 150;
-            int newX = slamRadius.X - increaseamount / 2;
-            int newY = slamRadius.Y - increaseamount / 2;
-            int newWidth = slamRadius.Width + increaseamount;
-            int newHeight = slamRadius.Height + increaseamount;
-            slamRadius = new Rectangle(newX, newY, newWidth, newHeight);
+            slamRadius = ChangeRectangleSize(slamRadius,150);
+            collision = ChangeRectangleSize(collision, 100, true);
 
             if (!isSlam && !stunned)
             {

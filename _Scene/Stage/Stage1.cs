@@ -131,7 +131,7 @@ namespace Advencursor._Scene.Stage
 
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 5, false);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 5, false,1.5f);
             animationManager.AddAnimation("Slash", slashAnimation);
 
 
@@ -423,29 +423,16 @@ namespace Advencursor._Scene.Stage
 
                 if (player.collision.Intersects(boss_obj.checkRadius) && !boss_obj.dashed)
                 {
-                    boss_obj.dashed = true;
-                    boss_obj.charge = true;
-                    boss_obj.charge_duration = 0;
-                    soundManager.PlaySound("Charge");
+                    boss_obj.Charge(player);
                 }
-
-
 
                 if (boss_obj.charge)
                 {
-                    boss_obj.charge_duration += TimeManager.TimeGlobal;
-                    if (boss_obj.charge_duration >= 2f)
-                    {
-                        soundManager.StopSound("Charge");
-                        boss_obj.isAttacking = true;
-                        soundManager.PlaySound("Beep");
-                    }
                     if (boss_obj.charge_duration >= 3f)
                     {
-                        boss_obj.Dash(player);
+                        boss_obj.Dash();
                         boss_obj.charge = false;
                         boss_obj.isAttacking = false;
-
                     }
                 }
                 if (!boss_obj.dashing && !boss_obj.charge && !boss_obj.stunned && boss_obj.Status.IsAlive())

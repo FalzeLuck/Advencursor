@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
+using Advencursor._Combat;
 
 namespace Advencursor._Skill.Thunder_Set
 {
@@ -94,6 +95,7 @@ namespace Advencursor._Skill.Thunder_Set
             countHit = 0;
             player.Immunity(skillTime);
             player.Stop();
+            
             isUsing = true;
         }
 
@@ -104,7 +106,7 @@ namespace Advencursor._Skill.Thunder_Set
             if (isUsing)
             {
                 skillTime -= TimeManager.TotalSeconds;
-
+                
                 Vector2 dir = targetPoint - player.position;
                 float distance = dir.Length();
 

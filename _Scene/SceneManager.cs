@@ -30,7 +30,7 @@ namespace Advencursor._Scene
             nextScene = scene;
             this.transition = transition ?? new FadeTransition();
             transitionStart = true;
-            isTransitioning = true;  
+            isTransitioning = true;
         }
 
         public void RemoveScene()

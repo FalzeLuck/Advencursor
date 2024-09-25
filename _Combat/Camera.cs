@@ -13,6 +13,7 @@ namespace Advencursor._Combat
         public Matrix transform { get; private set; }
         public Vector2 position { get; set; }
 
+
         private float shakeDuration = 0.0f;
         private float shakeMagnitude = 0f;
 
@@ -28,7 +29,6 @@ namespace Advencursor._Combat
             shakeDuration = duration;
             shakeMagnitude = magnitude;
         }
-
         public void Update()
         {
             Vector2 shakeOffset = Vector2.Zero;

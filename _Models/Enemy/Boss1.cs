@@ -15,6 +15,13 @@ namespace Advencursor._Models.Enemy
 {
     public class Boss1 : _Enemy
     {
+        private Texture2D warningTexture;
+        private Vector2 warningDirection;
+        private Sprite player;
+        private float warningRotationAngle;
+        private bool warningTrigger;
+        private float warningOpacity;
+
         public bool charge;
         public bool dashing;
         public bool dashed;
@@ -38,7 +45,7 @@ namespace Advencursor._Models.Enemy
 
             };
             indicator = "Idle";
-
+            warningTexture = CreateRectangleTexture(Globals.graphicsDevice, 2000);
 
             checkRadius = new Rectangle(9999, 9999, 0, 0);
             charge = false;
@@ -71,11 +78,23 @@ namespace Advencursor._Models.Enemy
 
                 //Update Radius
                 checkRadius = collision;
-                checkRadius = ChangeRectangleSize(checkRadius,300,false);
+                checkRadius = ChangeRectangleSize(checkRadius,450,false);
                 collision = ChangeRectangleSize(collision,125,true);
-                
+
 
                 //Dashing
+                if (charge)
+                {
+                    charge_duration += TimeManager.TimeGlobal;
+                    warningDirection = player.position - position;
+                    warningDirection.Normalize();
+                    float targetAngle = (float)Math.Atan2(warningDirection.Y, warningDirection.X);
+                    float rotationSpeed = 0.5f;
+
+                    warningRotationAngle = SmoothRotate(warningRotationAngle, targetAngle, rotationSpeed * (float)TimeManager.TimeGlobal);
+
+                }
+
                 if (dashing)
                 {
                     indicator = "Attack";
@@ -177,14 +196,50 @@ namespace Advencursor._Models.Enemy
 
         }
 
-        public void Dash(Sprite target)
+        public override void Draw()
+        {
+            base.Draw();
+            if (charge)
+            {
+                Vector2 origin = new Vector2(0, 100);
+                if (warningOpacity <= 0.3f)
+                {
+                    warningTrigger = true;
+                }
+                else if (warningOpacity >= 0.8f)
+                {
+                    warningTrigger = false;
+                }
+                if (!warningTrigger)
+                {
+                    warningOpacity -= 1 * TimeManager.TimeGlobal;
+                }
+                else
+                {
+                    warningOpacity += 1 * TimeManager.TimeGlobal;
+                }
+                Globals.SpriteBatch.Draw(warningTexture,position,null,Color.White * warningOpacity,warningRotationAngle,origin,1f,SpriteEffects.None,0f);
+            }
+        }
+
+        public void Charge(Sprite target)
+        {
+            dashed = true;
+            charge = true;
+            player = target;
+            warningOpacity = 0.8f;
+            warningTrigger = false;
+            charge_duration = 0;
+            warningDirection = player.position - position;
+            warningDirection.Normalize();
+            warningRotationAngle = (float)Math.Atan2(warningDirection.Y,warningDirection.X);
+        }
+        public void Dash()
         {
             stand_time = 0.5f;
             animations["Attack"].Reset();
             dashing = true;
-            var direction = target.position - position;
-            direction.Normalize();
-            velocity = direction * 1000;
+            velocity = warningDirection * 1000;
         }
 
         public void Stun(float stunduration)
@@ -194,6 +249,31 @@ namespace Advencursor._Models.Enemy
             this.stunduration = stunduration;
         }
 
+        private Texture2D CreateRectangleTexture(GraphicsDevice graphicsDevice,int length)
+        {
+            Texture2D texture = new Texture2D(graphicsDevice,  length, 200);
+            Color[] colorData = new Color[length * 200];
+
+            for (int i = 0; i < colorData.Length; i++)
+            {
+                colorData[i] = Color.Red;
+            }
+
+            texture.SetData(colorData);
+            return texture;
+        }
+
+        private float SmoothRotate(float currentAngle, float targetAngle, float amount)
+        {
+            float difference = MathHelper.WrapAngle(targetAngle - currentAngle);
+
+            if (Math.Abs(difference) < 0.0001f)
+            {
+                return targetAngle;
+            }
+
+            return currentAngle + MathHelper.Clamp(difference, -amount, amount);
+        }
 
     }
 }
