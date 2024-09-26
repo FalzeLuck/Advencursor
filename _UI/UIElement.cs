@@ -16,6 +16,7 @@ namespace Advencursor._UI
         protected readonly Vector2 origin;
         public Vector2 position { get; set; }
         public float rotation { get; set; }
+        public float scale { get; set; }
         public SpriteEffects spriteEffects;
         public bool flip;
         protected Color _color = Color.White;
@@ -26,6 +27,7 @@ namespace Advencursor._UI
         {
             this.texture = texture;
             this.position = position;
+            scale = 1f;
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
             spriteEffects = SpriteEffects.None;
 

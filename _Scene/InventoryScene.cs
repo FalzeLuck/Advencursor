@@ -237,11 +237,13 @@ namespace Advencursor._Scene
 
                         if (position.Y >= gridStartPos.Y - itemSize && position.Y < (gridStartPos.Y + gridRows * itemSize) + itemSize)
                         {
-                            if(itemIndex == selectedItemIndex)
+                            Color mouseHoverColor = new Color(252, 248, 148);
+
+                            if (itemIndex == selectedItemIndex)
                             {
                                 if (itemCollide.Intersects(mouseCollision))
                                 {
-                                    spriteBatch.Draw(gridTextureSelected, position, Color.Yellow);
+                                    spriteBatch.Draw(gridTextureSelected, position, mouseHoverColor);
                                     spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                                 else
@@ -254,7 +256,7 @@ namespace Advencursor._Scene
                             {
                                 if (itemCollide.Intersects(mouseCollision))
                                 {
-                                    spriteBatch.Draw(gridTexture, position, Color.Yellow);
+                                    spriteBatch.Draw(gridTexture, position, mouseHoverColor);
                                     spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                                 else
@@ -272,19 +274,7 @@ namespace Advencursor._Scene
             Texture2D thumb = Globals.Content.Load<Texture2D>("Item/scrollBarThumb");
             DrawScrollbar(spriteBatch,scrollbar,thumb);
 
-            for (int i = 0; i < 4; i++)
-            {
-                Vector2 position = new Vector2(50, gridStartPos.Y + (i * itemSize) + (i * 50));
-                Keys keyIndex = new Keys();
-                if(i == 0) { keyIndex = Keys.Q; }
-                else if(i == 1) { keyIndex = Keys.W; }
-                else if (i == 2) { keyIndex = Keys.E; }
-                else if (i == 3) { keyIndex = Keys.R; }
-                Texture2D equipItemTexture = AllSkills.allSkillTextures[player.Skills[keyIndex].name];
-
-                spriteBatch.Draw(gridTexture, position, Color.White);
-                spriteBatch.Draw(equipItemTexture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
-            }
+            DrawEquipItem(itemScale);
 
             DrawCurrentItem();
         }
@@ -294,6 +284,23 @@ namespace Advencursor._Scene
             spriteBatch.Draw(scrollbarTexture,new Rectangle((int)scrollbarPosition.X, (int)scrollbarPosition.Y, scrollbarWidth, scrollbarHeight),Color.Gray);
 
             spriteBatch.Draw(thumbTexture,new Rectangle((int)scrollbarPosition.X, (int)(scrollbarPosition.Y + scrollbarThumbPosition), scrollbarWidth, (int)scrollbarThumbHeight),Color.White);
+        }
+
+        private void DrawEquipItem(float itemScale)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 position = new Vector2(50, gridStartPos.Y + 100 + (i * itemSize) + (i * 0));
+                Keys keyIndex = new Keys();
+                if (i == 0) { keyIndex = Keys.Q; }
+                else if (i == 1) { keyIndex = Keys.W; }
+                else if (i == 2) { keyIndex = Keys.E; }
+                else if (i == 3) { keyIndex = Keys.R; }
+                Texture2D equipItemTexture = AllSkills.allSkillTextures[player.Skills[keyIndex].name];
+
+                Globals.SpriteBatch.Draw(gridTexture, position, Color.White);
+                Globals.SpriteBatch.Draw(equipItemTexture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
+            }
         }
 
         private void DrawCurrentItem()
@@ -376,8 +383,6 @@ namespace Advencursor._Scene
         private void OnEquipButtonClick()
         {
             player.EquipItem(inventory.Items[selectedItemIndex]);
-            Trace.WriteLine($"HP : {player.Status.MaxHP} Attack = {player.Status.Attack} Rate = {player.Status.CritRate} Damage = {player.Status.CritDam}");
-
         }
 
         private void OnPlayButtonClick()

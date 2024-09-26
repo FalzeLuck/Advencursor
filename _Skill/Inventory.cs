@@ -15,10 +15,10 @@ namespace Advencursor._Skill
 {
     public class Inventory
     {
-        public List<Item> Items {  get; private set; }
+        public List<Item> Items { get; private set; }
 
 
-        public Inventory() 
+        public Inventory()
         {
             Items = new List<Item>();
         }
@@ -31,7 +31,7 @@ namespace Advencursor._Skill
 
         public void LoadInventory(string filePath, Texture2D defaultTexture)
         {
-            if(!File.Exists(filePath)) return;
+            if (!File.Exists(filePath)) return;
 
             string json = File.ReadAllText(filePath);
             List<Item> deserializedItems = JsonSerializer.Deserialize<List<Item>>(json);
@@ -51,7 +51,7 @@ namespace Advencursor._Skill
     public class Item
     {
         [JsonIgnore]
-        public Texture2D texture {  get; private set; }
+        public Texture2D texture { get; private set; }
 
 
         public string name { get; set; }
@@ -60,7 +60,7 @@ namespace Advencursor._Skill
         public string statDesc { get; set; }
         public float statValue { get; set; }
 
-        public Item(string name,Skill skill,Keys keys) 
+        public Item(string name, Skill skill, Keys keys)
         {
             this.name = name;
             this.skill = skill;
@@ -74,27 +74,23 @@ namespace Advencursor._Skill
         {
             if (keys == Keys.Q)
             {
-                statDesc =  "Health";
-                statValue = Globals.RandomFloat(1000,3000);
+                statDesc = "Health";
+                statValue = Globals.RandomFloat(1000, 3000);
             }
             else if (keys == Keys.W)
             {
                 statDesc = "Attack";
                 statValue = Globals.RandomFloat(20, 40);
             }
-            else if(keys == Keys.E)
+            else if (keys == Keys.E)
             {
-                int index = Globals.random.Next(1, 3);
-                if(index == 1)
-                {
-                    statDesc = "Critical Rate";
-                    statValue = Globals.RandomFloat(4.7f,31.3f);
-                }
-                else
-                {
-                    statDesc = "Critical Damage";
-                    statValue = Globals.RandomFloat(9.3f, 62.2f);
-                }
+                statDesc = "Critical Rate";
+                statValue = Globals.RandomFloat(4.7f, 31.3f);
+            }
+            else if (keys == Keys.R)
+            {
+                statDesc = "Critical Damage";
+                statValue = Globals.RandomFloat(9.3f, 62.2f);
             }
         }
 

@@ -89,7 +89,7 @@ namespace Advencursor._Models.Enemy
                     warningDirection = player.position - position;
                     warningDirection.Normalize();
                     float targetAngle = (float)Math.Atan2(warningDirection.Y, warningDirection.X);
-                    float rotationSpeed = 0.5f;
+                    float rotationSpeed = 1.5f;
 
                     warningRotationAngle = SmoothRotate(warningRotationAngle, targetAngle, rotationSpeed * (float)TimeManager.TimeGlobal);
 
@@ -157,7 +157,7 @@ namespace Advencursor._Models.Enemy
                     int rightBound = 1920;
                     indicator = "Idle";
 
-                    int speed = 100;
+                    int speed = 200;
                     if (collision.X > leftBound && collision.X + collision.Width < rightBound && collision.Y > topBound && collision.Y + collision.Height < bottomBound)
                     {
                         velocity = new(speed);
@@ -198,7 +198,6 @@ namespace Advencursor._Models.Enemy
 
         public override void Draw()
         {
-            base.Draw();
             if (charge)
             {
                 Vector2 origin = new Vector2(0, 100);
@@ -218,8 +217,10 @@ namespace Advencursor._Models.Enemy
                 {
                     warningOpacity += 1 * TimeManager.TimeGlobal;
                 }
-                Globals.SpriteBatch.Draw(warningTexture,position,null,Color.White * warningOpacity,warningRotationAngle,origin,1f,SpriteEffects.None,0f);
+                Globals.SpriteBatch.Draw(warningTexture, position, null, Color.White * warningOpacity, warningRotationAngle, origin, 1f, SpriteEffects.None, 0f);
             }
+            base.Draw();
+            
         }
 
         public void Charge(Sprite target)

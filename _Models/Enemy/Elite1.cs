@@ -30,11 +30,11 @@ namespace Advencursor._Models.Enemy
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  1, true) },
-                { "Attack", new(texture,row,column,1,1,true) },
-                { "Charge",new(texture,row,column,1,1,true) },
-                { "Stun",new(texture,row,column,1,1,true) },
-                { "Die",new(texture,row,column,1,1,false) }
+                { "Idle", new(texture, row, column,1,  8, true) },
+                { "Attack", new(texture,row,column,1,8,true) },
+                { "Charge",new(texture,row,column,1,8,true) },
+                { "Stun",new(texture,row,column,1,8,true) },
+                { "Die",new(texture,row,column,2,8,false) }
 
             };
             indicator = "Idle";
@@ -66,64 +66,70 @@ namespace Advencursor._Models.Enemy
             }
             UpdateParryZone();
 
-            //Update Slam Radius
-            slamRadius = collision;
-            slamRadius = ChangeRectangleSize(slamRadius,150);
-            collision = ChangeRectangleSize(collision, 100, true);
-
-            if (!isSlam && !stunned)
+            if (Status.IsAlive())
             {
-                indicator = "Idle";
-                velocity = new(80, 80);
-                movementAI.Move(this);
-                slamCooldown += TimeManager.TimeGlobal;
-            }
-            if (isSlam)
-            {
-                slamChargeTime += TimeManager.TimeGlobal;
-                velocity = new(0, 0);
-                if (slamChargeTime > 0)
+                //Update Slam Radius
+                slamRadius = collision;
+                slamRadius = ChangeRectangleSize(slamRadius, 150);
+                collision = ChangeRectangleSize(collision, 100, true);
+
+                if (!isSlam && !stunned)
                 {
-                    slamIndicator = "slamCharge";
-                    indicator = "Charge";
-                    isAttacking = false;
+                    indicator = "Idle";
+                    velocity = new(150);
+                    movementAI.Move(this);
+                    slamCooldown += TimeManager.TimeGlobal;
+                }
+                if (isSlam)
+                {
+                    slamChargeTime += TimeManager.TimeGlobal;
+                    velocity = new(0, 0);
+                    if (slamChargeTime > 0)
+                    {
+                        slamIndicator = "slamCharge";
+                        indicator = "Charge";
+                        isAttacking = false;
+                    }
+
+                    if (slamChargeTime > 2.5f)
+                    {
+                        indicator = "Attack";
+                        isAttacking = true;
+                    }
+
+                    if (slamChargeTime > 3f)
+                    {
+                        slamIndicator = "slamFinish";
+                        isAttacking = false;
+                        isSlamming = true;
+                    }
+
+                    if (slamChargeTime > 3.5f)
+                    {
+                        isSlam = false;
+                        isSlamming = false;
+                        slamCooldown = 0f;
+                    }
                 }
 
-                if(slamChargeTime > 2.5f)
+                //Stun
+                if (stunned)
                 {
-                    indicator = "Attack";
-                    isAttacking = true;
+                    indicator = "Stun";
+                    stuntimer += TimeManager.TimeGlobal;
+                    if (stuntimer > stunduration) stunned = false;
                 }
-
-                if (slamChargeTime > 3f)
-                {
-                    slamIndicator = "slamFinish";
-                    isAttacking = false ;
-                    isSlamming = true;
-                }
-
-                if(slamChargeTime > 3.5f)
-                {
-                    isSlam = false;
-                    isSlamming = false;
-                    slamCooldown = 0f;
-                }
-            }
-
-            //Stun
-            if (stunned)
-            {
-                indicator = "Stun";
-                stuntimer += TimeManager.TimeGlobal;
-                if (stuntimer > stunduration) stunned = false;
             }
         }
 
         public override void Draw()
         {
-            if (isSlam && slamTexture.ContainsKey(slamIndicator))
+            if (Status.IsAlive())
             {
-                slamTexture[slamIndicator].Draw(position);
+                if (isSlam && slamTexture.ContainsKey(slamIndicator))
+                {
+                    slamTexture[slamIndicator].Draw(position);
+                }
             }
 
             if (animations.ContainsKey(indicator))

@@ -45,7 +45,7 @@ namespace Advencursor._Models
         {
             if (isVisible)
             {
-                Globals.SpriteBatch.Draw(texture, position, null, _color, rotation, origin, 1f, SpriteEffects.None, 1);
+                Globals.SpriteBatch.Draw(texture, position, null, _color, rotation, origin, scale, SpriteEffects.None, 1);
             }
         }
 

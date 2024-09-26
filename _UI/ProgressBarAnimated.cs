@@ -55,7 +55,7 @@ namespace Advencursor._UI
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            Globals.SpriteBatch.Draw(foreground, animationPosition, animationPart, animationShade, 0, origin, 1f, SpriteEffects.None, 1f);
+            Globals.SpriteBatch.Draw(foreground, animationPosition, animationPart, animationShade, 0, origin, scale, SpriteEffects.None, 1f);
         }
 
         public override void UpdateValue(float value)

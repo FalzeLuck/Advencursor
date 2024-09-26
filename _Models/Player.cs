@@ -93,7 +93,6 @@ namespace Advencursor._Models
         {
             AddSkill(item.keys,item.skill);
             CalculateStat(item);
-
         }
 
         public void CalculateStat(Item item)
@@ -110,12 +109,10 @@ namespace Advencursor._Models
             }
             else if (item.statDesc == "Critical Rate")
             {
-                Status.SetCritDamage(50);
-                Status.SetCritRate(item.statValue + 5);
+                Status.SetCritRate(item.statValue + 10);
             }
             else if (item.statDesc == "Critical Damage")
             {
-                Status.SetCritRate(5);
                 Status.SetCritDamage(item.statValue + 50);
             }
         }

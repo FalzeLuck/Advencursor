@@ -88,6 +88,11 @@ namespace Advencursor._UI
             }
         }
 
+        public void SetScale(string name,float scale)
+        {
+            uiElements[name].scale = scale;
+        }
+
         public bool CheckCollide(Sprite sprite)
         {
             foreach (var element in uiElements.Values)
