@@ -1,7 +1,7 @@
 ﻿using Advencursor._Animation;
 using Advencursor._Managers;
 using Advencursor._Models;
-using Advencursor._Models.Enemy;
+using Advencursor._Models.Enemy.Stage1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advencursor._Models.Enemy
+namespace Advencursor._Models.Enemy.Stage1
 {
     public class Boss1 : _Enemy
     {
@@ -60,7 +60,7 @@ namespace Advencursor._Models.Enemy
             collisionCooldown -= TimeManager.TimeGlobal;
             Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
 
-            
+
 
             if (animations.ContainsKey(indicator))
             {
@@ -78,8 +78,8 @@ namespace Advencursor._Models.Enemy
 
                 //Update Radius
                 checkRadius = collision;
-                checkRadius = ChangeRectangleSize(checkRadius,450,false);
-                collision = ChangeRectangleSize(collision,125,true);
+                checkRadius = ChangeRectangleSize(checkRadius, 450, false);
+                collision = ChangeRectangleSize(collision, 125, true);
 
 
                 //Dashing
@@ -100,7 +100,7 @@ namespace Advencursor._Models.Enemy
                     indicator = "Attack";
                     position += velocity * TimeManager.TimeGlobal;
 
-                    if (animations["Attack"].currentFrame == 21  && stand_time >= 0.5f)
+                    if (animations["Attack"].currentFrame == 21 && stand_time >= 0.5f)
                     {
                         animations["Attack"].PauseFrame(5);
                     }
@@ -116,7 +116,7 @@ namespace Advencursor._Models.Enemy
                         stand_time -= TimeManager.TimeGlobal;
                     }
 
-                    if(stand_time <= 0f)
+                    if (stand_time <= 0f)
                     {
                         dashing = false;
                         stand_time = 0.5f;
@@ -220,7 +220,7 @@ namespace Advencursor._Models.Enemy
                 Globals.SpriteBatch.Draw(warningTexture, position, null, Color.White * warningOpacity, warningRotationAngle, origin, 1f, SpriteEffects.None, 0f);
             }
             base.Draw();
-            
+
         }
 
         public void Charge(Sprite target)
@@ -233,7 +233,7 @@ namespace Advencursor._Models.Enemy
             charge_duration = 0;
             warningDirection = player.position - position;
             warningDirection.Normalize();
-            warningRotationAngle = (float)Math.Atan2(warningDirection.Y,warningDirection.X);
+            warningRotationAngle = (float)Math.Atan2(warningDirection.Y, warningDirection.X);
         }
         public void Dash()
         {
@@ -250,9 +250,9 @@ namespace Advencursor._Models.Enemy
             this.stunduration = stunduration;
         }
 
-        private Texture2D CreateRectangleTexture(GraphicsDevice graphicsDevice,int length)
+        private Texture2D CreateRectangleTexture(GraphicsDevice graphicsDevice, int length)
         {
-            Texture2D texture = new Texture2D(graphicsDevice,  length, 200);
+            Texture2D texture = new Texture2D(graphicsDevice, length, 200);
             Color[] colorData = new Color[length * 200];
 
             for (int i = 0; i < colorData.Length; i++)

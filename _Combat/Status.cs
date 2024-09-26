@@ -106,6 +106,11 @@ namespace Advencursor._Combat
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
             float tempDamage = damage;
             Color tempColor = Color.White;
+
+            if(fromwho is _Enemy)
+            {
+                tempColor = Color.Red;
+            }
             
 
 

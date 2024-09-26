@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advencursor._Models.Enemy
+namespace Advencursor._Models.Enemy.Stage1
 {
     public class Elite1 : _Enemy
     {
@@ -24,7 +24,7 @@ namespace Advencursor._Models.Enemy
         public float stuntimer;
         public bool stunned;
 
-        private Dictionary<string,Animation> slamTexture;
+        private Dictionary<string, Animation> slamTexture;
 
         public Elite1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
@@ -153,7 +153,7 @@ namespace Advencursor._Models.Enemy
             slamChargeTime = 9999f;
             stunned = true;
             stuntimer = 0f;
-            this.stunduration = duration;
+            stunduration = duration;
         }
     }
 }

@@ -44,7 +44,48 @@ namespace Advencursor
             return (float)(random.NextDouble() * (max - min)) + min;
         }
 
-        
+        public static Texture2D CreateCircleTexture(GraphicsDevice graphicsDevice, int radius)
+        {
+            Texture2D texture = new Texture2D(graphicsDevice, radius * 2, radius * 2);
+            Color[] colorData = new Color[texture.Width * texture.Height];
+
+            float radSquared = radius * radius;
+
+            for (int y = 0; y < texture.Height; y++)
+            {
+                for (int x = 0; x < texture.Width; x++)
+                {
+                    int xDistance = x - radius;
+                    int yDistance = y - radius;
+
+                    if (xDistance * xDistance + yDistance * yDistance <= radSquared)
+                    {
+                        colorData[y * texture.Width + x] = Color.White;
+                    }
+                    else
+                    {
+                        colorData[y * texture.Width + x] = Color.Transparent;
+                    }
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
+        }
+
+        public static Texture2D CreateRectangleTexture(int width, int height,Color color)
+        {
+            Texture2D texture = new Texture2D(graphicsDevice, width, height);
+            Color[] colorData = new Color[width * height];
+
+            for (int i = 0; i < colorData.Length; i++)
+            {
+                colorData[i] = color;
+            }
+
+            texture.SetData(colorData);
+            return texture;
+        }
 
 
     }

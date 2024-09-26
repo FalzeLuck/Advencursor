@@ -14,14 +14,14 @@ namespace Advencursor._Models.Enemy
 {
     public abstract class _Enemy : Sprite
     {
-        
+
         public MovementAI movementAI { get; set; }
         public Rectangle parryZone;
         public bool isAttacking;
 
-        public float collisionCooldown {  get; set; }
+        public float collisionCooldown { get; set; }
 
-        public _Enemy(Texture2D texture, Vector2 position, int health,int attack) : base(texture, position)
+        public _Enemy(Texture2D texture, Vector2 position, int health, int attack) : base(texture, position)
         {
             Status = new(health, attack);
             animations = new Dictionary<string, Animation>();
@@ -58,6 +58,10 @@ namespace Advencursor._Models.Enemy
             int newHeight = parryZone.Height + increaseamount;
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
         }
+        public virtual void TakeDamage(float fixedDamage, Sprite fromwho)
+        {
+            Status.TakeDamageNoCrit(fixedDamage, fromwho);
+        }
 
         public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
         {
@@ -67,11 +71,11 @@ namespace Advencursor._Models.Enemy
             }
             else
             {
-                Status.TakeDamage(multiplier * player.Status.Attack,player);
+                Status.TakeDamage(multiplier * player.Status.Attack, player);
             }
         }
 
-        public virtual void TakeDamage(float multiplier, Player player, float fixedDamage, bool throughImmune = false,bool NoCrit = false)
+        public virtual void TakeDamage(float multiplier, Player player, float fixedDamage, bool throughImmune = false, bool NoCrit = false)
         {
             if (throughImmune)
             {
@@ -84,9 +88,11 @@ namespace Advencursor._Models.Enemy
                     Status.TakeDamageNoCrit(fixedDamage, player);
                 }
                 else
-                Status.TakeDamage(fixedDamage, player);
+                    Status.TakeDamage(fixedDamage, player);
             }
         }
+
+        
 
         public virtual void CollisionCooldownReset(float timer)
         {

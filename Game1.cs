@@ -69,7 +69,7 @@ namespace Advencursor
             gameData.LoadData();
 
 
-            _sceneManager.AddScene(new InventoryScene(Content, _sceneManager));
+            _sceneManager.AddScene(new Stage2(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

@@ -26,7 +26,7 @@ namespace Advencursor._Scene.Transition
 
             screenCenter = new Vector2(Globals.Bounds.X / 2f, Globals.Bounds.Y / 2f);
             maxRadius = (float)Math.Sqrt(screenCenter.X * screenCenter.X + screenCenter.Y * screenCenter.Y);
-            circleTexture = CreateCircleTexture(Globals.graphicsDevice,300);
+            circleTexture = Globals.CreateCircleTexture(Globals.graphicsDevice,300);
         }
 
         public void Start(bool isInTransition)
@@ -60,35 +60,6 @@ namespace Advencursor._Scene.Transition
                 float scale = radius / (circleTexture.Width / 2f);
                 spriteBatch.Draw(circleTexture, screenCenter, null, Color.Black, 0f, new Vector2(circleTexture.Width / 2f, circleTexture.Height / 2f), scale, SpriteEffects.None, 0f);
             }
-        }
-
-        private Texture2D CreateCircleTexture(GraphicsDevice graphicsDevice, int radius)
-        {
-            Texture2D texture = new Texture2D(graphicsDevice, radius * 2, radius * 2);
-            Color[] colorData = new Color[texture.Width * texture.Height];
-
-            float radSquared = radius * radius;
-
-            for (int y = 0; y < texture.Height; y++)
-            {
-                for (int x = 0; x < texture.Width; x++)
-                {
-                    int xDistance = x - radius;
-                    int yDistance = y - radius;
-
-                    if (xDistance * xDistance + yDistance * yDistance <= radSquared)
-                    {
-                        colorData[y * texture.Width + x] = Color.White;
-                    }
-                    else
-                    {
-                        colorData[y * texture.Width + x] = Color.Transparent;
-                    }
-                }
-            }
-
-            texture.SetData(colorData);
-            return texture;
         }
 
     }

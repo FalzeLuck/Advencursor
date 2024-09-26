@@ -16,6 +16,7 @@ using System.ComponentModel;
 using Advencursor._SaveData;
 using System.Text.Json;
 using System.IO;
+using Advencursor._Models.Enemy.Stage1;
 
 namespace Advencursor._Models
 {

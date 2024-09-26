@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Advencursor._Models.Enemy
+namespace Advencursor._Models.Enemy.Stage1
 {
     public class Special1 : _Enemy
     {
@@ -58,7 +58,7 @@ namespace Advencursor._Models.Enemy
             }
             else if (walkTimer > 0)
             {
-                
+
                 position += velocity * TimeManager.TimeGlobal;
             }
 
@@ -66,13 +66,13 @@ namespace Advencursor._Models.Enemy
             if (collision.X + collision.Width > Globals.Bounds.X)
             {
                 if (!isBombed) indicator = "Left";
-                velocity = new Vector2(velocity.X * - 1,0);
-                position += new Vector2(-10,0);
+                velocity = new Vector2(velocity.X * -1, 0);
+                position += new Vector2(-10, 0);
             }
 
             if (collision.X < 0)
             {
-                if(!isBombed) indicator = "Right";
+                if (!isBombed) indicator = "Right";
                 velocity = new Vector2(velocity.X * -1, 0);
                 position += new Vector2(10, 0);
             }
@@ -84,5 +84,5 @@ namespace Advencursor._Models.Enemy
             indicator = "Bomb";
             bombTimer += TimeManager.TimeGlobal;
         }
-        }
+    }
 }
