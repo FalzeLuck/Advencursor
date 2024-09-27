@@ -46,14 +46,14 @@ namespace Advencursor._Scene
         private int selectedItemIndex;
         private float scrollStep = 150f;
 
-        private Vector2 gridStartPos = new(Globals.Bounds.X/2,50);
+        private Vector2 gridStartPos = new(Globals.Bounds.X/2 + 40,100);
         private int itemSize = 150;
 
         //Scrollbar
-        private int scrollbarHeight = 300;
-        private int scrollbarWidth = 20;
+        private int scrollbarHeight = 600;
+        private int scrollbarWidth = 40;
         private Vector2 scrollbarPosition;
-        private float scrollbarThumbHeight = 50;
+        private float scrollbarThumbHeight = 150;
         private float scrollbarThumbPosition = 0f;
         private bool isDraggingThumb = false;
         private int totalItems;
@@ -76,7 +76,7 @@ namespace Advencursor._Scene
             gameData = new GameData();
 
             totalVisibleItems = gridColumns * gridRows;
-            scrollbarPosition = new Vector2((itemSize*gridColumns) + gridStartPos.X, gridStartPos.Y);
+            scrollbarPosition = new Vector2((itemSize*gridColumns) + gridStartPos.X + 30, gridStartPos.Y);
         }
 
         public void Load()
@@ -89,14 +89,14 @@ namespace Advencursor._Scene
             
             
 
-            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Button/EquipButton"), new Vector2(Globals.Bounds.X/2 - 400, 400 + Globals.Bounds.Y / 2), OnEquipButtonClick);
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X / 2 + 400, 400 + Globals.Bounds.Y / 2), OnPlayButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(0, 0), OnExitButtonClick);
+            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(gridStartPos.X + ((gridColumns*itemSize)/2),gridStartPos.Y + ((gridRows*itemSize)+(71/2))), OnEquipButtonClick);
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 541/2, Globals.Bounds.Y-(144/2)), OnPlayButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(541/2, Globals.Bounds.Y - (145/2)-1), OnExitButtonClick);
             uiManager.AddElement("equipButton",equipButton);
             uiManager.AddElement("exitButton",exitButton);
             uiManager.AddElement("playButton",playButton);
 
-            backgroundInventory = Globals.Content.Load<Texture2D>("Background/Stage1_1");
+            backgroundInventory = Globals.Content.Load<Texture2D>("Item/Background1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
             gridTextureSelected = Globals.Content.Load<Texture2D>("Item/GridSelected");
 
@@ -178,7 +178,9 @@ namespace Advencursor._Scene
 
             scrollbarThumbPosition = (float)currentScrollIndex / totalPages * scrollbarTrackHeight;
             Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+
+            //Mouse Drag is bug. Waiting to fix.
+            /*if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 if (mousePosition.X >= scrollbarPosition.X && mousePosition.X <= scrollbarPosition.X + scrollbarWidth &&
                     mousePosition.Y >= scrollbarPosition.Y + scrollbarThumbPosition &&
@@ -211,7 +213,7 @@ namespace Advencursor._Scene
             {
                 isDraggingThumb = false;
             }
-
+            */
             mouseCollision = new((int)mousePosition.X, (int)mousePosition.Y, 1, 1);
 
             SelectedItem();
@@ -290,7 +292,7 @@ namespace Advencursor._Scene
         {
             for (int i = 0; i < 4; i++)
             {
-                Vector2 position = new Vector2(50, gridStartPos.Y + 100 + (i * itemSize) + (i * 0));
+                Vector2 position = new Vector2(85, gridStartPos.Y + (i * itemSize) + (i * 0));
                 Keys keyIndex = new Keys();
                 if (i == 0) { keyIndex = Keys.Q; }
                 else if (i == 1) { keyIndex = Keys.W; }
@@ -307,7 +309,7 @@ namespace Advencursor._Scene
         {
             //Draw Big Item
             Vector2 bigItemOrigin = new(inventory.Items[selectedItemIndex].texture.Width / 2, inventory.Items[selectedItemIndex].texture.Height / 2);
-            Vector2 bigItemPosition = new(Globals.Bounds.X / 4, Globals.Bounds.Y / 4);
+            Vector2 bigItemPosition = new((Globals.Bounds.X / 4) + 150, (Globals.Bounds.Y / 2) - 125);
             Globals.SpriteBatch.Draw(inventory.Items[selectedItemIndex].texture, bigItemPosition, null, Color.White, 0f, bigItemOrigin, 1f, SpriteEffects.None, 0f);
 
             SpriteFont spriteFont = Globals.Content.Load<SpriteFont>("basicFont");
@@ -397,6 +399,7 @@ namespace Advencursor._Scene
 
         private void OnExitButtonClick()
         {
+            player.SavePlayer();
             sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 

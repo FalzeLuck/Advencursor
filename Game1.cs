@@ -46,7 +46,7 @@ namespace Advencursor
             Globals.Bounds = new(1920, 1080);
             _graphics.PreferredBackBufferWidth = Globals.Bounds.X;
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
 
             Globals.Content = Content;
@@ -69,7 +69,7 @@ namespace Advencursor
             gameData.LoadData();
 
 
-            _sceneManager.AddScene(new Stage2(Content, _sceneManager));
+            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

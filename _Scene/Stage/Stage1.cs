@@ -537,7 +537,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Elite1
-            if (elite_spawn_time > 5f && !boss_spawned)
+            if (elite_spawn_time > 15f && !boss_spawned)
             {
                 if (elite_count < elite_max)
                 {
