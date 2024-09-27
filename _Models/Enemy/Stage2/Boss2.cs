@@ -42,6 +42,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private Vector2 screenCenter;
         private bool isShake = false;
 
+
         public Boss2(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -70,7 +71,10 @@ namespace Advencursor._Models.Enemy.Stage2
 
         public override void Update(GameTime gameTime)
         {
-
+            if (movementAI.target is Player)
+            {
+                player = movementAI.target;
+            }
             if (isStart)
             {
                 collisionCooldown -= TimeManager.TimeGlobal;
@@ -104,7 +108,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         {
                             isCenter = false;
                             isStand = true;
-                            standTime = 2f;
+                            standTime = 5f;
                         }
                     }
 
@@ -169,9 +173,9 @@ namespace Advencursor._Models.Enemy.Stage2
                         }
                         if (rayDamageInterval <= 0 && rayChargeTime <= 0)
                         {
-                            if (rayCollision.Intersects(movementAI.target.collision))
+                            if (rayCollision.Intersects(player.collision))
                             {
-                                movementAI.target.Status.TakeDamage(1000, this);
+                                player.Status.TakeDamage(1000, this);
                                 rayDamageInterval = 1f;
                             }
 
@@ -217,7 +221,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                         OrientedRectangle rayBox1 = new OrientedRectangle(topLeft1, topRight1, bottomLeft1, bottomRight1);
                         OrientedRectangle rayBox2 = new OrientedRectangle(topLeft2, topRight2, bottomLeft2, bottomRight2);
-                        OrientedRectangle playerBox = RectangleToOrientedRectangle(movementAI.target.collision);
+                        OrientedRectangle playerBox = RectangleToOrientedRectangle(player.collision);
 
 
                         rayDamageInterval -= TimeManager.TimeGlobal;
@@ -232,7 +236,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         {
                             if (SATCollision(rayBox1,playerBox) || SATCollision(rayBox2, playerBox))
                             {
-                                movementAI.target.Status.TakeDamage(2000, this);
+                                player.Status.TakeDamage(2000, this);
                                 rayDamageInterval = 1f;
                             }
 
