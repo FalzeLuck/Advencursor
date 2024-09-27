@@ -87,6 +87,36 @@ namespace Advencursor
             return texture;
         }
 
+        public static Vector2 RotatePoint(Vector2 point, Vector2 pivot, float angle)
+        {
+            float cos = (float)Math.Cos(angle);
+            float sin = (float)Math.Sin(angle);
+
+            Vector2 translatedPoint = point - pivot;
+
+            float rotatedX = translatedPoint.X * cos - translatedPoint.Y * sin;
+            float rotatedY = translatedPoint.X * sin + translatedPoint.Y * cos;
+
+            return new Vector2(rotatedX, rotatedY) + pivot;
+        }
+
+        public static Rectangle CreateBoundingRectangle(Vector2 topLeft, Vector2 topRight, Vector2 bottomLeft, Vector2 bottomRight)
+        {
+            
+            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
+            float minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
+
+            float maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
+            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+
+
+            return new Rectangle(
+                (int)minX,  
+                (int)minY, 
+                (int)(maxX - minX),  
+                (int)(maxY - minY) 
+            );
+        }
 
     }
 }

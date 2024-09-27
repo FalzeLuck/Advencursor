@@ -47,6 +47,7 @@ namespace Advencursor._Models.Enemy.Stage2
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
+                collision = animations[indicator].GetCollision(position);
             }
             bombRadius = new Rectangle((int)(position.X - bombRadiusSize / 2), (int)(position.Y - bombRadiusSize / 2), bombRadiusSize, bombRadiusSize);
 

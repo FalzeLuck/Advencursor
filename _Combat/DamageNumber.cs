@@ -68,6 +68,34 @@ namespace Advencursor._Combat
             Color outlineColor = new Color(108,16,156);
             float outlineThickness = 2f;
 
+            Vector2 textSize = font.MeasureString(text);
+            Vector2 position = Vector2.Zero;
+            if(this.position.X < 0)
+            {
+                position.X = this.position.X + Math.Abs(0 - this.position.X);
+            }
+            else if (this.position.X + (textSize.X * scale) > Globals.Bounds.X)
+            {
+                position.X = this.position.X - Math.Abs(this.position.X + (textSize.X * scale) - Globals.Bounds.X);
+            }
+            else
+            {
+                position.X = this.position.X;
+            }
+
+            if (this.position.Y < 0)
+            {
+                position.Y = this.position.Y + Math.Abs(0 - this.position.Y);
+            }
+            else if (this.position.Y + textSize.Y > Globals.Bounds.Y)
+            {
+                position.Y = this.position.Y - Math.Abs(this.position.Y + textSize.Y - Globals.Bounds.Y);
+            }
+            else
+            {
+                position.Y = this.position.Y;
+            }
+
             // Up down Left Right
             Globals.SpriteBatch.DrawString(font, text, position + new Vector2(-outlineThickness, 0), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);
             Globals.SpriteBatch.DrawString(font, text, position + new Vector2(outlineThickness, 0), outlineColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);
