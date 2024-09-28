@@ -22,6 +22,7 @@ namespace Advencursor._Skill.Food_Set
         {
             rarity = 2;
             setSkill = "Food";
+            description = "\"Haha, it's a trap!\" Place a poison trap on the ground. When enemies step in, enemies will be rapidly consumed by the poison!";
             buffTime = 0f;
             poisonFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/W_Texture"), Vector2.Zero);
             poisonFood.animations["base"] = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/W_Effect"),1,8,8,true);

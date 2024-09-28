@@ -23,6 +23,7 @@ namespace Advencursor._Skill.Food_Set
         {
             rarity = 3;
             setSkill = "Food";
+            description = "When the body reaches its limit, Unleash the power of emergency food! Immediately increases the user's attack power along with restoring some health, making it possible to come back to fight stronger again. This power lasts only few seconds. Make the most of this short moment!";
             auraHeal = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/E_Effect2"), 1, 4, 8, false);
             auraDamage = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/E_Effect1"), 1, 4, 8, true);
         }

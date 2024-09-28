@@ -338,7 +338,7 @@ namespace Advencursor._Scene
             Vector2 skillDescSize = textFont.MeasureString(skillDesc);
             Vector2 skillDescOrigin = new(skillDescSize.X/2, 0);
             Globals.SpriteBatch.DrawString(textFont, skillName, new(bigItemPosition.X, bigItemPosition.Y + 210), fontColor, 0, skillNameOrigin, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 225), fontColor, 0, skillDescOrigin, 0.8f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 225), fontColor, 0, skillDescOrigin, 0.75f, SpriteEffects.None, 0f);
 
 
             

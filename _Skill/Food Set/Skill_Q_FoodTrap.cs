@@ -18,6 +18,7 @@ namespace Advencursor._Skill.Food_Set
         {
             rarity = 1;
             setSkill = "Food";
+            description = "\"Attractive Aroma!\" Creates a lure filled with an alluring scent that attracts all enemies. Enemies that come near the lure will be attracted and attack the lure instead, giving the player a chance to attack.";
             buffTime = 0f;
             tauntFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/Q_Texture"), Vector2.Zero);
             tauntFood.animations["base"] = new(Globals.Content.Load<Texture2D>("Item/SetFood/Q_Effect"), 1, 8, 8, true);
