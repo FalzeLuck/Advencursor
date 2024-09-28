@@ -17,6 +17,8 @@ namespace Advencursor._Skill
         public float cooldown { get; set; }
         public float cooldownTimer { get; private set; }
 
+        public int rarity;
+
         public Skill(string name, float cooldown) 
         {
             this.name = name;

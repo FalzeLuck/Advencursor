@@ -45,6 +45,7 @@ namespace Advencursor._Skill.Thunder_Set
         private int countHit = 0;
         public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
         {
+            rarity = 4;
             description = "As the power of sharp judgment, I will slash every enemy in the area. Inflicts all enemies with massive damage and inflict Paralysis status for a short period.";
             star1 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_1");
             star2 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_2");
@@ -163,7 +164,7 @@ namespace Advencursor._Skill.Thunder_Set
                 {
                     foreach (var enemy in Globals.EnemyManager)
                     {
-                        enemy.TakeDamage( 2, player);
+                        enemy.TakeDamage( 2, player,true);
                     }
                     Globals.Camera.Shake(0.2f,5f);
                     countHit++;

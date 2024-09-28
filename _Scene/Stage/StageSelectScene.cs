@@ -29,6 +29,8 @@ namespace Advencursor._Scene.Stage
 
         private Vector2 screenCenter;
         private int moveButtonSpeed = 1000;
+        private Vector2 gachaPos;
+        private Vector2 gachaPosdes;
         private Vector2 posStage1;
         private Vector2 posStage1des;
         private Vector2 posStage2;
@@ -36,7 +38,8 @@ namespace Advencursor._Scene.Stage
 
         private enum Stage
         {
-            Stage1 = 1,
+            Gacha,
+            Stage1,
             Stage2,
             Stage3
         }
@@ -58,13 +61,16 @@ namespace Advencursor._Scene.Stage
             screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
 
 
-
+            UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);
             UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 , Globals.Bounds.Y / 2), OnStage1ButtonClick);
             UIButton stage2Button = new(Globals.Content.Load<Texture2D>("Button/Stage2Button"), new Vector2(Globals.Bounds.X / 2 + 500, Globals.Bounds.Y / 2), OnStage2ButtonClick);
+            uiManager.AddElement("gachaButton", gachaButton);
             uiManager.AddElement("stage1Button", stage1Button);
             uiManager.AddElement("stage2Button", stage2Button);
 
 
+            gachaPos = uiManager.GetElementPosition("gachaButton");
+            gachaPosdes = uiManager.GetElementPosition("gachaButton");
             posStage1 = uiManager.GetElementPosition("stage1Button");
             posStage1des = uiManager.GetElementPosition("stage1Button");
             posStage2 = uiManager.GetElementPosition("stage2Button");
@@ -82,7 +88,29 @@ namespace Advencursor._Scene.Stage
             Rectangle mouseCollision = new((int)mousePosition.X, (int)mousePosition.Y, 1, 1);
 
 
-            if (currentStage == 1)
+            if (currentStage == 0)
+            {
+                Vector2 direction = GetVectorDirection(gachaPos, gachaPosdes);
+                if (direction.X < 0)
+                {
+                    MoveAllButton(direction);
+                    if (gachaPos.X <= gachaPosdes.X)
+                    {
+                        gachaPos = screenCenter;
+                        uiManager.SetElementPosition(gachaPos, "gachaButton");
+                    }
+                }
+                else if (direction.X > 0)
+                {
+                    MoveAllButton(direction);
+                    if (gachaPos.X >= gachaPosdes.X)
+                    {
+                        gachaPos = screenCenter;
+                        uiManager.SetElementPosition(gachaPos, "gachaButton");
+                    }
+                }
+            }
+            else if (currentStage == 1)
             {
                 Vector2 direction = GetVectorDirection(posStage1, posStage1des);
                 if (direction.X < 0)
@@ -126,13 +154,6 @@ namespace Advencursor._Scene.Stage
                 }
             }
 
-
-
-            /*if (moveButtonSpeed == 0)
-            {
-                posStage1 = posStage1des;
-                uiManager.SetElementPosition(posStage1, "stage1Button");
-            }*/
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -144,6 +165,8 @@ namespace Advencursor._Scene.Stage
 
         private void MoveAllButton(Vector2 direction)
         {
+            gachaPos += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+            uiManager.SetElementPosition(gachaPos, "gachaButton");
             posStage1 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
             uiManager.SetElementPosition(posStage1, "stage1Button");
             posStage2 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
@@ -153,6 +176,22 @@ namespace Advencursor._Scene.Stage
 
 
 
+
+        private void OnGachaButtonClick()
+        {
+            if (uiManager.GetElementPosition("gachaButton") == screenCenter)
+            {
+                gameData.stage = currentStage = (int)Stage.Gacha;
+                gameData.SaveData();
+                sceneManager.AddScene(new GachaScene(contentManager, sceneManager));
+            }
+            else if (uiManager.GetElementPosition("gachaButton").X > screenCenter.X || uiManager.GetElementPosition("gachaButton").X < screenCenter.X)
+            {
+                gachaPosdes = screenCenter;
+                currentStage = (int)Stage.Gacha;
+                uiManager.SetElementPosition(gachaPos, "gachaButton");
+            }
+        }
 
         private void OnStage1ButtonClick()
         {

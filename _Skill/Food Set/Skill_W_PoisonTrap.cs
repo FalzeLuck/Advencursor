@@ -20,6 +20,7 @@ namespace Advencursor._Skill.Food_Set
         private List<float> collisionCooldown = new List<float>();
         public Skill_W_PoisonTrap(string name, float cooldown) : base(name, cooldown)
         {
+            rarity = 2;
             buffTime = 0f;
             poisonFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/W_Texture"), Vector2.Zero);
             poisonFood.animations["base"] = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/W_Effect"),1,8,8,true);
@@ -53,7 +54,7 @@ namespace Advencursor._Skill.Food_Set
                     {
                         if (Globals.EnemyManager[i].collision.Intersects(poisonFood.collision))
                         {
-                            Globals.EnemyManager[i].TakeDamage(1, player);
+                            Globals.EnemyManager[i].TakeDamage(1, player, (Globals.EnemyManager[i].Status.MaxHP / 100) + 500,true,true);
                             collisionCooldown[i] = 1f;
                         }
                     }

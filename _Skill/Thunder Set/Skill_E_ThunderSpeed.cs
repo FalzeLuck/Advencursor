@@ -35,6 +35,7 @@ namespace Advencursor._Skill.Thunder_Set
         private float skillMultiplier = 0.5f;
         public Skill_E_ThunderSpeed(string name, float cooldown) : base(name, cooldown)
         {
+            rarity = 3;
             description = "Release lightning power into the ground. Enemy who surpass will take damage and got paralized. Also, user will gain additional attack speed.";
         }
 
@@ -53,7 +54,7 @@ namespace Advencursor._Skill.Thunder_Set
                     colorStart = Color.Cyan,
                     colorEnd = Color.White,
                 },
-                interval = 0.04f,
+                interval = 0.07f,
                 emitCount = 1,
                 angleVariance = 180f,
                 speedMax = 0.5f,
@@ -72,7 +73,7 @@ namespace Advencursor._Skill.Thunder_Set
                     colorStart = Color.Yellow,
                     colorEnd = Color.White,
                 },
-                interval = 0.04f,
+                interval = 0.07f,
                 emitCount = 1,
                 angleVariance = 180f,
                 speedMax = 0.5f,

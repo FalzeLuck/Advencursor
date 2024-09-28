@@ -67,8 +67,12 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
                 movementAI.Move(this);
                 Status.Update();
-
                 int defaultSpeed = 200;
+                if (Status.isParalysis)
+                {
+                    defaultSpeed = 100;
+                }
+                
                 if (dash)
                 {
                     dash = true;
@@ -107,37 +111,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                     isDashing = false;
                     dashCooldown += TimeManager.TimeGlobal;
                     dashTimer = 0f;
-                    /*if (Status.isParalysis)
-                    {
-                        velocity = new Vector2(defaultSpeed / 2);
-                    }
-                    else if (!Status.isParalysis)
-                    {
-                        velocity = new(defaultSpeed);
-                    }
-
-                    jumpTime -= TimeManager.TimeGlobal;
-
-                    if (jumpTime <= 0.5f)
-                    {
-                        velocity = Vector2.Zero;
-                    }
-                    else if (jumpTime <= 1f)
-                    {
-                        animations["Walk"].Play();
-                        velocity = new(defaultSpeed);
-                    }
-                    else if (jumpTime <= 1.5f)
-                    {
-                        animations["Walk"].PauseFrame(1);
-                        velocity = Vector2.Zero;
-                    }
                     
-                    
-                    if (jumpTime <= 0)
-                    {
-                        jumpTime = 1.5f;
-                    }*/
 
                     Vector2 dir = movementAI.target.position - position;
                     dir.Normalize();

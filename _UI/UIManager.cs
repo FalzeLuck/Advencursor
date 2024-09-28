@@ -93,6 +93,22 @@ namespace Advencursor._UI
             uiElements[name].scale = scale;
         }
 
+        public void HideAll()
+        {
+            foreach (var element in uiElements.Values)
+            {
+                element.isVisible = false;
+            }
+        }
+
+        public void ShowAll()
+        {
+            foreach (var element in uiElements.Values)
+            {
+                element.isVisible = true;
+            }
+        }
+
         public bool CheckCollide(Sprite sprite)
         {
             foreach (var element in uiElements.Values)

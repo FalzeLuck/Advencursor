@@ -21,6 +21,7 @@ namespace Advencursor._Skill.Food_Set
         private Vector2 position;
         public Skill_E_EmergencyFood(string name, float cooldown) : base(name, cooldown)
         {
+            rarity = 3;
             auraHeal = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/E_Effect2"), 1, 4, 8, false);
             auraDamage = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/E_Effect1"), 1, 4, 8, true);
         }

@@ -67,6 +67,10 @@ namespace Advencursor._Models.Enemy.Stage1
                 {
                     indicator = "Idle";
                     velocity = new(150);
+                    if (Status.isParalysis)
+                    {
+                        velocity = new(75);
+                    }
                     movementAI.Move(this);
                     slamCooldown += TimeManager.TimeGlobal;
                 }
@@ -141,6 +145,16 @@ namespace Advencursor._Models.Enemy.Stage1
             {
                 animations[indicator].Draw(position);
             }
+        }
+
+        public override void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
+        {
+            if (player.isBuff && player.buffIndicator == "Thunder_")
+            {
+                Status.Paralysis(2f);
+            }
+
+            base.TakeDamage(multiplier, player, throughImmune);
         }
 
 
