@@ -17,6 +17,7 @@ namespace Advencursor._Skill.Food_Set
         public Skill_Q_FoodTrap(string name, float cooldown) : base(name, cooldown)
         {
             rarity = 1;
+            setSkill = "Food";
             buffTime = 0f;
             tauntFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/Q_Texture"), Vector2.Zero);
             tauntFood.animations["base"] = new(Globals.Content.Load<Texture2D>("Item/SetFood/Q_Effect"), 1, 8, 8, true);

@@ -21,6 +21,7 @@ namespace Advencursor._Skill.Food_Set
         public Skill_W_PoisonTrap(string name, float cooldown) : base(name, cooldown)
         {
             rarity = 2;
+            setSkill = "Food";
             buffTime = 0f;
             poisonFood = new(Globals.Content.Load<Texture2D>("Item/SetFood/W_Texture"), Vector2.Zero);
             poisonFood.animations["base"] = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/W_Effect"),1,8,8,true);

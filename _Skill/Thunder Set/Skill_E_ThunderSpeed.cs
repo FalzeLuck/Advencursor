@@ -36,6 +36,7 @@ namespace Advencursor._Skill.Thunder_Set
         public Skill_E_ThunderSpeed(string name, float cooldown) : base(name, cooldown)
         {
             rarity = 3;
+            setSkill = "Thunder";
             description = "Release lightning power into the ground. Enemy who surpass will take damage and got paralized. Also, user will gain additional attack speed.";
         }
 

@@ -28,7 +28,7 @@ namespace Advencursor._Scene
         private Inventory inventory;
         private SpriteFont textFont;
         private GameData gameData;
-        private int pityUltimateSkillThreshold = 10;
+        private int pityUltimateSkillThreshold = 70;
 
         private List<Skill> skillPool;
 
@@ -103,6 +103,7 @@ namespace Advencursor._Scene
             uiManager.Draw(spriteBatch);
 
             Globals.SpriteBatch.DrawString(textFont,$"Gems : {gameData.gems}",Vector2.Zero,Color.Black);
+            Globals.SpriteBatch.DrawString(textFont, $"Pity : {gameData.pityCounter}/{pityUltimateSkillThreshold}", new Vector2(0,100), Color.Black);
 
             if (gachaWaitTime > 0)
             {

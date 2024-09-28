@@ -20,6 +20,7 @@ namespace Advencursor._Skill.Thunder_Set
         public  Skill_Q_ThunderCore(string name, float cooldown) : base(name, cooldown)
         {
             rarity = 1;
+            setSkill = "Thunder";
             description = "Awake lightning power in your soul. Cause the mouse cursor to shine with lightning. When attacking enemies during this time, enemy will be shocked by lightning and inflict Paralysis for a short period.";
             buffTime = 8f;
         }

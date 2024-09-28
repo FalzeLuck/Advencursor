@@ -81,7 +81,8 @@ namespace Advencursor._Scene
             uiManager = new UIManager();
             gameData = new GameData();
 
-            totalVisibleItems = gridColumns * gridRows;
+           
+
             scrollbarPosition = new Vector2((itemSize*gridColumns) + gridStartPos.X + 30, gridStartPos.Y);
         }
 
@@ -122,13 +123,14 @@ namespace Advencursor._Scene
             }
 
 
+            inventory.SortItem();
 
 
 
+            totalVisibleItems = gridColumns * gridRows;
             totalItems = inventory.Items.Count;
-            totalPages = (totalItems + gridColumns - 1) / gridColumns;
+            totalPages = (int)Math.Ceiling((float)inventory.Items.Count / totalVisibleItems);
             scrollbarTrackHeight = scrollbarHeight - scrollbarThumbHeight;
-
         }
 
         public void Update(GameTime gameTime)
@@ -142,31 +144,24 @@ namespace Advencursor._Scene
 
             if (scrollDelta > 0 && currentScrollIndex > 0)
             {
-                scrollOffset += scrollStep; //Up
+                currentScrollIndex -= gridColumns;
+                currentScrollIndex = Math.Max(0, currentScrollIndex);
             }
-            else if (scrollDelta < 0 && currentScrollIndex < inventory.Items.Count / gridColumns)
+            else if (scrollDelta < 0 && currentScrollIndex < inventory.Items.Count - totalVisibleItems)
             {
-                scrollOffset -= scrollStep; //Down
+                currentScrollIndex += gridColumns;
+                currentScrollIndex = Math.Min(inventory.Items.Count - totalVisibleItems, currentScrollIndex);
             }
 
             if (scrollOffset >= itemSize)
             {
-                if (currentScrollIndex > 0)
-                {
-                    currentScrollIndex-=gridColumns;
-                    scrollOffset = 0;
-                }
+                scrollOffset = 0;  
             }
             else if (scrollOffset <= -itemSize)
             {
-                if (currentScrollIndex < inventory.Items.Count - totalVisibleItems)
-                {
-                    currentScrollIndex+=gridColumns;
-                    scrollOffset = 0;
-                }
+                scrollOffset = 0; 
             }
-
-            scrollbarThumbPosition = (float)currentScrollIndex / totalPages * scrollbarTrackHeight;
+            scrollbarThumbPosition = (float)currentScrollIndex / (inventory.Items.Count - totalVisibleItems) * scrollbarTrackHeight;
             Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
             //Mouse Drag is bug. Waiting to fix.
@@ -225,12 +220,11 @@ namespace Advencursor._Scene
                     if (itemIndex < inventory.Items.Count)
                     {
                         Vector2 position = new Vector2(gridStartPos.X + col * itemSize, gridStartPos.Y + row * itemSize + scrollOffset);
-                        Rectangle itemCollide = new((int)position.X,(int)position.Y, itemSize,itemSize);
+                        Rectangle itemCollide = new((int)position.X, (int)position.Y, itemSize, itemSize);
 
                         if (position.Y >= gridStartPos.Y - itemSize && position.Y < (gridStartPos.Y + gridRows * itemSize) + itemSize)
                         {
                             Color mouseHoverColor = new Color(252, 248, 148);
-
                             if (itemIndex == selectedItemIndex)
                             {
                                 if (itemCollide.Intersects(mouseCollision))
@@ -240,8 +234,8 @@ namespace Advencursor._Scene
                                 }
                                 else
                                 {
-                                    spriteBatch.Draw(gridTextureSelected, position, Color.White);
-                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
+                                    spriteBatch.Draw(gridTextureSelected, position, mouseHoverColor);
+                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
                                 }
                             }
                             else
@@ -254,13 +248,14 @@ namespace Advencursor._Scene
                                 else
                                 {
                                     spriteBatch.Draw(gridTexture, position, Color.White);
-                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
+                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
                                 }
                             }
                         }
                     }
                 }
             }
+        
 
             Texture2D scrollbar = Globals.Content.Load<Texture2D>("Item/scrollBarTexture");
             Texture2D thumb = Globals.Content.Load<Texture2D>("Item/scrollBarThumb");
@@ -380,6 +375,7 @@ namespace Advencursor._Scene
         }
         private void SelectedItem()
         {
+
             for (int row = 0; row < gridRows; row++)
             {
                 for (int col = 0; col < gridColumns; col++)

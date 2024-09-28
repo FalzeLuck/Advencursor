@@ -42,6 +42,7 @@ namespace Advencursor._Skill.Thunder_Set
         public Skill_W_ThunderShuriken(string name, float cooldown) : base(name, cooldown)
         {
             rarity = 2;
+            setSkill = "Thunder";
             description = "Use lightning to control shuriken. Each of them will spin through enemy and push them away.";
         }
 

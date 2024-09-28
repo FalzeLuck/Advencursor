@@ -24,6 +24,7 @@ namespace Advencursor._Skill.Food_Set
         public Skill_R_Invincibility(string name, float cooldown) : base(name, cooldown)
         {
             rarity = 4;
+            setSkill = "Food";
             aura = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/R_Effect"), 1, 4, 8, true);
             auraDamage = new Animation(Globals.Content.Load<Texture2D>("Item/SetFood/E_Effect1"), 2, 4, 2, 8, true);
         }

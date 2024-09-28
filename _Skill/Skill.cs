@@ -19,6 +19,8 @@ namespace Advencursor._Skill
 
         public int rarity;
 
+        public string setSkill;
+
         public Skill(string name, float cooldown) 
         {
             this.name = name;

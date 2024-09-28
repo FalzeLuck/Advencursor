@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.IO;
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 
 namespace Advencursor._Skill
 {
@@ -25,8 +26,6 @@ namespace Advencursor._Skill
             {
                 new Item(AllSkills.itemNameViaSkillName["null"],AllSkills.allSkills["null"],Keys.None)
             };
-
-
         }
 
         public void SaveInventory()
@@ -54,9 +53,24 @@ namespace Advencursor._Skill
 
         public void ClearNull()
         {
-
             Items.RemoveAll(item => item.name == "null");
+        }
 
+        public void SortItem()
+        {
+            Dictionary<Keys, int> keyOrder = new Dictionary<Keys, int>
+            {
+                { Keys.Q, 1 },
+                { Keys.W, 2 },
+                { Keys.E, 3 },
+                { Keys.R, 4 }
+            };
+
+            Items = Items
+                .OrderByDescending(item => item.itemSet)
+                .ThenBy(item => keyOrder.ContainsKey(item.keys) ? keyOrder[item.keys] : int.MaxValue)
+                .ThenByDescending(item => item.statValue)
+                .ToList();
         }
 
     }
@@ -69,6 +83,7 @@ namespace Advencursor._Skill
 
         public string name { get; set; }
         public Skill skill { get; set; }
+        public string itemSet { get; set; }
         public Keys keys { get; set; }
         public string statDesc { get; set; }
         public float statValue { get; set; }
@@ -77,6 +92,7 @@ namespace Advencursor._Skill
         {
             this.name = name;
             this.skill = skill;
+            itemSet = skill.setSkill;
             this.keys = keys;
             texture = AllSkills.allSkillTextures["null"];
             SetTexture();
@@ -88,23 +104,32 @@ namespace Advencursor._Skill
             if (keys == Keys.Q)
             {
                 statDesc = "Health";
-                statValue = Globals.RandomFloat(1000, 3000);
+                statValue = BiasedRandomFloat(1000, 3000, 1.8f);
             }
             else if (keys == Keys.W)
             {
                 statDesc = "Attack";
-                statValue = Globals.RandomFloat(20, 40);
+                statValue = BiasedRandomFloat(20, 40, 2.0f);
             }
             else if (keys == Keys.E)
             {
                 statDesc = "Critical Rate";
-                statValue = Globals.RandomFloat(4.7f, 31.3f);
+                statValue = BiasedRandomFloat(4.7f, 31.3f, 2.5f);
             }
             else if (keys == Keys.R)
             {
                 statDesc = "Critical Damage";
-                statValue = Globals.RandomFloat(9.3f, 62.2f);
+                statValue = BiasedRandomFloat(9.3f, 62.2f, 2.5f);
             }
+        }
+
+        private float BiasedRandomFloat(float min, float max, float bias = 2.0f)
+        {
+            float randomFactor = (float)Globals.random.NextDouble();
+
+            randomFactor = (float)Math.Pow(randomFactor, bias);
+
+            return min + (max - min) * randomFactor;
         }
 
         public void GenerateStatCheat()
