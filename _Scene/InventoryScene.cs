@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
@@ -45,6 +46,11 @@ namespace Advencursor._Scene
         private int currentScrollIndex = 0;
         private int selectedItemIndex;
         private float scrollStep = 150f;
+
+        SpriteFont textFont;
+        SpriteFont textFontThai;
+
+        private bool drawOnHover;
 
         private Vector2 gridStartPos = new(Globals.Bounds.X/2 + 40,100);
         private int itemSize = 150;
@@ -84,17 +90,24 @@ namespace Advencursor._Scene
             Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
             gameData.LoadData();
 
+            textFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
+            textFontThai = Globals.Content.Load<SpriteFont>("Font/TextFontThai");
+
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
             player.LoadPlayer(4,1);
             
             
 
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(gridStartPos.X + ((gridColumns*itemSize)/2),gridStartPos.Y + ((gridRows*itemSize)+(71/2))), OnEquipButtonClick);
+            UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(175, gridStartPos.Y + ((gridRows * itemSize) + (71 / 2))), OnStatusButtonHover,true);
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 541/2, Globals.Bounds.Y-(144/2)), OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(541/2, Globals.Bounds.Y - (145/2)-1), OnExitButtonClick);
             uiManager.AddElement("equipButton",equipButton);
+            uiManager.AddElement("statButton",statButton);
             uiManager.AddElement("exitButton",exitButton);
             uiManager.AddElement("playButton",playButton);
+
+            uiManager.SetScale("statButton",0.75f);
 
             backgroundInventory = Globals.Content.Load<Texture2D>("Item/Background1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
@@ -279,11 +292,15 @@ namespace Advencursor._Scene
             DrawEquipItem(itemScale);
 
             DrawCurrentItem();
+
+            DrawOnHover();
+
+            drawOnHover = false;
         }
 
         private void DrawScrollbar(SpriteBatch spriteBatch, Texture2D scrollbarTexture, Texture2D thumbTexture)
         {
-            spriteBatch.Draw(scrollbarTexture,new Rectangle((int)scrollbarPosition.X, (int)scrollbarPosition.Y, scrollbarWidth, scrollbarHeight),Color.Gray);
+            spriteBatch.Draw(scrollbarTexture,new Rectangle((int)scrollbarPosition.X, (int)scrollbarPosition.Y, scrollbarWidth, scrollbarHeight),Color.LightGray);
 
             spriteBatch.Draw(thumbTexture,new Rectangle((int)scrollbarPosition.X, (int)(scrollbarPosition.Y + scrollbarThumbPosition), scrollbarWidth, (int)scrollbarThumbHeight),Color.White);
         }
@@ -292,7 +309,7 @@ namespace Advencursor._Scene
         {
             for (int i = 0; i < 4; i++)
             {
-                Vector2 position = new Vector2(85, gridStartPos.Y + (i * itemSize) + (i * 0));
+                Vector2 position = new Vector2(95, gridStartPos.Y + (i * itemSize) + (i * 0));
                 Keys keyIndex = new Keys();
                 if (i == 0) { keyIndex = Keys.Q; }
                 else if (i == 1) { keyIndex = Keys.W; }
@@ -312,7 +329,9 @@ namespace Advencursor._Scene
             Vector2 bigItemPosition = new((Globals.Bounds.X / 4) + 150, (Globals.Bounds.Y / 2) - 125);
             Globals.SpriteBatch.Draw(inventory.Items[selectedItemIndex].texture, bigItemPosition, null, Color.White, 0f, bigItemOrigin, 1f, SpriteEffects.None, 0f);
 
-            SpriteFont spriteFont = Globals.Content.Load<SpriteFont>("basicFont");
+
+            Color fontColor = new Color(85,17,95);
+
             string mainStat = inventory.Items[selectedItemIndex].statValue.ToString("F2");
             string mainStatDesc = inventory.Items[selectedItemIndex].statDesc;
             string mainStatString;
@@ -331,31 +350,57 @@ namespace Advencursor._Scene
             {
                 mainStatString = $"";
             }
-            Vector2 mainStatSize = spriteFont.MeasureString(mainStatString);
+            Vector2 mainStatSize = textFont.MeasureString(mainStatString);
             Vector2 mainStatOrigin = new(mainStatSize.X/2, mainStatSize.Y/2);
-            Vector2 nameSize = spriteFont.MeasureString(inventory.Items[selectedItemIndex].name);
+            Vector2 nameSize = textFont.MeasureString(inventory.Items[selectedItemIndex].name);
             Vector2 nameOrigin = new(nameSize.X / 2, nameSize.Y / 2);
+            Globals.SpriteBatch.DrawString(textFont,  $"{(char)34}{ inventory.Items[selectedItemIndex].name}{(char)34}", new(bigItemPosition.X, bigItemPosition.Y - 300), fontColor, 0, nameOrigin, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont,mainStatString,new(bigItemPosition.X,bigItemPosition.Y - 250),fontColor,0,mainStatOrigin,1,SpriteEffects.None,0f);
 
-            Globals.SpriteBatch.DrawString(spriteFont, inventory.Items[selectedItemIndex].name, new(bigItemPosition.X, bigItemPosition.Y + 200), Color.Black, 0, nameOrigin, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(spriteFont,mainStatString,new(bigItemPosition.X,bigItemPosition.Y + 250),Color.Black,0,mainStatOrigin,1,SpriteEffects.None,0f);
+
+            //Skill Description
+            string skillName = $"Skill : {(char)34}{inventory.Items[selectedItemIndex].skill.name}{(char)34}";
+            string skillDesc = WrapText(textFontThai, inventory.Items[selectedItemIndex].skill.description, 900);
+            Vector2 skillNameSize = textFont.MeasureString(skillName);
+            Vector2 skillNameOrigin = new(skillNameSize.X/2,skillNameSize.Y/2);
+            Vector2 skillDescSize = textFont.MeasureString(skillDesc);
+            Vector2 skillDescOrigin = new(skillDescSize.X/2, 0);
+            Globals.SpriteBatch.DrawString(textFont, skillName, new(bigItemPosition.X, bigItemPosition.Y + 210), fontColor, 0, skillNameOrigin, 1, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 225), fontColor, 0, skillDescOrigin, 0.8f, SpriteEffects.None, 0f);
 
 
-            //Player Stat
-            string Header = "Player Status";
-            Vector2 HeaderSize = spriteFont.MeasureString(Header);
-            Vector2 HeaderOrigin = new(HeaderSize.X / 2, HeaderSize.Y / 2);
-            string HP = $"HP : {player.Status.MaxHP.ToString()}";
-            string Attack = $"Attack = {player.Status.Attack.ToString()}";
-            string CritRate = $"Critical Rate = {player.Status.CritRate.ToString("F2")}%";
-            string CritDam = $"Critical Damage = {player.Status.CritDam.ToString("F2")}%";
-            Globals.SpriteBatch.DrawString(spriteFont, Header, new(bigItemPosition.X, bigItemPosition.Y + 300), Color.Black, 0, HeaderOrigin, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(spriteFont, HP, new(bigItemPosition.X - 150, bigItemPosition.Y + 350), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(spriteFont, Attack, new(bigItemPosition.X - 150, bigItemPosition.Y + 400), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(spriteFont, CritRate, new(bigItemPosition.X - 150, bigItemPosition.Y + 450), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(spriteFont, CritDam, new(bigItemPosition.X - 150, bigItemPosition.Y + 500), Color.Black, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-
+            
+            
         }
 
+
+        public string WrapText(SpriteFont spriteFont, string text, float maxLineWidth)
+        {
+            string[] words = text.Split(' ');
+            StringBuilder sb = new StringBuilder();
+            float lineWidth = 0f;
+            float spaceWidth = spriteFont.MeasureString(" ").X;
+
+            foreach (string word in words)
+            {
+                Vector2 size = spriteFont.MeasureString(word);
+
+                if (lineWidth + size.X < maxLineWidth)
+                {
+
+                    sb.Append(word + " ");
+                    lineWidth += size.X + spaceWidth;
+                }
+                else
+                {
+
+                    sb.Append("\n" + word + " ");
+                    lineWidth = size.X + spaceWidth;
+                }
+            }
+
+            return sb.ToString();
+        }
         private void SelectedItem()
         {
             for (int row = 0; row < gridRows; row++)
@@ -385,6 +430,35 @@ namespace Advencursor._Scene
         private void OnEquipButtonClick()
         {
             player.EquipItem(inventory.Items[selectedItemIndex]);
+        }
+
+        private void OnStatusButtonHover()
+        {
+            drawOnHover = true;
+        }
+
+        private void DrawOnHover()
+        {
+            if (drawOnHover)
+            {
+                Vector2 pos = new Vector2(200,gridStartPos.Y);
+
+                Texture2D playerStatBackground = Globals.Content.Load<Texture2D>("Item/PlayerBackground");
+                //Player Stat
+                string Header = "Player Status";
+                Vector2 HeaderSize = textFont.MeasureString(Header);
+                Vector2 HeaderOrigin = new(HeaderSize.X / 2, HeaderSize.Y / 2);
+                string HP = $"HP : {player.Status.MaxHP.ToString()}";
+                string Attack = $"Attack = {player.Status.Attack.ToString()}";
+                string CritRate = $"Critical Rate = {player.Status.CritRate.ToString("F2")}%";
+                string CritDam = $"Critical Damage = {player.Status.CritDam.ToString("F2")}%";
+                Globals.SpriteBatch.Draw(playerStatBackground,pos,Color.White);
+                Globals.SpriteBatch.DrawString(textFont, Header, new Vector2(pos.X + playerStatBackground.Width / 2, pos.Y + HeaderSize.Y), Color.Black, 0, HeaderOrigin, 1.5f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, HP, new Vector2(pos.X + 10, pos.Y + 100), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 10,pos.Y + 150), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 10, pos.Y + 200), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 10, pos.Y + 250), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+            }
         }
 
         private void OnPlayButtonClick()

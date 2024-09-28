@@ -15,10 +15,17 @@ namespace Advencursor._Models
     {
         private Rectangle _rect;
         private Action onClick;
+        private Action onHover;
         public UIButton(Texture2D texture, Vector2 position, Action onClick) : base(texture, position)
         {
             _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
             this.onClick = onClick;
+        }
+
+        public UIButton(Texture2D texture, Vector2 position, Action onHover,bool hover) : base(texture, position)
+        {
+            _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
+            this.onHover = onHover;
         }
 
         public override void Update(GameTime gameTime)
@@ -27,6 +34,7 @@ namespace Advencursor._Models
             if (InputManager.MouseCursor.Intersects(_rect))
             {
                 _color = Color.DarkGray;
+                onHover?.Invoke();
             }
             else
             {

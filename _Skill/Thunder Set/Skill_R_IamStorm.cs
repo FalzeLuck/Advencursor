@@ -20,7 +20,9 @@ namespace Advencursor._Skill.Thunder_Set
         private SpriteEmitter spriteEmitter;
 
         private ParticleEmitterData lightningPed;
+        private ParticleEmitterData ped1;
         private ParticleEmitter pe;
+        private ParticleEmitter pe1;
 
         private float skillTime;
         private bool isUsing = false;
@@ -43,6 +45,7 @@ namespace Advencursor._Skill.Thunder_Set
         private int countHit = 0;
         public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
         {
+            description = "As the power of sharp judgment, I will slash every enemy in the area. Inflicts all enemies with massive damage and inflict Paralysis status for a short period.";
             star1 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_1");
             star2 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_2");
             starOrigin =  new Vector2(star1.Width / 2, star1.Height / 2);
@@ -64,7 +67,25 @@ namespace Advencursor._Skill.Thunder_Set
                     sizeStart = 150,
                     sizeEnd = 150,
                 },
-                interval = 0.0005f,
+                interval = 0.0001f,
+                emitCount = 1,
+                angleVariance = 180f,
+                speedMax = 0f,
+                speedMin = 0f,
+                lifeSpanMax = 1f,
+                lifeSpanMin = 0.5f,
+                rotationMax = 360f,
+            };
+
+            ped1 = new()
+            {
+                particleData = new LightningParticleData()
+                {
+                    sizeStart = 150,
+                    sizeEnd = 150,
+                    colorStart = Color.Yellow,
+                },
+                interval = 0.0001f,
                 emitCount = 1,
                 angleVariance = 180f,
                 speedMax = 0f,
@@ -78,7 +99,9 @@ namespace Advencursor._Skill.Thunder_Set
             spriteEmitter = new SpriteEmitter(() => player.position);
 
             pe = new(spriteEmitter, lightningPed);
+            pe1 = new(spriteEmitter, ped1);
             ParticleManager.AddParticleEmitter(pe);
+            ParticleManager.AddParticleEmitter(pe1);
             TimeManager.ChangeGameSpeed(0.01f);
 
             //Star
@@ -152,6 +175,7 @@ namespace Advencursor._Skill.Thunder_Set
                     float randomY = Globals.RandomFloat(Globals.Bounds.Y / 2 - randomRange, Globals.Bounds.Y / 2 + randomRange);
                     player.position = new Vector2(randomX, randomY);
                     ParticleManager.RemoveParticleEmitter(pe);
+                    ParticleManager.RemoveParticleEmitter(pe1);
                 }
 
 

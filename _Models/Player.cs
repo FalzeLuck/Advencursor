@@ -36,7 +36,7 @@ namespace Advencursor._Models
         public bool CanParry => cooldownTimer <= 0;
 
         public float normalAttackCooldown;
-        public float normalAttackDelay = 0.2f;
+        public float normalAttackDelay = 0.4f;
 
 
         public bool isStun;
@@ -260,9 +260,9 @@ namespace Advencursor._Models
                 }
             }
         }
-        public void DoNormalAttack(float delay)
+        public void DoNormalAttack()
         {
-            normalAttackCooldown = delay;
+            normalAttackCooldown = normalAttackDelay;
         }
 
         public bool CanNormalAttack()
@@ -271,6 +271,10 @@ namespace Advencursor._Models
             else { return false; }
         }
 
+        public void SetAttackDelay(float delay)
+        {
+            normalAttackDelay = delay;
+        }
 
         public  override void Update(GameTime gameTime)
         {
@@ -305,8 +309,6 @@ namespace Advencursor._Models
                 collision = new();
                 Mouse.SetPosition((int)position.X, (int)position.Y);
             }
-
-
             
             if (parryTimer > 0)
             {

@@ -13,6 +13,7 @@ namespace Advencursor._Skill
     {
         public string name { get; set; }
         public int damage { get; set; }
+        public string description { get; set; }
         public float cooldown { get; set; }
         public float cooldownTimer { get; private set; }
 
@@ -21,6 +22,7 @@ namespace Advencursor._Skill
             this.name = name;
             this.cooldown = cooldown;
             cooldownTimer = 0;
+            description = "";
         }
 
 

@@ -155,6 +155,12 @@ namespace Advencursor._Animation
             animation.IsFlip = isflip;
         }
 
+        public void SetScale(string name,float scale)
+        {
+            Animation animation = GetAnimation(name);
+            animation.scale = scale;
+        }
+
 
     }
 }

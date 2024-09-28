@@ -24,26 +24,22 @@ namespace Advencursor._Models.Enemy.Stage1
         public float stuntimer;
         public bool stunned;
 
-        private Dictionary<string, Animation> slamTexture;
-
+        Texture2D warningTexture;
+        private bool warningTrigger;
+        private float warningOpacity;
         public Elite1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {
                 { "Idle", new(texture, row, column,1,  8, true) },
-                { "Attack", new(texture,row,column,1,8,true) },
+                { "Attack", new(texture,row,column,6,3,8,true) },
                 { "Charge",new(texture,row,column,1,8,true) },
                 { "Stun",new(texture,row,column,1,8,true) },
                 { "Die",new(texture,row,column,2,8,false) }
 
             };
             indicator = "Idle";
-            Texture2D slamFile = Globals.Content.Load<Texture2D>("Animation/slamTexture");
-            slamTexture = new Dictionary<string, Animation>
-            {
-                {"slamCharge", new(slamFile,2,3,startrow: 1,fps:15,true) },
-                {"slamFinish", new(slamFile,2,3,startrow: 2,fps:15,true) }
-            };
+            warningTexture = Globals.CreateRectangleTexture(300,300,Color.Red);
             slamIndicator = "slamCharge";
 
             isSlam = false;
@@ -59,18 +55,12 @@ namespace Advencursor._Models.Enemy.Stage1
                 animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
-
-            if (slamTexture.ContainsKey(slamIndicator))
-            {
-                slamTexture[slamIndicator].Update();
-            }
             UpdateParryZone();
 
             if (Status.IsAlive())
             {
                 //Update Slam Radius
-                slamRadius = collision;
-                slamRadius = ChangeRectangleSize(slamRadius, 150);
+                slamRadius = new Rectangle(collision.X, collision.Y, 300, 300);
                 collision = ChangeRectangleSize(collision, 100, true);
 
                 if (!isSlam && !stunned)
@@ -93,6 +83,7 @@ namespace Advencursor._Models.Enemy.Stage1
 
                     if (slamChargeTime > 2.5f)
                     {
+                        animations["Attack"].scale = 1.5f;
                         indicator = "Attack";
                         isAttacking = true;
                     }
@@ -124,12 +115,26 @@ namespace Advencursor._Models.Enemy.Stage1
 
         public override void Draw()
         {
-            if (Status.IsAlive())
+            if (Status.IsAlive() && isSlam && !(slamChargeTime > 2.5f))
             {
-                if (isSlam && slamTexture.ContainsKey(slamIndicator))
+                Vector2 origin = new Vector2(warningTexture.Width/2, warningTexture.Height/2);
+                if (warningOpacity <= 0.3f)
                 {
-                    slamTexture[slamIndicator].Draw(position);
+                    warningTrigger = true;
                 }
+                else if (warningOpacity >= 0.8f)
+                {
+                    warningTrigger = false;
+                }
+                if (!warningTrigger)
+                {
+                    warningOpacity -= 1 * TimeManager.TimeGlobal;
+                }
+                else
+                {
+                    warningOpacity += 1 * TimeManager.TimeGlobal;
+                }
+                Globals.SpriteBatch.Draw(warningTexture, position, null, Color.White * warningOpacity, 0, origin, 1f, SpriteEffects.None, 0f);
             }
 
             if (animations.ContainsKey(indicator))

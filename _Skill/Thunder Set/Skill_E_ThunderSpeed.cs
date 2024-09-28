@@ -28,12 +28,14 @@ namespace Advencursor._Skill.Thunder_Set
         private List<Rectangle> collision = new List<Rectangle>();
         private List<float> collisionCooldown = new List<float>();
 
+        private float oldPlayerDelay;
+
         //For Multiplier
         private Player player;
         private float skillMultiplier = 0.5f;
         public Skill_E_ThunderSpeed(string name, float cooldown) : base(name, cooldown)
         {
-            
+            description = "Release lightning power into the ground. Enemy who surpass will take damage and got paralized. Also, user will gain additional attack speed.";
         }
 
         public override void Use(Player player)
@@ -51,7 +53,26 @@ namespace Advencursor._Skill.Thunder_Set
                     colorStart = Color.Cyan,
                     colorEnd = Color.White,
                 },
-                interval = 0.03f,
+                interval = 0.04f,
+                emitCount = 1,
+                angleVariance = 180f,
+                speedMax = 0.5f,
+                speedMin = 0.5f,
+                lifeSpanMax = bufftime,
+                lifeSpanMin = bufftime,
+                rotationMax = 180,
+            };
+
+            ped1 = new()
+            {
+                particleData = new LightningParticleData()
+                {
+                    sizeStart = 150f,
+                    sizeEnd = 150f,
+                    colorStart = Color.Yellow,
+                    colorEnd = Color.White,
+                },
+                interval = 0.04f,
                 emitCount = 1,
                 angleVariance = 180f,
                 speedMax = 0.5f,
@@ -62,10 +83,15 @@ namespace Advencursor._Skill.Thunder_Set
             };
 
             pe = new(spriteEmitter, ped);
+            pe1 = new(spriteEmitter, ped1);
             ParticleManager.AddParticleEmitter(pe);
+            ParticleManager.AddParticleEmitter(pe1);
             
 
             collisionCooldown = new List<float>(new float[100]);
+
+            oldPlayerDelay = player.normalAttackDelay;
+            player.SetAttackDelay(oldPlayerDelay / 2);
 
             isUsing = true;
         }
@@ -82,6 +108,7 @@ namespace Advencursor._Skill.Thunder_Set
                 if(bufftime <= 0)
                 {
                     ParticleManager.RemoveParticleEmitter(pe);
+                    ParticleManager.RemoveParticleEmitter(pe1);
                     isUsing = false;
                 }
 
@@ -102,6 +129,7 @@ namespace Advencursor._Skill.Thunder_Set
 
                 for (int i = 0; i < collisionCooldown.Count; i++)
                 {
+                    player.SetAttackDelay(oldPlayerDelay);
                     collisionCooldown[i] -= TimeManager.TimeGlobal;
                 }
                 
@@ -109,6 +137,7 @@ namespace Advencursor._Skill.Thunder_Set
 
             if (!isUsing)
             {
+                
                 collision.Clear();
                 collisionCooldown.Clear();
             }

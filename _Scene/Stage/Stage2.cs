@@ -242,7 +242,7 @@ namespace Advencursor._Scene.Stage
                     player.ChangeAnimation("Attack", true);
                     animationManager.Flip("Slash", true);
                     animationManager.Play("Slash");
-                    player.DoNormalAttack(player.normalAttackDelay);
+                    player.DoNormalAttack();
                 }
                 if (InputManager.MouseLeftClicked && player.CanNormalAttack())
                 {
@@ -250,7 +250,7 @@ namespace Advencursor._Scene.Stage
                     player.ChangeAnimation("Attack", false);
                     animationManager.Flip("Slash", false);
                     animationManager.Play("Slash");
-                    player.DoNormalAttack(player.normalAttackDelay);
+                    player.DoNormalAttack();
                 }
             }
 

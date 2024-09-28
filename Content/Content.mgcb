@@ -303,6 +303,20 @@
 /processorParam:TextureFormat=Compressed
 /build:Font/DamageNumber.spritefont
 
+#begin Font/TextFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Font/TextFont.spritefont
+
+#begin Font/TextFontThai.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Font/TextFontThai.spritefont
+
 #begin GroundEffect/PoisonPool.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -374,6 +388,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Item/GridSelected.png
+
+#begin Item/PlayerBackground.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/PlayerBackground.PNG
 
 #begin Item/ScrollBarTexture.png
 /importer:TextureImporter
@@ -614,6 +640,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Item/StartButton.PNG
+
+#begin Item/StatusButton.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/StatusButton.PNG
 
 #begin particle.png
 /importer:TextureImporter

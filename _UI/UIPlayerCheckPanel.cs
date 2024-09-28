@@ -20,7 +20,7 @@ namespace Advencursor._UI
         {
             status = player.Status;
             this.player = player;
-            font = Globals.Content.Load<SpriteFont>("basicFont");
+            font = Globals.Content.Load<SpriteFont>("Font/TextFont");
         }
 
         public override void Update(GameTime gameTime)
