@@ -20,20 +20,26 @@ namespace Advencursor._Skill
 
         public Inventory()
         {
-            Items = new List<Item>();
+
+            Items = new List<Item>()
+            {
+                new Item(AllSkills.itemNameViaSkillName["null"],AllSkills.allSkills["null"],Keys.None)
+            };
+
+
         }
 
-        public void SaveInventory(string filePath)
+        public void SaveInventory()
         {
             string json = JsonSerializer.Serialize(Items);
-            File.WriteAllText(filePath, json);
+            File.WriteAllText("inventory.json", json);
         }
 
-        public void LoadInventory(string filePath, Texture2D defaultTexture)
+        public void LoadInventory(Texture2D defaultTexture)
         {
-            if (!File.Exists(filePath)) return;
+            if (!File.Exists("inventory.json")) return;
 
-            string json = File.ReadAllText(filePath);
+            string json = File.ReadAllText("inventory.json");
             List<Item> deserializedItems = JsonSerializer.Deserialize<List<Item>>(json);
 
             foreach (var item in deserializedItems)
@@ -43,8 +49,15 @@ namespace Advencursor._Skill
 
             Items.Clear();
             Items.AddRange(deserializedItems);
+            ClearNull();
         }
 
+        public void ClearNull()
+        {
+
+            Items.RemoveAll(item => item.name == "null");
+
+        }
 
     }
 

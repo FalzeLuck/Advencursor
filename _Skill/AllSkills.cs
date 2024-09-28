@@ -57,6 +57,7 @@ namespace Advencursor._Skill
 
         public static Dictionary<string, string> itemNameViaSkillName = new Dictionary<string, string>
         {
+            {"null","null"},
             {"Thunder Core","(Q)Thunder Core Orb"},
             {"Thunder Shuriken","(W)Thunder Shuriken Orb"},
             {"Thunder Speed","(E)Thunder Speed Orb"},

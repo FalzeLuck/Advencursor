@@ -58,15 +58,17 @@ namespace Advencursor._Scene
 
         public void Load()
         {
-            UIButton roll1Button = new(Globals.Content.Load<Texture2D>("Gacha/Roll1"), new Vector2(Globals.Bounds.X - 500, Globals.Bounds.Y / 2 + 300), OnRoll1ButtonClick);
+            UIButton roll1Button = new(Globals.Content.Load<Texture2D>("Gacha/Roll1"), new Vector2(Globals.Bounds.X/2, Globals.Bounds.Y / 2 + 300), OnRoll1ButtonClick);
+            UIButton roll5Button = new(Globals.Content.Load<Texture2D>("Gacha/Roll5"), new Vector2(Globals.Bounds.X - 500, Globals.Bounds.Y / 2 + 300), OnRoll5ButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(Globals.Bounds.X / 2 - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
-            uiManager.AddElement("playButton", roll1Button);
+            uiManager.AddElement("roll1Button", roll1Button);
+            uiManager.AddElement("roll5Button", roll5Button);
             uiManager.AddElement("exitButton", exitButton);
 
             background = Globals.Content.Load<Texture2D>("Background/Menu");
             textFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
 
-            inventory.LoadInventory("inventory.json", new(Globals.graphicsDevice, 1, 1));
+            inventory.LoadInventory(new(Globals.graphicsDevice, 1, 1));
             gameData.LoadData();
         }
 
@@ -122,6 +124,29 @@ namespace Advencursor._Scene
                     Vector2 statOrigin = new Vector2(statSize.X / 2, statSize.Y / 2);
                     Globals.SpriteBatch.DrawString(textFont, stat, statPos, Color.Black, 0f, statOrigin, 1f, SpriteEffects.None, 0f);
                 }
+                else if (tempGachaItem.Count > 1)
+                {
+                    float scale = 0.5f;
+                    for (int i = 0; i < tempGachaItem.Count; i++)
+                    {
+                        Vector2 itemOrigin = new Vector2(tempGachaItem[i].texture.Width / 2, tempGachaItem[i].texture.Height / 2);
+                        Vector2 itemPos = new Vector2((Globals.Bounds.X / tempGachaItem.Count) + (i* tempGachaItem[i].texture.Width), Globals.Bounds.Y / 2);
+                        Globals.SpriteBatch.Draw(tempGachaItem[i].texture, itemPos, null, Color.White, 0, itemOrigin, scale, SpriteEffects.None, 0f);
+
+                        string name = $"{(char)34}{tempGachaItem[i].name}{(char)34}";
+                        Vector2 namePos = itemPos + new Vector2(0, 200);
+                        Vector2 nameSize = textFont.MeasureString(name);
+                        Vector2 nameOrigin = new Vector2(nameSize.X / 2, nameSize.Y / 2);
+                        Globals.SpriteBatch.DrawString(textFont, name, namePos, Color.Black, 0f, nameOrigin, scale, SpriteEffects.None, 0f);
+
+                        string stat = $"{(char)34}{tempGachaItem[i].statDesc}:{tempGachaItem[i].statValue.ToString("F2")}{(char)34}";
+                        Vector2 statPos = namePos + new Vector2(0, 100);
+                        Vector2 statSize = textFont.MeasureString(stat);
+                        Vector2 statOrigin = new Vector2(statSize.X / 2, statSize.Y / 2);
+                        Globals.SpriteBatch.DrawString(textFont, stat, statPos, Color.Black, 0f, statOrigin, scale, SpriteEffects.None, 0f);
+
+                    }
+                }
             }
         }
 
@@ -135,6 +160,29 @@ namespace Advencursor._Scene
 
             tempGachaItem.Clear();
             tempGachaItem.Add(tempItem);
+            inventory.Items.Add(tempItem);
+            gameData.SaveData();
+            inventory.SaveInventory();
+            gachaWaitTime = gachaInterval;
+        }
+
+        private void OnRoll5ButtonClick()
+        {
+            int rollNumber = 6;
+            if (gameData.gems - 10*(rollNumber-1) <= 0) return;
+
+            gameData.gems -= 10*(rollNumber-1);
+            List<Item> results = new List<Item>();
+            for (int i = 0; i < rollNumber; i++)
+            {
+                results.Add(RandomItemsWithPity(skillPool,pullRates));
+            }
+
+            tempGachaItem.Clear();
+            tempGachaItem.AddRange(results);
+            inventory.Items.AddRange(tempGachaItem);
+            gameData.SaveData();
+            inventory.SaveInventory();
             gachaWaitTime = gachaInterval;
         }
 
@@ -159,13 +207,13 @@ namespace Advencursor._Scene
                     }
                     else if (rate.Key == 3)
                     {
-                        tempKey = Keys.R;
+                        tempKey = Keys.E;
                     }
                     else if (rate.Key == 2)
                     {
                         tempKey = Keys.W;
                     }
-                    else
+                    else if (rate.Key == 1)
                     {
                         tempKey = Keys.Q;
                     }

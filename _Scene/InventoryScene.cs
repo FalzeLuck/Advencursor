@@ -89,6 +89,7 @@ namespace Advencursor._Scene
         {
             Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
             gameData.LoadData();
+            inventory.LoadInventory(tempTexture);
 
             textFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
             textFontThai = Globals.Content.Load<SpriteFont>("Font/TextFontThai");
@@ -113,38 +114,14 @@ namespace Advencursor._Scene
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
             gridTextureSelected = Globals.Content.Load<Texture2D>("Item/GridSelected");
 
-
-
-            Skill ThunderCore = AllSkills.allSkills["Thunder Core"];
-            Skill ThunderShuriken = AllSkills.allSkills["Thunder Shuriken"];
-            Skill ThunderSpeed = AllSkills.allSkills["Thunder Speed"];
-            Skill ThunderStorm = AllSkills.allSkills["I am the Storm"];
-            Skill FoodTrap = AllSkills.allSkills["Food Trap"];
-            Skill PoisonTrap = AllSkills.allSkills["Poison Trap"];
-            Skill EmergencyFood = AllSkills.allSkills["Emergency Food"];
-            Skill Invincibility = AllSkills.allSkills["Invincibility"];
-            Skill nullSkill = AllSkills.allSkills["null"];
-
-
-            inventory.Items.Add(new Item("ThunderCore book", ThunderCore, Keys.Q));
-            inventory.Items.Add(new Item("ThunderShuriken book", ThunderShuriken, Keys.W));
-            inventory.Items.Add(new Item("ThunderSpeed book", ThunderSpeed, Keys.E));
-            inventory.Items.Add(new Item("ThunderStorm book", ThunderStorm, Keys.R));
-            inventory.Items.Add(new Item("Food Trap Book",FoodTrap,Keys.Q));
-            inventory.Items.Add(new Item("Poison Trap Book", PoisonTrap, Keys.W));
-            inventory.Items.Add(new Item("Emergency Food Book", EmergencyFood, Keys.E));
-            inventory.Items.Add(new Item("Invinc Book", Invincibility, Keys.R));
-
             Texture2D nullTexture = new(Globals.graphicsDevice, 1, 1);
-            Item nullItem = new Item("null book", nullSkill, Keys.None);
-            for (int i = 0; i < totalVisibleItems*2 ; i++)
+            Item nullItem = new Item("null book", AllSkills.allSkills["null"], Keys.None);
+            for (int i = 0; i < totalVisibleItems * 2; i++)
             {
                 inventory.Items.Add(nullItem);
             }
 
-            CheatInventory();
 
-            inventory.SaveInventory(pathinventory);
 
 
 
@@ -477,33 +454,6 @@ namespace Advencursor._Scene
             sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 
-        private void CheatInventory()
-        {
-            Skill ThunderCore = AllSkills.allSkills["Thunder Core"];
-            Skill ThunderShuriken = AllSkills.allSkills["Thunder Shuriken"];
-            Skill ThunderSpeed = AllSkills.allSkills["Thunder Speed"];
-            Skill ThunderStorm = AllSkills.allSkills["I am the Storm"];
-            Skill nullSkill = AllSkills.allSkills["null"];
-            for (int i = 0; i < inventory.Items.Count; i++)
-            {
-                if(inventory.Items[i].name == "null book")
-                {
-                    inventory.Items[i] = new("Q_Cheat", ThunderCore, Keys.Q);
-                    inventory.Items[i+1] = new("W_Cheat", ThunderShuriken, Keys.W);
-                    inventory.Items[i+2] = new("E_Cheat", ThunderSpeed, Keys.E);
-                    inventory.Items[i+3] = new("R_Cheat", ThunderStorm, Keys.R);
-                    inventory.Items[i].GenerateStatCheat();
-                    inventory.Items[i + 1].GenerateStatCheat();
-                    inventory.Items[i + 2].GenerateStatCheat();
-                    inventory.Items[i + 3].GenerateStatCheat();
-                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"],Keys.None));
-                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"], Keys.None));
-                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"], Keys.None));
-                    inventory.Items.Add(new Item("null book", AllSkills.allSkills["null"], Keys.None));
-                    break;
-                }
-            }
-        }
 
     }
 }
