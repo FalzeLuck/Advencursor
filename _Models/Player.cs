@@ -17,6 +17,7 @@ using Advencursor._SaveData;
 using System.Text.Json;
 using System.IO;
 using Advencursor._Models.Enemy.Stage1;
+using System.Text;
 
 namespace Advencursor._Models
 {
@@ -375,13 +376,15 @@ namespace Advencursor._Models
             }
 
             string serializedData = JsonSerializer.Serialize(data);
-            File.WriteAllText("playerdata.json", serializedData);
+            string encodedJson = Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedData));
+            File.WriteAllText("playerdata.dat", encodedJson);
         }
 
         public void LoadPlayer(int row, int column)
         {
-            if (!File.Exists("playerdata.json")) return;
-            string deserializedData = File.ReadAllText("playerdata.json");
+            if (!File.Exists("playerdata.dat")) return;
+            string encodedJson = File.ReadAllText("playerdata.dat");
+            string deserializedData  = Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
             PlayerData data = JsonSerializer.Deserialize<PlayerData>(deserializedData);
 
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");

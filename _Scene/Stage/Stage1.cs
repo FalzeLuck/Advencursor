@@ -43,6 +43,7 @@ namespace Advencursor._Scene.Stage
 
         private Player player;
         private Inventory inventory = new Inventory();
+        private GameData gameData = new GameData();
 
         List<Common1> commonEnemy;
         List<Elite1> eliteEnemy;
@@ -113,8 +114,9 @@ namespace Advencursor._Scene.Stage
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
             player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 1, 1);
             player.LoadPlayer(4, 1);
-            inventory.LoadInventory(tempTexture);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
+            inventory.LoadInventory(tempTexture);
+            gameData.LoadData();
 
             //Load enemies
             commonEnemy = new List<Common1>();
@@ -634,8 +636,9 @@ namespace Advencursor._Scene.Stage
                 foreach (var enemy in Globals.EnemyManager)
                 {
                     enemy.Status.Kill();
-
                 }
+                gameData.gems += 10;
+                gameData.SaveData();
                 UnloadScene();
             }
 
@@ -734,6 +737,8 @@ namespace Advencursor._Scene.Stage
         {
             if (!player.Status.IsAlive())
             {
+                gameData.gems += 5;
+                gameData.SaveData();
                 UnloadScene();
             }
 

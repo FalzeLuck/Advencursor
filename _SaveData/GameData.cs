@@ -27,14 +27,16 @@ namespace Advencursor._SaveData
             GameData data = this;
 
             string serializedData = JsonSerializer.Serialize(data);
-            File.WriteAllText("gamedata.json", serializedData);
+            string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(serializedData));
+            File.WriteAllText("gamedata.dat", encoded);
         }
 
         public void LoadData()
         {
-            if (File.Exists("gamedata.json"))
+            if (File.Exists("gamedata.dat"))
             {
-                string deserializedData = File.ReadAllText("gamedata.json");
+                string encoded = File.ReadAllText("gamedata.dat");
+                string deserializedData = Encoding.UTF8.GetString(Convert.FromBase64String(encoded));
                 GameData data = JsonSerializer.Deserialize<GameData>(deserializedData);
                 this.isFirstTime = data.isFirstTime;
                 this.stage = data.stage;

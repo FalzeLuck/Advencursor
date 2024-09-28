@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace Advencursor
@@ -117,6 +118,7 @@ namespace Advencursor
                 (int)(maxY - minY) 
             );
         }
+
 
     }
 }

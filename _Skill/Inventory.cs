@@ -31,14 +31,16 @@ namespace Advencursor._Skill
         public void SaveInventory()
         {
             string json = JsonSerializer.Serialize(Items);
-            File.WriteAllText("inventory.json", json);
+            string encodedJson = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+            File.WriteAllText("inventory.dat", encodedJson);
         }
 
         public void LoadInventory(Texture2D defaultTexture)
         {
-            if (!File.Exists("inventory.json")) return;
+            if (!File.Exists("inventory.dat")) return;
 
-            string json = File.ReadAllText("inventory.json");
+            string encodedJson = File.ReadAllText("inventory.dat");
+            string json = Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
             List<Item> deserializedItems = JsonSerializer.Deserialize<List<Item>>(json);
 
             foreach (var item in deserializedItems)
