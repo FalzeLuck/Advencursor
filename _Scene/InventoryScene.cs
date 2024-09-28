@@ -1,10 +1,8 @@
-﻿using Advencursor._Combat;
-using Advencursor._Models;
+﻿using Advencursor._Models;
 using Advencursor._SaveData;
 using Advencursor._Scene.Stage;
 using Advencursor._Scene.Transition;
 using Advencursor._Skill;
-using Advencursor._Skill.Thunder_Set;
 using Advencursor._UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,15 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Reflection.PortableExecutable;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Advencursor._Scene
 {
