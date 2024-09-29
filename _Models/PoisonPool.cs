@@ -22,7 +22,7 @@ namespace Advencursor._Models
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Normal", new(texture, row, column,1,  0, true) },
+                { "Normal", new(texture, row, column,1,  6, true) },
             };
             indicator = "Normal";
 

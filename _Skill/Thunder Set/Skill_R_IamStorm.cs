@@ -165,7 +165,7 @@ namespace Advencursor._Skill.Thunder_Set
                 {
                     foreach (var enemy in Globals.EnemyManager)
                     {
-                        enemy.TakeDamage( 2, player,true);
+                        enemy.TakeDamage( 2, player,true,false);
                     }
                     Globals.Camera.Shake(0.2f,5f);
                     countHit++;

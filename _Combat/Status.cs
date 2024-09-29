@@ -138,7 +138,7 @@ namespace Advencursor._Combat
 
         }
 
-        public void TakeDamageNoImmune(float damage, Sprite who)
+        public void TakeDamageNoImmune(float damage, Sprite fromwho)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
 

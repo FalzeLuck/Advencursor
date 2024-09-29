@@ -40,7 +40,7 @@ namespace Advencursor._Scene
             {1, 0.33f} //Q
         };
 
-        private float gachaInterval = 0.5f;
+        private float gachaInterval = 1f;
         private float gachaWaitTime;
         private List<Item> tempGachaItem;
 

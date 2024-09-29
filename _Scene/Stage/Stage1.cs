@@ -679,7 +679,7 @@ namespace Advencursor._Scene.Stage
                             Globals.Content.Load<Texture2D>("GroundEffect/PoisonPool"),
                             special.position,
                             1,
-                            1
+                            6
                             ));
                         damageNumberManager.UnSubscribeToTakeDamageEvent(special.Status, special);
                         Globals.EnemyManager.Remove(special);
