@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Input;
 
 namespace Advencursor._Skill
 {
@@ -66,6 +67,19 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap","(W)Poison Inhaler Orb"},
             {"Emergency Food","(E)Heal Inhaler Orb"},
             {"Nah I'd win","(R)Invincibility Orb"},
+        };
+
+        public static Dictionary<string,Keys> itemKeyViaSkillName = new Dictionary<string, Keys>
+        {
+            {"null",Keys.None},
+            {"Thunder Core",Keys.Q},
+            {"Thunder Shuriken",Keys.W},
+            {"Thunder Speed",Keys.E},
+            {"I AM the Storm",Keys.R},
+            {"Yadom Bait",Keys.Q},
+            {"HAHAHA It's A Trap",Keys.W},
+            {"Emergency Food",Keys.E},
+            {"Nah I'd win",Keys.R},
         };
     }
 }

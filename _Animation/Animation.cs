@@ -11,6 +11,7 @@ namespace Advencursor._Animation
         public int Row { get; private set; }
         public int Column { get; private set; }
         public int maxColumn { get; private set; }
+        public int startColumn { get; private set; }
         public int Startrow { get; }
         public int TotalFrame { get; }
         public float FrameTime { get; }
@@ -71,18 +72,39 @@ namespace Advencursor._Animation
             opacityValue = 1f;
             this.scale = scale;
         }
-
-        public Animation(Texture2D texture, int row, int column,int maxColumn, int startrow, float fps, bool IsLooping, float scale = 1f)
+        public Animation(Texture2D texture, int row, int column, int maxColumn, int startrow, float fps, bool IsLooping, float scale = 1f)
         {
             this.Texture = texture;
             this.Row = row;
             this.Column = column;
             this.maxColumn = maxColumn;
+            this.startColumn = 0;
             Startrow = startrow;
             TotalFrame = row * column;
             this.FrameTime = 1 / fps;
             this.IsLooping = IsLooping;
             currentFrame = (column * Startrow) - column;
+            timer = 0f;
+            IsComplete = false;
+            IsPause = false;
+            IsCollide = false;
+            offset = Vector2.Zero;
+            opacityValue = 1f;
+            this.scale = scale;
+        }
+
+        public Animation(Texture2D texture, int row, int column,int startColumn,int maxColumn, int startrow, float fps, bool IsLooping, float scale = 1f)
+        {
+            this.Texture = texture;
+            this.Row = row;
+            this.Column = column;
+            this.maxColumn = maxColumn;
+            this.startColumn = startColumn;
+            Startrow = startrow;
+            TotalFrame = row * column;
+            this.FrameTime = 1 / fps;
+            this.IsLooping = IsLooping;
+            currentFrame = (column * Startrow) - column + startColumn;
             timer = 0f;
             IsComplete = false;
             IsPause = false;
@@ -125,7 +147,7 @@ namespace Advencursor._Animation
                     {
                         if (IsLooping)
                         {
-                            currentFrame = (Column * Startrow) - Column;
+                            currentFrame = (Column * Startrow) - Column + startColumn;
                         }
                         else
                         {

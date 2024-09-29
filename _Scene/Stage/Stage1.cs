@@ -253,6 +253,14 @@ namespace Advencursor._Scene.Stage
         {
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
             timer.Draw();
+            foreach (var pool in poisonPool)
+            {
+                pool.Draw();
+            }
+            foreach (var special in specialEnemy)
+            {
+                special.Draw();
+            }
             foreach (var enemy in commonEnemy)
             {
                 enemy.Draw();
@@ -264,14 +272,6 @@ namespace Advencursor._Scene.Stage
             if (boss_spawned)
             {
                 boss_obj.Draw();
-            }
-            foreach (var pool in poisonPool)
-            {
-                pool.Draw();
-            }
-            foreach (var special in specialEnemy)
-            {
-                special.Draw();
             }
             uiManager.Draw(spriteBatch);
             player.Draw();

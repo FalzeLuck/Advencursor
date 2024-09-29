@@ -125,6 +125,16 @@ namespace Advencursor._Scene
 
         public void Update(GameTime gameTime)
         {
+            //Cheat Inventory
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)
+                && Keyboard.GetState().IsKeyDown(Keys.Q)
+                && Keyboard.GetState().IsKeyDown(Keys.W)
+                && Keyboard.GetState().IsKeyDown(Keys.E)
+                && Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                CheatInventory();
+            }
+
             Globals.Game.IsMouseVisible = true;
             uiManager.Update(gameTime);
 
@@ -427,7 +437,7 @@ namespace Advencursor._Scene
         private void OnPlayButtonClick()
         {
             player.SavePlayer();
-
+            inventory.SaveInventory();
             if (gameData.stage == 1)
             {
                 sceneManager.AddScene(new Stage1(contentManager, sceneManager),new CircleTransition(Globals.graphicsDevice));
@@ -437,9 +447,23 @@ namespace Advencursor._Scene
         private void OnExitButtonClick()
         {
             player.SavePlayer();
+            inventory.SaveInventory();
             sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 
 
+
+        private void CheatInventory()
+        {
+            inventory.Items.Clear();
+
+            foreach (var skill in AllSkills.allSkills)
+            {
+                Item temp = new(AllSkills.itemNameViaSkillName[skill.Key], skill.Value, AllSkills.itemKeyViaSkillName[skill.Key]);
+                inventory.Items.Add(temp);
+            }
+            inventory.ClearNull();
+            inventory.SortItem();
+        }
     }
 }

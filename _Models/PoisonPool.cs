@@ -22,7 +22,8 @@ namespace Advencursor._Models
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Normal", new(texture, row, column,1,  6, true) },
+                { "Normal", new(texture, row, column,1,  6, false) },
+                { "Loop" , new(texture,row,column,2,column,1,6,true)}
             };
             indicator = "Normal";
 
@@ -32,11 +33,18 @@ namespace Advencursor._Models
         {
             poolDuration += TimeManager.TimeGlobal;
             burnCooldown += TimeManager.TimeGlobal;
+
+            if (animations["Normal"].IsComplete)
+            {
+                indicator = "Loop";
+            }
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
                 collision = animations[indicator].GetCollision(position);
             }
+
+            
         }
 
         public void Burn()

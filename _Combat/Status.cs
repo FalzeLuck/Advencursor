@@ -15,9 +15,9 @@ namespace Advencursor._Combat
     {
         public float MaxHP { get; private set; }
         public float CurrentHP { get; private set; }
-        public float BaseHP {  get; private set; }
+        public float BaseHP { get; private set; }
         public float BaseAttack { get; private set; }
-        public float Attack {  get; private set; }
+        public float Attack { get; private set; }
         public float Shield { get; private set; }
 
         public bool immunity;
@@ -25,7 +25,7 @@ namespace Advencursor._Combat
         private float numberScale = 0.75f;
 
         //Crit
-        public float CritRate {  get; private set; }
+        public float CritRate { get; private set; }
         public float CritDam { get; private set; }
 
         //CC
@@ -33,9 +33,9 @@ namespace Advencursor._Combat
         public bool isParalysis { get; private set; } = false;
 
         //Action
-        public Action<string,Color,float> OnTakeDamage;
+        public Action<string, Color, float> OnTakeDamage;
 
-        public Status(float MaxHP,float Attack) 
+        public Status(float MaxHP, float Attack)
         {
             this.MaxHP = MaxHP;
             this.CurrentHP = MaxHP;
@@ -48,7 +48,7 @@ namespace Advencursor._Combat
             Shield = 0;
         }
 
-        public void TakeDamage(float damage,Sprite fromwho)
+        public void TakeDamage(float damage, Sprite fromwho)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
             float tempDamage;
@@ -70,7 +70,7 @@ namespace Advencursor._Combat
                 }
                 else
                 {
-                    tempColor = new Color(248,228,249,1);
+                    tempColor = new Color(248, 228, 249, 1);
                 }
                 tempScale = numberScale;
                 tempDamage = damage;
@@ -89,16 +89,17 @@ namespace Advencursor._Combat
                     float remainDamage = (tempDamage - Shield);
                     Shield = 0;
                     CurrentHP -= remainDamage;
-                }else if (Shield == 0)
+                }
+                else if (Shield == 0)
                 {
                     CurrentHP -= tempDamage;
                 }
-                OnTakeDamage?.Invoke(tempString,tempColor,tempScale);
+                OnTakeDamage?.Invoke(tempString, tempColor, tempScale);
             }
 
-            if (CurrentHP < 0) {CurrentHP = 0; }
+            if (CurrentHP < 0) { CurrentHP = 0; }
 
-            
+
         }
 
         public void TakeDamageNoCrit(float damage, Sprite fromwho)
@@ -107,11 +108,11 @@ namespace Advencursor._Combat
             float tempDamage = damage;
             Color tempColor = Color.White;
 
-            if(fromwho is _Enemy)
+            if (fromwho is _Enemy)
             {
                 tempColor = Color.Red;
             }
-            
+
 
 
             if (immunity == false)
@@ -138,25 +139,52 @@ namespace Advencursor._Combat
 
         }
 
-        public void TakeDamageNoImmune(float damage, Sprite fromwho)
+        public void TakeDamageNoImmune(float damage, Sprite fromwho,bool nocrit)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
-
-            if (Shield >= damage)
+            float tempDamage;
+            Color tempColor;
+            float tempScale;
+            string tempString;
+            if (IsCrit(fromwho.Status.CritRate) && !nocrit)
             {
-                Shield -= damage;
+                tempScale = numberScale * 1.75f;
+                tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
+                tempString = $"{tempDamage.ToString("F0")}!";
+                tempColor = new Color(255, 16, 240);
             }
-            else if (Shield < damage)
+            else
             {
-                float remainDamage = (damage - Shield);
+                if (fromwho is _Enemy)
+                {
+                    tempColor = Color.Red;
+                }
+                else
+                {
+                    tempColor = new Color(248, 228, 249, 1);
+                }
+                tempScale = numberScale;
+                tempDamage = damage;
+                tempString = tempDamage.ToString("F0");
+            }
+
+            if (Shield >= tempDamage)
+            {
+                Shield -= tempDamage;
+            }
+            else if (Shield < tempDamage)
+            {
+                float remainDamage = (tempDamage - Shield);
                 Shield = 0;
                 CurrentHP -= remainDamage;
             }
             else if (Shield == 0)
             {
-                CurrentHP -= damage;
+                CurrentHP -= tempDamage;
             }
-            OnTakeDamage?.Invoke(damage.ToString("F0"),Color.White, numberScale);
+            OnTakeDamage?.Invoke(tempString, tempColor, tempScale);
+
+
 
             if (CurrentHP < 0) { CurrentHP = 0; }
         }
@@ -194,7 +222,7 @@ namespace Advencursor._Combat
         {
             CurrentHP = 0;
         }
-            
+
         public void AddShield(int amount)
         {
             if (amount < 0) throw new ArgumentOutOfRangeException("Shield can't be negative");
@@ -220,7 +248,7 @@ namespace Advencursor._Combat
             if (isParalysis)
             {
                 paralysisTimer -= TimeManager.TimeGlobal;
-                if( paralysisTimer < 0 ) { isParalysis=false; }
+                if (paralysisTimer < 0) { isParalysis = false; }
             }
         }
 

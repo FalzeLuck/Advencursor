@@ -67,7 +67,7 @@ namespace Advencursor._Models.Enemy
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(multiplier * player.Status.Attack, player);
+                Status.TakeDamageNoImmune(multiplier * player.Status.Attack, player,NoCrit);
             }
             else
             {
@@ -79,7 +79,7 @@ namespace Advencursor._Models.Enemy
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(fixedDamage, player);
+                Status.TakeDamageNoImmune(fixedDamage, player , NoCrit);
             }
             else
             {
