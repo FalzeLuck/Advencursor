@@ -248,7 +248,7 @@ namespace Advencursor._Animation
 
         public void PauseFrame(int frame)
         {
-            currentFrame = ((Column * Startrow) - (Column - maxColumn)) - (Column-(frame-1));
+            currentFrame = ((Column * Startrow) - (Column - maxColumn)) - (maxColumn-(frame-1));
             IsComplete = false;
             IsPause = true;
         }

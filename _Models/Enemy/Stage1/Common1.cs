@@ -36,7 +36,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             animations = new Dictionary<string, Animation>
             {
                 { "Walk", new(texture, row, column,2,  8, false) },
-                { "Attack", new(texture,row,column,1,8,true) },
+                { "Attack", new(texture,row,column,7,1,8,false) },
                 { "Die", new(texture,row,column,3,12,false) },
             };
             indicator = "Walk";
@@ -80,26 +80,44 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                     dashCooldown = 0f;
                     velocity = Vector2.Zero;
 
-                    if (dashTimer > 0f)
+
+                    if (dashTimer > 2.5f)
                     {
-                        indicator = "Attack";
+                        isDashing = false;
+                        dash = false;
                     }
-                    if (dashTimer > 0.7f)
+                    else if (dashTimer > 1.7f)
                     {
-                        isAttacking = true;
+                        animations[indicator].IsPause = false;
+                        if (animations[indicator].IsComplete)
+                        {
+                            animations[indicator].PauseFrame(7);
+                        }
                     }
-                    if (dashTimer > 1.2f)
+                    else if (dashTimer > 1.2f)
                     {
+                        animations[indicator].PauseFrame(3);
                         position += dashDirection * 600 * TimeManager.TimeGlobal;
                         isAttacking = false;
                         isDashing = true;
                         indicator = "Attack";
                     }
-                    if (dashTimer > 1.7f)
+                    else if (dashTimer > 0.7f)
                     {
-                        isDashing = false;
-                        dash = false;
+                        isAttacking = true;
                     }
+                    else if (dashTimer > 0f)
+                    {
+                        indicator = "Attack";
+                        if (animations[indicator].currentFrame == 1)
+                        {
+                            animations[indicator].PauseFrame(2);
+                        }
+                    }
+                    
+                    
+                    
+                    
 
 
 
