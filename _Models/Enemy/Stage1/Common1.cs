@@ -36,7 +36,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             animations = new Dictionary<string, Animation>
             {
                 { "Walk", new(texture, row, column,2,  8, false) },
-                { "Attack", new(texture,row,column,2,8,true) },
+                { "Attack", new(texture,row,column,1,8,true) },
                 { "Die", new(texture,row,column,3,12,false) },
             };
             indicator = "Walk";

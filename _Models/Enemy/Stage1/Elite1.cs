@@ -20,6 +20,8 @@ namespace Advencursor._Models.Enemy.Stage1
         public bool isSlamming;
         public bool isSlam;
 
+
+        public float stopCooldown;
         public float stunduration;
         public float stuntimer;
         public bool stunned;
@@ -31,7 +33,7 @@ namespace Advencursor._Models.Enemy.Stage1
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  8, true) },
+                { "Idle", new(texture, row, column,1,  8, false) },
                 { "Attack", new(texture,row,column,6,3,8,true) },
                 { "Charge",new(texture,row,column,1,8,true) },
                 { "Stun",new(texture,row,column,1,8,true) },
@@ -45,6 +47,7 @@ namespace Advencursor._Models.Enemy.Stage1
             isSlam = false;
             isSlamming = false;
             slamCooldown = 10f;
+            stopCooldown = 0f;
         }
 
         public override void Update(GameTime gameTime)
@@ -66,12 +69,29 @@ namespace Advencursor._Models.Enemy.Stage1
                 if (!isSlam && !stunned)
                 {
                     indicator = "Idle";
-                    velocity = new(150);
-                    if (Status.isParalysis)
-                    {
-                        velocity = new(75);
-                    }
                     movementAI.Move(this);
+                    
+                    
+                    if (animations["Idle"].IsComplete)
+                    {
+                        animations["Idle"].PauseFrame(1);
+                        stopCooldown =0.25f;   
+                    }
+                    if (stopCooldown >= 0)
+                    {
+                        stopCooldown -= TimeManager.TimeGlobal;
+                        velocity = new(0);
+                    }
+                    else
+                    {
+                        if(animations["Idle"].IsPause) animations["Idle"].Reset();
+                        animations["Idle"].IsPause = false;
+                        velocity = new(150);
+                        if (Status.isParalysis)
+                        {
+                            velocity = new(75);
+                        }
+                    }
                     slamCooldown += TimeManager.TimeGlobal;
                 }
                 if (isSlam)

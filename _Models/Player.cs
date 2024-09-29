@@ -63,8 +63,8 @@ namespace Advencursor._Models
             {
                 { "Normal_Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
                 { "Normal_Attack", new(texture, row, column,2,  TimeManager.framerate, true) },
-                { "Thunder_Idle", new(texture, row, column,3,  TimeManager.framerate, true) },
-                { "Thunder_Attack", new(texture, row, column,4,  TimeManager.framerate, true) }
+                { "Thunder_Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
+                { "Thunder_Attack", new(texture, row, column,2,  TimeManager.framerate, true) }
             };
             
             Skills = new Dictionary<Keys, Skill>();

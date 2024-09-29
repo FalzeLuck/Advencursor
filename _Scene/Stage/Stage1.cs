@@ -113,7 +113,7 @@ namespace Advencursor._Scene.Stage
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
             player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 1, 1);
-            player.LoadPlayer(4, 1);
+            player.LoadPlayer(2, 1);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
             inventory.LoadInventory(tempTexture);
             gameData.LoadData();
@@ -538,7 +538,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Elite1
-            if (elite_spawn_time > 15f && !boss_spawned)
+            if (elite_spawn_time > 1f && !boss_spawned)
             {
                 if (elite_count < elite_max)
                 {

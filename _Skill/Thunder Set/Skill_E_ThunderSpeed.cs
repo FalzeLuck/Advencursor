@@ -112,6 +112,7 @@ namespace Advencursor._Skill.Thunder_Set
                     ParticleManager.RemoveParticleEmitter(pe);
                     ParticleManager.RemoveParticleEmitter(pe1);
                     isUsing = false;
+                    player.SetAttackDelay(oldPlayerDelay);
                 }
 
                 collision.Add(new Rectangle((int)player.position.X,(int)player.position.Y,10,10));
@@ -122,7 +123,6 @@ namespace Advencursor._Skill.Thunder_Set
                     {
                         if (collision.Any(collide => collide.Intersects(Globals.EnemyManager[i].collision)) && Globals.EnemyManager[i].Status.IsAlive())
                         {
-                            
                             Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
                             collisionCooldown[i] = 0.1f;
                         }
@@ -131,7 +131,6 @@ namespace Advencursor._Skill.Thunder_Set
 
                 for (int i = 0; i < collisionCooldown.Count; i++)
                 {
-                    player.SetAttackDelay(oldPlayerDelay);
                     collisionCooldown[i] -= TimeManager.TimeGlobal;
                 }
                 
