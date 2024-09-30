@@ -93,7 +93,7 @@ namespace Advencursor._Scene.Stage
             Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
 
             //Load Background
-            background = Globals.Content.Load<Texture2D>("Background/BG_Stage1");
+            background = Globals.Content.Load<Texture2D>("Background/Stage1_6");
 
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
@@ -413,7 +413,7 @@ namespace Advencursor._Scene.Stage
                             spawnpoint,
                             health: 10000,
                             attack: 1,
-                            row: 2,
+                            row: 3,
                             column: 8
                             )
                         {

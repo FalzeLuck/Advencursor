@@ -106,22 +106,22 @@ namespace Advencursor._Skill
             if (keys == Keys.Q)
             {
                 statDesc = "Health";
-                statValue = BiasedRandomFloat(1000, 3000, 1.8f);
+                statValue = BiasedRandomFloat(1000, 3000, 2.2f);
             }
             else if (keys == Keys.W)
             {
                 statDesc = "Attack";
-                statValue = BiasedRandomFloat(20, 40, 2.0f);
+                statValue = BiasedRandomFloat(20, 40, 2.2f);
             }
             else if (keys == Keys.E)
             {
                 statDesc = "Critical Rate";
-                statValue = BiasedRandomFloat(4.7f, 31.3f, 2.5f);
+                statValue = BiasedRandomFloat(4.7f, 31.3f, 2.8f);
             }
             else if (keys == Keys.R)
             {
                 statDesc = "Critical Damage";
-                statValue = BiasedRandomFloat(9.3f, 62.2f, 2.5f);
+                statValue = BiasedRandomFloat(9.3f, 62.2f, 3.0f);
             }
         }
 

@@ -24,13 +24,13 @@ namespace Advencursor._Scene
 
         private Inventory inventory = new Inventory();
         private string pathinventory = "inventory.json";
-        private Dictionary<Keys,Item> equippedItems = new Dictionary<Keys,Item>();
+        private Dictionary<Keys, Item> equippedItems = new Dictionary<Keys, Item>();
 
         private Texture2D backgroundInventory;
         private Texture2D gridTexture;
         private Texture2D gridTextureSelected;
-        private int gridColumns = 5;
-        private int gridRows = 4;
+        private int gridColumns = 4;
+        private int gridRows = 3;
         private int totalVisibleItems;
         private float scrollOffset = 0f;
         private int currentScrollIndex = 0;
@@ -42,14 +42,14 @@ namespace Advencursor._Scene
 
         private bool drawOnHover;
 
-        private Vector2 gridStartPos = new(Globals.Bounds.X/2 + 40,100);
-        private int itemSize = 150;
+        private Vector2 gridStartPos = new((Globals.Bounds.X / 2) + 54, 255);
+        private int itemSize = 170;
 
         //Scrollbar
-        private int scrollbarHeight = 600;
-        private int scrollbarWidth = 40;
+        private int scrollbarHeight = 538;
+        private int scrollbarWidth = 51;
         private Vector2 scrollbarPosition;
-        private float scrollbarThumbHeight = 150;
+        private float scrollbarThumbHeight = 148;
         private float scrollbarThumbPosition = 0f;
         private bool isDraggingThumb = false;
         private int totalItems;
@@ -62,7 +62,7 @@ namespace Advencursor._Scene
 
         //Player Save and Load
         private Player player;
-        private string pathplayer = "playerdata.json"; 
+        private string pathplayer = "playerdata.json";
 
         public InventoryScene(ContentManager contentManager, SceneManager sceneManager)
         {
@@ -71,9 +71,9 @@ namespace Advencursor._Scene
             uiManager = new UIManager();
             gameData = new GameData();
 
-           
 
-            scrollbarPosition = new Vector2((itemSize*gridColumns) + gridStartPos.X + 30, gridStartPos.Y);
+
+            scrollbarPosition = new Vector2(gridStartPos.X + 753, gridStartPos.Y + 51);
         }
 
         public void Load()
@@ -82,28 +82,44 @@ namespace Advencursor._Scene
             gameData.LoadData();
             inventory.LoadInventory(tempTexture);
 
+            if (gameData.isFirstTime)
+            {
+                inventory.Items.Add(new(AllSkills.itemNameViaSkillName["Thunder Core"], AllSkills.allSkills["Thunder Core"], Keys.Q));
+                gameData.isFirstTime = false;
+                gameData.SaveData();
+            }
+
             textFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
             textFontThai = Globals.Content.Load<SpriteFont>("Font/TextFontThai");
 
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
-            player.LoadPlayer(4,1);
-            
-            
+            player.LoadPlayer(4, 1);
 
-            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(gridStartPos.X + ((gridColumns*itemSize)/2),gridStartPos.Y + ((gridRows*itemSize)+(71/2))), OnEquipButtonClick);
-            UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(175, gridStartPos.Y + ((gridRows * itemSize) + (71 / 2))), OnStatusButtonHover,true);
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 541/2, Globals.Bounds.Y-(144/2)), OnPlayButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(541/2, Globals.Bounds.Y - (145/2)-1), OnExitButtonClick);
-            uiManager.AddElement("equipButton",equipButton);
-            uiManager.AddElement("statButton",statButton);
-            uiManager.AddElement("exitButton",exitButton);
-            uiManager.AddElement("playButton",playButton);
 
-            uiManager.SetScale("statButton",0.75f);
+
+            UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(800, Globals.Bounds.Y - 100), OnEquipButtonClick);
+            UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(170, Globals.Bounds.Y - 105), OnStatusButtonHover, true);
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 300, Globals.Bounds.Y - 115), OnPlayButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(Globals.Bounds.X - 100, 65), OnExitButtonClick);
+            uiManager.AddElement("equipButton", equipButton);
+            uiManager.AddElement("statButton", statButton);
+            uiManager.AddElement("exitButton", exitButton);
+            uiManager.AddElement("playButton", playButton);
+
+            uiManager.SetScale("statButton", 0.75f);
 
             backgroundInventory = Globals.Content.Load<Texture2D>("Item/Background1");
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
             gridTextureSelected = Globals.Content.Load<Texture2D>("Item/GridSelected");
+
+            
+
+
+
+            totalVisibleItems = gridColumns * gridRows;
+            totalItems = inventory.Items.Count;
+            totalPages = (int)Math.Ceiling((float)inventory.Items.Count / totalVisibleItems);
+            scrollbarTrackHeight = scrollbarHeight - scrollbarThumbHeight;
 
             Texture2D nullTexture = new(Globals.graphicsDevice, 1, 1);
             Item nullItem = new Item("null book", AllSkills.allSkills["null"], Keys.None);
@@ -114,13 +130,6 @@ namespace Advencursor._Scene
 
 
             inventory.SortItem();
-
-
-
-            totalVisibleItems = gridColumns * gridRows;
-            totalItems = inventory.Items.Count;
-            totalPages = (int)Math.Ceiling((float)inventory.Items.Count / totalVisibleItems);
-            scrollbarTrackHeight = scrollbarHeight - scrollbarThumbHeight;
         }
 
         public void Update(GameTime gameTime)
@@ -155,11 +164,11 @@ namespace Advencursor._Scene
 
             if (scrollOffset >= itemSize)
             {
-                scrollOffset = 0;  
+                scrollOffset = 0;
             }
             else if (scrollOffset <= -itemSize)
             {
-                scrollOffset = 0; 
+                scrollOffset = 0;
             }
             scrollbarThumbPosition = (float)currentScrollIndex / (inventory.Items.Count - totalVisibleItems) * scrollbarTrackHeight;
             Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
@@ -207,9 +216,12 @@ namespace Advencursor._Scene
         public void Draw(SpriteBatch spriteBatch)
         {
             Globals.SpriteBatch.Draw(backgroundInventory, Vector2.Zero, Color.White);
+            Color fontColor = new Color(85, 17, 95);
+            Globals.SpriteBatch.DrawString(textFont, $"Stage {gameData.stage}", new(73, 43), fontColor, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, $"Inventory", new(1300, 155), fontColor, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
             uiManager.Draw(spriteBatch);
 
-            float itemScale = 0.5f;
+            float itemScale = 0.57f;
 
             for (int row = 0; row < gridRows; row++)
             {
@@ -219,7 +231,7 @@ namespace Advencursor._Scene
 
                     if (itemIndex < inventory.Items.Count)
                     {
-                        Vector2 position = new Vector2(gridStartPos.X + col * itemSize, gridStartPos.Y + row * itemSize + scrollOffset);
+                        Vector2 position = new Vector2(gridStartPos.X + (col * itemSize) + (col * 10), gridStartPos.Y + (row * itemSize) + (row * 12) + scrollOffset);
                         Rectangle itemCollide = new((int)position.X, (int)position.Y, itemSize, itemSize);
 
                         if (position.Y >= gridStartPos.Y - itemSize && position.Y < (gridStartPos.Y + gridRows * itemSize) + itemSize)
@@ -235,7 +247,7 @@ namespace Advencursor._Scene
                                 else
                                 {
                                     spriteBatch.Draw(gridTextureSelected, position, mouseHoverColor);
-                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
+                                    spriteBatch.Draw(inventory.Items[selectedItemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                             }
                             else
@@ -248,22 +260,23 @@ namespace Advencursor._Scene
                                 else
                                 {
                                     spriteBatch.Draw(gridTexture, position, Color.White);
-                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
+                                    spriteBatch.Draw(inventory.Items[itemIndex].texture, position, null, Color.White, 0f, Vector2.Zero, itemScale, SpriteEffects.None, 0f);
                                 }
                             }
                         }
                     }
                 }
             }
-        
+
 
             Texture2D scrollbar = Globals.Content.Load<Texture2D>("Item/scrollBarTexture");
             Texture2D thumb = Globals.Content.Load<Texture2D>("Item/scrollBarThumb");
-            DrawScrollbar(spriteBatch,scrollbar,thumb);
+            DrawScrollbar(spriteBatch, scrollbar, thumb);
 
             DrawEquipItem(itemScale);
 
             DrawCurrentItem();
+
 
             DrawOnHover();
 
@@ -272,16 +285,16 @@ namespace Advencursor._Scene
 
         private void DrawScrollbar(SpriteBatch spriteBatch, Texture2D scrollbarTexture, Texture2D thumbTexture)
         {
-            spriteBatch.Draw(scrollbarTexture,new Rectangle((int)scrollbarPosition.X, (int)scrollbarPosition.Y, scrollbarWidth, scrollbarHeight),Color.LightGray);
+            spriteBatch.Draw(scrollbarTexture, new Rectangle((int)scrollbarPosition.X, (int)scrollbarPosition.Y, scrollbarWidth, scrollbarHeight), Color.LightGray);
 
-            spriteBatch.Draw(thumbTexture,new Rectangle((int)scrollbarPosition.X, (int)(scrollbarPosition.Y + scrollbarThumbPosition), scrollbarWidth, (int)scrollbarThumbHeight),Color.White);
+            spriteBatch.Draw(thumbTexture, new Rectangle((int)scrollbarPosition.X, (int)(scrollbarPosition.Y + scrollbarThumbPosition), scrollbarWidth, (int)scrollbarThumbHeight), Color.White);
         }
 
         private void DrawEquipItem(float itemScale)
         {
             for (int i = 0; i < 4; i++)
             {
-                Vector2 position = new Vector2(95, gridStartPos.Y + (i * itemSize) + (i * 0));
+                Vector2 position = new Vector2(85, gridStartPos.Y + (i * itemSize) + (i * 20) - 100);
                 Keys keyIndex = new Keys();
                 if (i == 0) { keyIndex = Keys.Q; }
                 else if (i == 1) { keyIndex = Keys.W; }
@@ -302,7 +315,7 @@ namespace Advencursor._Scene
             Globals.SpriteBatch.Draw(inventory.Items[selectedItemIndex].texture, bigItemPosition, null, Color.White, 0f, bigItemOrigin, 1f, SpriteEffects.None, 0f);
 
 
-            Color fontColor = new Color(85,17,95);
+            Color fontColor = new Color(85, 17, 95);
 
             string mainStat = inventory.Items[selectedItemIndex].statValue.ToString("F2");
             string mainStatDesc = inventory.Items[selectedItemIndex].statDesc;
@@ -323,26 +336,26 @@ namespace Advencursor._Scene
                 mainStatString = $"";
             }
             Vector2 mainStatSize = textFont.MeasureString(mainStatString);
-            Vector2 mainStatOrigin = new(mainStatSize.X/2, mainStatSize.Y/2);
+            Vector2 mainStatOrigin = new(mainStatSize.X / 2, mainStatSize.Y / 2);
             Vector2 nameSize = textFont.MeasureString(inventory.Items[selectedItemIndex].name);
             Vector2 nameOrigin = new(nameSize.X / 2, nameSize.Y / 2);
-            Globals.SpriteBatch.DrawString(textFont,  $"{(char)34}{ inventory.Items[selectedItemIndex].name}{(char)34}", new(bigItemPosition.X, bigItemPosition.Y - 300), fontColor, 0, nameOrigin, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(textFont,mainStatString,new(bigItemPosition.X,bigItemPosition.Y - 250),fontColor,0,mainStatOrigin,1,SpriteEffects.None,0f);
+            Globals.SpriteBatch.DrawString(textFont, $"\"{inventory.Items[selectedItemIndex].name}\"", new(bigItemPosition.X, bigItemPosition.Y - 220), fontColor, 0, nameOrigin, 1.2f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, mainStatString, new(bigItemPosition.X, bigItemPosition.Y + 155), fontColor, 0, mainStatOrigin, 1.2f, SpriteEffects.None, 0f);
 
 
             //Skill Description
             string skillName = $"Skill : {(char)34}{inventory.Items[selectedItemIndex].skill.name}{(char)34}";
-            string skillDesc = WrapText(textFontThai, inventory.Items[selectedItemIndex].skill.description, 900);
+            string skillDesc = WrapText(textFont, inventory.Items[selectedItemIndex].skill.description, 500);
             Vector2 skillNameSize = textFont.MeasureString(skillName);
-            Vector2 skillNameOrigin = new(skillNameSize.X/2,skillNameSize.Y/2);
+            Vector2 skillNameOrigin = new(skillNameSize.X / 2, skillNameSize.Y / 2);
             Vector2 skillDescSize = textFont.MeasureString(skillDesc);
-            Vector2 skillDescOrigin = new(skillDescSize.X/2, 0);
-            Globals.SpriteBatch.DrawString(textFont, skillName, new(bigItemPosition.X, bigItemPosition.Y + 210), fontColor, 0, skillNameOrigin, 1, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 225), fontColor, 0, skillDescOrigin, 0.75f, SpriteEffects.None, 0f);
+            Vector2 skillDescOrigin = new(skillDescSize.X / 2, 0);
+            Globals.SpriteBatch.DrawString(textFont, skillName, new(bigItemPosition.X, bigItemPosition.Y + 210), fontColor, 0, skillNameOrigin, 1.2f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 250), fontColor, 0, skillDescOrigin, 1f, SpriteEffects.None, 0f);
 
 
-            
-            
+
+
         }
 
 
@@ -414,7 +427,7 @@ namespace Advencursor._Scene
         {
             if (drawOnHover)
             {
-                Vector2 pos = new Vector2(200,gridStartPos.Y);
+                Vector2 pos = new Vector2(200, gridStartPos.Y);
 
                 Texture2D playerStatBackground = Globals.Content.Load<Texture2D>("Item/PlayerBackground");
                 //Player Stat
@@ -425,10 +438,10 @@ namespace Advencursor._Scene
                 string Attack = $"Attack = {player.Status.Attack.ToString()}";
                 string CritRate = $"Critical Rate = {player.Status.CritRate.ToString("F2")}%";
                 string CritDam = $"Critical Damage = {player.Status.CritDam.ToString("F2")}%";
-                Globals.SpriteBatch.Draw(playerStatBackground,pos,Color.White);
+                Globals.SpriteBatch.Draw(playerStatBackground, pos, Color.White);
                 Globals.SpriteBatch.DrawString(textFont, Header, new Vector2(pos.X + playerStatBackground.Width / 2, pos.Y + HeaderSize.Y), Color.Black, 0, HeaderOrigin, 1.5f, SpriteEffects.None, 0f);
                 Globals.SpriteBatch.DrawString(textFont, HP, new Vector2(pos.X + 10, pos.Y + 100), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 10,pos.Y + 150), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 10, pos.Y + 150), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
                 Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 10, pos.Y + 200), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
                 Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 10, pos.Y + 250), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
             }
@@ -440,7 +453,10 @@ namespace Advencursor._Scene
             inventory.SaveInventory();
             if (gameData.stage == 1)
             {
-                sceneManager.AddScene(new Stage1(contentManager, sceneManager),new CircleTransition(Globals.graphicsDevice));
+                sceneManager.AddScene(new Stage1(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+            }else if (gameData.stage == 2)
+            {
+                sceneManager.AddScene(new Stage2(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
             }
         }
 

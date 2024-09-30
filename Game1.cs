@@ -46,7 +46,11 @@ namespace Advencursor
             Globals.Bounds = new(1920, 1080);
             _graphics.PreferredBackBufferWidth = Globals.Bounds.X;
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
-            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _graphics.IsFullScreen = false;
+            Window.IsBorderless = true;
+            _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 
             Globals.Content = Content;
@@ -69,7 +73,7 @@ namespace Advencursor
             gameData.LoadData();
 
 
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+            _sceneManager.AddScene(new InventoryScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,16 +81,20 @@ namespace Advencursor
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Globals.Game.Exit();
 
-            Globals.Update(gameTime);
-            InputManager.Update();
-            TimeManager.Update(gameTime);
-            _sceneManager.Update(gameTime);
-            base.Update(gameTime);
+            if (IsActive)
+            {
+                Globals.Update(gameTime);
+                InputManager.Update();
+                TimeManager.Update(gameTime);
+                _sceneManager.Update(gameTime);
+                base.Update(gameTime);
+            }
         }
 
 
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.White);
 
             _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);

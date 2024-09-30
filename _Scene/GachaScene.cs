@@ -153,7 +153,7 @@ namespace Advencursor._Scene
 
         private void OnRoll1ButtonClick()
         {
-            if (gameData.gems - 10 <= 0) return;
+            if (gameData.gems - 10 < 0) return;
 
             gameData.gems -= 10;
             Item tempItem = RandomItemsWithPity(skillPool,pullRates);
@@ -170,7 +170,7 @@ namespace Advencursor._Scene
         private void OnRoll5ButtonClick()
         {
             int rollNumber = 6;
-            if (gameData.gems - 10*(rollNumber-1) <= 0) return;
+            if (gameData.gems - 10*(rollNumber-1) < 0) return;
 
             gameData.gems -= 10*(rollNumber-1);
             List<Item> results = new List<Item>();

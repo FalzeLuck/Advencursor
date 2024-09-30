@@ -33,7 +33,7 @@ namespace Advencursor._Models.Enemy.Stage1
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,1,  8, false) },
+                { "Idle", new(texture, row, column,1,  10, false) },
                 { "Attack", new(texture,row,column,6,3,8,true) },
                 { "Charge",new(texture,row,column,1,8,true) },
                 { "Stun",new(texture,row,column,1,8,true) },

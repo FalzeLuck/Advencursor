@@ -347,6 +347,13 @@ namespace Advencursor._Scene.Stage
                         elite.Status.immunity = false;
                     }
                 }
+                foreach (var enemy in specialEnemy)
+                {
+                    if (enemy.Status.immunity)
+                    {
+                        enemy.Status.immunity = false;
+                    }
+                }
                 boss_obj.Status.immunity = false;
                 player.ChangeAnimation("Idle");
                 animationManager.Stop("Slash");
@@ -408,7 +415,7 @@ namespace Advencursor._Scene.Stage
                 {
                     pool.Burn();
                     Common1 poolTemp = new Common1(new(Globals.graphicsDevice, 1, 1), Vector2.Zero, 1, 1, 1, 1);
-                    player.Status.TakeDamage(10, poolTemp);
+                    player.Status.TakeDamage((player.Status.MaxHP*3)/100, poolTemp);
                 }
 
                 if (pool.poolDuration > 5f)
@@ -538,7 +545,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Elite1
-            if (elite_spawn_time > 1f && !boss_spawned)
+            if (elite_spawn_time > 30f && !boss_spawned)
             {
                 if (elite_count < elite_max)
                 {

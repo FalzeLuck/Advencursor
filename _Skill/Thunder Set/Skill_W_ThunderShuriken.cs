@@ -1,6 +1,7 @@
 ﻿using Advencursor._Animation;
 using Advencursor._Managers;
 using Advencursor._Models;
+using Advencursor._Models.Enemy._CommonEnemy;
 using Advencursor._Models.Enemy.Stage1;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -119,7 +120,7 @@ namespace Advencursor._Skill.Thunder_Set
                             Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
                             Globals.EnemyManager[i].Status.Paralysis(1.5f);
 
-                            if (!(Globals.EnemyManager[i] is Boss1))
+                            if (Globals.EnemyManager[i] is Common1)
                             {
                                 Vector2 dir = Globals.EnemyManager[i].position - position[j];
                                 dir.Normalize();
