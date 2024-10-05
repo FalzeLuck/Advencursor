@@ -27,6 +27,7 @@ namespace Advencursor._Scene
         private Dictionary<Keys, Item> equippedItems = new Dictionary<Keys, Item>();
 
         private Texture2D backgroundInventory;
+        private Texture2D midgroundInventory;
         private Texture2D gridTexture;
         private Texture2D gridTextureSelected;
         private int gridColumns = 4;
@@ -108,7 +109,9 @@ namespace Advencursor._Scene
 
             uiManager.SetScale("statButton", 0.75f);
 
-            backgroundInventory = Globals.Content.Load<Texture2D>("Item/Background1");
+            backgroundInventory = Globals.Content.Load<Texture2D>("Item/Background2");
+            midgroundInventory = Globals.Content.Load<Texture2D>("Item/Background1");
+
             gridTexture = Globals.Content.Load<Texture2D>("Item/Grid");
             gridTextureSelected = Globals.Content.Load<Texture2D>("Item/GridSelected");
 
@@ -216,6 +219,7 @@ namespace Advencursor._Scene
         public void Draw(SpriteBatch spriteBatch)
         {
             Globals.SpriteBatch.Draw(backgroundInventory, Vector2.Zero, Color.White);
+            Globals.SpriteBatch.Draw(midgroundInventory, Vector2.Zero, Color.White);
             Color fontColor = new Color(85, 17, 95);
             Globals.SpriteBatch.DrawString(textFont, $"Stage {gameData.stage}", new(73, 43), fontColor, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
             Globals.SpriteBatch.DrawString(textFont, $"Inventory", new(1300, 155), fontColor, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
@@ -275,7 +279,8 @@ namespace Advencursor._Scene
 
             DrawEquipItem(itemScale);
 
-            DrawCurrentItem();
+            if (inventory.Items[selectedItemIndex].skill.name != "null")
+                DrawCurrentItem();
 
 
             DrawOnHover();
@@ -344,6 +349,7 @@ namespace Advencursor._Scene
 
 
             //Skill Description
+            
             string skillName = $"Skill : {(char)34}{inventory.Items[selectedItemIndex].skill.name}{(char)34}";
             string skillDesc = WrapText(textFont, inventory.Items[selectedItemIndex].skill.description, 500);
             Vector2 skillNameSize = textFont.MeasureString(skillName);

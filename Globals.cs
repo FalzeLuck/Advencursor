@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +23,6 @@ namespace Advencursor
         public static SpriteBatch SpriteBatch { get; set; }
         public static SpriteFont SpriteFont { get; set; }
         public static GraphicsDevice graphicsDevice { get; set; }
-
         public static Camera Camera { get; set; }
         public static Viewport Viewport { get; set; }
         public static Point Bounds { get; set; }

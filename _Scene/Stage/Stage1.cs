@@ -172,6 +172,8 @@ namespace Advencursor._Scene.Stage
             soundManager.SetVolume("Charge", 0.2f);
             SoundEffect parry = Globals.Content.Load<SoundEffect>("Sound/Parry");
             soundManager.LoadSound("Parry", parry);
+            SoundEffect slash = Globals.Content.Load<SoundEffect>("Sound/Effect/Knife Swing");
+            soundManager.LoadSound("Slash", slash);
             Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
         }
 

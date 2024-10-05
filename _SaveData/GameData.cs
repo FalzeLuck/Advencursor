@@ -19,6 +19,11 @@ namespace Advencursor._SaveData
         public bool isFirstTime {  get; set; } = true;
         public int stage { get; set; } = 1;
 
+        //Setting
+        public float volumeMusic { get; set; } = 1f;
+        public float volumeEffect { get; set; } = 1f;
+
+
         public int gems { get; set; } = 0;
         public int pityCounter { get; set; } = 0;
 

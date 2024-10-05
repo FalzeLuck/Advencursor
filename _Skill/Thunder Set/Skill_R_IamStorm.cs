@@ -12,12 +12,14 @@ using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 using Advencursor._Combat;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Advencursor._Skill.Thunder_Set
 {
     public class Skill_R_IamStorm : Skill
     {
         private SpriteEmitter spriteEmitter;
+        private SoundManager soundManager = new SoundManager();
 
         private ParticleEmitterData lightningPed;
         private ParticleEmitterData ped1;
@@ -51,6 +53,9 @@ namespace Advencursor._Skill.Thunder_Set
             star1 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_1");
             star2 = Globals.Content.Load<Texture2D>("Item/SetThunder/R_Thunder_2");
             starOrigin =  new Vector2(star1.Width / 2, star1.Height / 2);
+
+            SoundEffect slash = Globals.Content.Load<SoundEffect>("Sound/Effect/Knife Swing");
+            soundManager.LoadSound("Slash", slash);
         }
 
         public override void Use(Player player)
@@ -163,6 +168,7 @@ namespace Advencursor._Skill.Thunder_Set
                 
                 if(skillTime <= 1f && countHit < maxHit)
                 {
+                    soundManager.PlaySoundCanStack("Slash");
                     foreach (var enemy in Globals.EnemyManager)
                     {
                         enemy.TakeDamage( 2, player,true,false);
