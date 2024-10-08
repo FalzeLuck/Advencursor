@@ -55,7 +55,7 @@ namespace Advencursor._Models.Enemy.Stage2
             };
             indicator = "Idle";
             rayWidth = Globals.Bounds.X + 500;
-            rayHeight = 300;
+            rayHeight = 250;
             warningTexture = Globals.CreateRectangleTexture(rayWidth, rayHeight, Color.Red);
             rayTexture = Globals.CreateRectangleTexture(rayWidth, rayHeight, Color.Yellow);
             screenCenter = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);

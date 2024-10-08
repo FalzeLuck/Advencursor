@@ -18,6 +18,7 @@ namespace Advencursor._Models.Enemy
         public MovementAI movementAI { get; set; }
         public Rectangle parryZone;
         public bool isAttacking;
+        protected Texture2D shadowTexture;
 
         public float collisionCooldown { get; set; }
 
@@ -31,19 +32,43 @@ namespace Advencursor._Models.Enemy
         {
             collisionCooldown -= TimeManager.TimeGlobal;
             Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
+            FlipAuto(playerPosition);
+        }
 
-            if (playerPosition.X > position.X)
+        public void FlipAuto(Vector2 playerPosition,bool reverse = false)
+        {
+            if (!reverse)
             {
-                foreach (var anim in animations.Values)
+                if (playerPosition.X > position.X)
                 {
-                    anim.IsFlip = false;
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.IsFlip = false;
+                    }
+                }
+                else
+                {
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.IsFlip = true;
+                    }
                 }
             }
             else
             {
-                foreach (var anim in animations.Values)
+                if (playerPosition.X < position.X)
                 {
-                    anim.IsFlip = true;
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.IsFlip = false;
+                    }
+                }
+                else
+                {
+                    foreach (var anim in animations.Values)
+                    {
+                        anim.IsFlip = true;
+                    }
                 }
             }
         }

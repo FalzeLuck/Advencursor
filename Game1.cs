@@ -50,7 +50,7 @@ namespace Advencursor
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.IsFullScreen = false;
-            Window.IsBorderless = true;
+            Window.IsBorderless = false;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 
@@ -74,7 +74,7 @@ namespace Advencursor
             gameData.LoadData();
 
 
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+            _sceneManager.AddScene(new Stage1(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

@@ -67,7 +67,7 @@ namespace Advencursor._Scene.Stage
             screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
 
             bgsong = Globals.Content.Load<Song>("Sound/Song/Stage Select Song");
-            soundManager.PlaySong("Stage Select Song",bgsong,true);
+            //soundManager.PlaySong("Stage Select Song",bgsong,true);
             soundManager.SetSongVolume(gameData.volumeMusic);
 
             UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);

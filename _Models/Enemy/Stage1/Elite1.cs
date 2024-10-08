@@ -35,7 +35,7 @@ namespace Advencursor._Models.Enemy.Stage1
             {
                 { "Idle", new(texture, row, column,1,  10, false) },
                 { "Attack", new(texture,row,column,6,3,8,true) },
-                { "Charge",new(texture,row,column,1,8,true) },
+                { "Charge",new(texture,row,column,1,12,true) },
                 { "Stun",new(texture,row,column,1,8,true) },
                 { "Die",new(texture,row,column,2,8,false) }
 
@@ -48,6 +48,8 @@ namespace Advencursor._Models.Enemy.Stage1
             isSlamming = false;
             slamCooldown = 10f;
             stopCooldown = 0f;
+
+            shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow3");
         }
 
         public override void Update(GameTime gameTime)
@@ -160,7 +162,7 @@ namespace Advencursor._Models.Enemy.Stage1
                 }
                 Globals.SpriteBatch.Draw(warningTexture, position, null, Color.White * warningOpacity, 0, origin, 1f, SpriteEffects.None, 0f);
             }
-
+            DrawShadow();
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Draw(position);
@@ -193,6 +195,15 @@ namespace Advencursor._Models.Enemy.Stage1
             stunned = true;
             stuntimer = 0f;
             stunduration = duration;
+        }
+
+        private void DrawShadow()
+        {
+            Vector2 shadowPosition = new Vector2 (position.X, position.Y + 150/2);
+            float shadowScale = 1f;
+
+            Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
+            Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White, rotation, shadowOrigin, shadowScale, spriteEffects, 0f);
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Advencursor._Scene
 
 
 
-            scrollbarPosition = new Vector2(gridStartPos.X + 753, gridStartPos.Y + 51);
+            scrollbarPosition = new Vector2(gridStartPos.X + 780, gridStartPos.Y + 51);
         }
 
         public void Load()

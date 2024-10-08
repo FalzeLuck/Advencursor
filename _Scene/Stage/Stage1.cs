@@ -61,7 +61,6 @@ namespace Advencursor._Scene.Stage
 
 
         //Stage Timer & Controls
-        private bool canAttack = true;
         private float boss_spawn_time;
         private float boss_dash_cooldown;
         private bool boss_spawned;
@@ -72,7 +71,7 @@ namespace Advencursor._Scene.Stage
         private int elite_count = 0;
         private int special_count = 0;
         private int enemy_max = 30;
-        private int elite_max = 1;
+        private int elite_max = 2;
         private int special_max = 3;
         private int enemy_killed = 0;
 
@@ -319,7 +318,6 @@ namespace Advencursor._Scene.Stage
                     player.ChangeAnimation("Attack", true);
                     animationManager.Flip("Slash", true);
                     animationManager.Play("Slash");
-                    canAttack = false;
                     player.DoNormalAttack();
                 }
                 if (InputManager.MouseLeftClicked && player.CanNormalAttack())
@@ -328,7 +326,6 @@ namespace Advencursor._Scene.Stage
                     player.ChangeAnimation("Attack", false);
                     animationManager.Flip("Slash", false);
                     animationManager.Play("Slash");
-                    canAttack = false;
                     player.DoNormalAttack();
                 }
             }
@@ -584,6 +581,7 @@ namespace Advencursor._Scene.Stage
                     if (enemy.animations["Die"].IsComplete)
                     {
                         elite_count--;
+                        enemy_killed++;
                         player.Status.SetCritRate(player.Status.CritRate + 4);
                         damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
                         Globals.EnemyManager.Remove(enemy);

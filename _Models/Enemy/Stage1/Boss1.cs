@@ -53,6 +53,8 @@ namespace Advencursor._Models.Enemy.Stage1
             dashed = false;
             stunned = false;
 
+            shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow2");
+
         }
 
         public override void Update(GameTime gameTime)
@@ -78,7 +80,7 @@ namespace Advencursor._Models.Enemy.Stage1
 
                 //Update Radius
                 checkRadius = collision;
-                checkRadius = ChangeRectangleSize(checkRadius, 450, false);
+                checkRadius = ChangeRectangleSize(checkRadius, 1000, false);
                 collision = ChangeRectangleSize(collision, 125, true);
 
 
@@ -86,20 +88,7 @@ namespace Advencursor._Models.Enemy.Stage1
                 if (charge)
                 {
                     //Change Flip Cuz art do wrong side
-                    if (playerPosition.X < position.X)
-                    {
-                        foreach (var anim in animations.Values)
-                        {
-                            anim.IsFlip = false;
-                        }
-                    }
-                    else
-                    {
-                        foreach (var anim in animations.Values)
-                        {
-                            anim.IsFlip = true;
-                        }
-                    }
+                    FlipAuto(playerPosition, true);
                     charge_duration += TimeManager.TimeGlobal;
                     warningDirection = player.position - position;
                     warningDirection.Normalize();
@@ -125,7 +114,7 @@ namespace Advencursor._Models.Enemy.Stage1
                         if (!animations["Attack"].IsComplete)
                         {
                             animations["Attack"].Play();
-                            Globals.Camera.Shake(0.2f, 5);
+                            Globals.Camera.Shake(0.2f, 10);
                         }
                         velocity = Vector2.Zero;
                         stand_time -= TimeManager.TimeGlobal;
@@ -234,6 +223,7 @@ namespace Advencursor._Models.Enemy.Stage1
                 }
                 Globals.SpriteBatch.Draw(warningTexture, position, null, Color.White * warningOpacity, warningRotationAngle, origin, 1f, SpriteEffects.None, 0f);
             }
+            DrawShadow();
             base.Draw();
 
         }
@@ -291,5 +281,13 @@ namespace Advencursor._Models.Enemy.Stage1
             return currentAngle + MathHelper.Clamp(difference, -amount, amount);
         }
 
+        private void DrawShadow()
+        {
+            Vector2 shadowPosition = new Vector2(position.X, position.Y + 150 / 2);
+            float shadowScale = 1f;
+
+            Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
+            Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White * 0.6f, rotation, shadowOrigin, shadowScale, spriteEffects, 0f);
+        }
     }
 }
