@@ -81,7 +81,7 @@ namespace Advencursor._Models
             stunWaitDuration = 0f;
 
             //default skill
-            Skill nullSkill = new Skill("null", 0);
+            Skill nullSkill = new Skill("null", 0,new SkillData());
             Skills = new()
             {
                 {Keys.Q,nullSkill},

@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.IO;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
+using Advencursor._SaveData;
 
 namespace Advencursor._Skill
 {
@@ -18,10 +19,10 @@ namespace Advencursor._Skill
     {
         public List<Item> Items { get; private set; }
 
-
+        
         public Inventory()
         {
-
+            
             Items = new List<Item>()
             {
                 new Item(AllSkills.itemNameViaSkillName["null"],AllSkills.allSkills["null"],Keys.None)

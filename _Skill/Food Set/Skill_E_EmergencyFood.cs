@@ -1,5 +1,6 @@
 ﻿using Advencursor._Animation;
 using Advencursor._Models;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,14 +14,20 @@ namespace Advencursor._Skill.Food_Set
     public class Skill_E_EmergencyFood : Skill
     {
         private float buffTime;
+        private float duration;
+        private float healPercent;
+        private float damageMultiplier;
         private float oldAttack;
         private bool isusing = false;
 
         private Animation auraHeal;
         private Animation auraDamage;
         private Vector2 position;
-        public Skill_E_EmergencyFood(string name, float cooldown) : base(name, cooldown)
+        public Skill_E_EmergencyFood(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
         {
+            duration = skillData.GetMultiplierNumber(name, "Duration");
+            healPercent = skillData.GetMultiplierNumber(name, "Heal Percentage");
+            damageMultiplier = skillData.GetMultiplierNumber(name, "Attack Multiplier");
             rarity = 3;
             setSkill = "Food";
             description = "When the body reaches its limit, Unleash the power of emergency food! Immediately increases the user's attack power along with restoring some health, making it possible to come back to fight stronger again. This power lasts only few seconds. Make the most of this short moment!";
@@ -31,11 +38,11 @@ namespace Advencursor._Skill.Food_Set
         public override void Use(Player player)
         {
             base.Use(player);
-            player.Status.Heal(player.Status.MaxHP * 5 / 100);
+            player.Status.Heal(player.Status.MaxHP * healPercent / 100);
             oldAttack = player.Status.Attack;
-            player.Status.SetAttack(oldAttack * 1.7f);
+            player.Status.SetAttack(oldAttack * damageMultiplier);
             isusing = true;
-            buffTime = 5f;
+            buffTime = duration;
             auraDamage.Reset();
         }
 

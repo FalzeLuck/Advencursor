@@ -7,38 +7,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Advencursor._SaveData;
+using System.Text.Json.Serialization;
+using System.IO;
 
 namespace Advencursor._Skill
 {
     static class AllSkills
     {
+        public static SkillData skillData { get; set; } = new SkillData();
+
+        
 
         public static Dictionary<string, Skill> allSkills = new Dictionary<string, Skill>
         {
             //Please Copy All to Reset function Below when changing this or you will encounter logic error. - from Past Chotayakorn to Future Chotayakorn
-            {"null", new Skill("null",0.1f) },
-            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 18)},
-            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:20)},
-            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:15)},
-            {"I AM the Storm", new Skill_R_IamStorm("I AM the Storm",cooldown:60)},
-            {"Yadom Bait",new Skill_Q_FoodTrap("Yadom Bait",cooldown:12) },
-            {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap",cooldown : 15) },
-            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 14) },
-            {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win",cooldown : 60) },
+            {"null", new Skill("null",0.1f,skillData) },
+            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 18,skillData)},
+            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:20,skillData)},
+            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:15, skillData)},
+            {"I AM the Storm", new Skill_R_IamStorm("I AM the Storm",cooldown:60, skillData)},
+            {"Yadom Bait",new Skill_Q_FoodTrap("Yadom Bait",cooldown:12, skillData) },
+            {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap",cooldown : 15, skillData) },
+            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 14, skillData) },
+            {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win",cooldown : 60, skillData) },
         };
         public static void Reset()
         {
             allSkills = new Dictionary<string, Skill>
             {
-            {"null", new Skill("null",0.1f) },
-            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 18)},
-            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:20)},
-            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:15)},
-            {"I AM the Storm", new Skill_R_IamStorm("I AM the Storm",cooldown:60)},
-            {"Yadom Bait",new Skill_Q_FoodTrap("Yadom Bait",cooldown:12) },
-            {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap",cooldown : 15) },
-            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 14) },
-            {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win",cooldown : 60) },
+            {"null", new Skill("null",0.1f,skillData) },
+            {"Thunder Core", new Skill_Q_ThunderCore("Thunder Core",cooldown: 18,skillData)},
+            {"Thunder Shuriken", new Skill_W_ThunderShuriken("Thunder Shuriken",cooldown:20,skillData)},
+            {"Thunder Speed", new Skill_E_ThunderSpeed("Thunder Speed",cooldown:15, skillData)},
+            {"I AM the Storm", new Skill_R_IamStorm("I AM the Storm",cooldown:60, skillData)},
+            {"Yadom Bait",new Skill_Q_FoodTrap("Yadom Bait",cooldown:12, skillData) },
+            {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap",cooldown : 15, skillData) },
+            {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food",cooldown : 14, skillData) },
+            {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win",cooldown : 60, skillData) },
             };
         }
 

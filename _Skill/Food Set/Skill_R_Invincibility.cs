@@ -1,5 +1,6 @@
 ﻿using Advencursor._Animation;
 using Advencursor._Models;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,11 +19,22 @@ namespace Advencursor._Skill.Food_Set
         private float oldCritDam;
         private bool isusing = false;
 
+        private float duration;
+        private float healPercent;
+        private float attackMultiplier;
+        private float addCritRate;
+        private float addCritDam;
+
         private Animation aura;
         private Animation auraDamage;
         private Vector2 position;
-        public Skill_R_Invincibility(string name, float cooldown) : base(name, cooldown)
+        public Skill_R_Invincibility(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
         {
+            duration = skillData.GetMultiplierNumber(name, "Duration");
+            healPercent = skillData.GetMultiplierNumber(name, "Heal Percentage");
+            attackMultiplier = skillData.GetMultiplierNumber(name, "Attack Add");
+            addCritRate = skillData.GetMultiplierNumber(name, "Crit Rate Add");
+            addCritDam = skillData.GetMultiplierNumber(name, "Crit Dam Add");
             rarity = 4;
             setSkill = "Food";
             description = "\"The Taste of Victory!\" Consume a special meal to restore half of your health, increase your attack power, critical hit chance and critical hit damage by a lot.Get ready for a new battle!";
@@ -33,15 +45,15 @@ namespace Advencursor._Skill.Food_Set
         public override void Use(Player player)
         {
             base.Use(player);
-            player.Status.Heal(player.Status.MaxHP * 50 / 100);
+            player.Status.Heal(player.Status.MaxHP * healPercent / 100);
             oldAttack = player.Status.Attack;
             oldCritRate = player.Status.CritRate;
             oldCritDam = player.Status.CritDam;
-            player.Status.SetAttack(oldAttack + 800);
-            player.Status.SetCritRate(oldCritRate + 20);
-            player.Status.SetCritDamage(oldCritDam + 200);
+            player.Status.SetAttack(oldAttack + attackMultiplier);
+            player.Status.SetCritRate(oldCritRate + addCritRate);
+            player.Status.SetCritDamage(oldCritDam + addCritDam);
             isusing = true;
-            buffTime = 15f;
+            buffTime = duration;
         }
 
         public override void Update(float deltaTime, Player player)

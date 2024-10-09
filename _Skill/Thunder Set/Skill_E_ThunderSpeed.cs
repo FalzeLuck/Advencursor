@@ -3,6 +3,7 @@ using Advencursor._Models;
 using Advencursor._Models.Enemy;
 using Advencursor._Particles;
 using Advencursor._Particles.Emitter;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace Advencursor._Skill.Thunder_Set
         private ParticleEmitter pe1;
 
         private float bufftime;
+        private float duration;
         private bool isUsing = false;
 
         private List<Rectangle> collision = new List<Rectangle>();
@@ -33,8 +35,12 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 0.5f;
-        public Skill_E_ThunderSpeed(string name, float cooldown) : base(name, cooldown)
+        private float speedMultiplier = 2f;
+        public Skill_E_ThunderSpeed(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
         {
+            skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
+            duration = skillData.GetMultiplierNumber(name, "Duration");
+            speedMultiplier = skillData.GetMultiplierNumber(name, "Speed Multiplier");
             rarity = 3;
             setSkill = "Thunder";
             description = "Release lightning power into the ground. Enemy who surpass will take damage and got paralized. Also, user will gain additional attack speed.";
@@ -44,7 +50,7 @@ namespace Advencursor._Skill.Thunder_Set
         {
             base.Use(player);
             spriteEmitter = new SpriteEmitter(() => player.position);
-            bufftime = 5f;
+            bufftime = duration;
 
             ped = new()
             {
@@ -93,7 +99,7 @@ namespace Advencursor._Skill.Thunder_Set
             collisionCooldown = new List<float>(new float[100]);
 
             oldPlayerDelay = player.normalAttackDelay;
-            player.SetAttackDelay(oldPlayerDelay / 2);
+            player.SetAttackDelay(oldPlayerDelay / speedMultiplier);
 
             isUsing = true;
         }

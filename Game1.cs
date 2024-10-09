@@ -5,6 +5,7 @@ using Advencursor._SaveData;
 using Advencursor._Scene;
 using Advencursor._Scene.Stage;
 using Advencursor._Scene.Transition;
+using Advencursor._Skill;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,6 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Advencursor
 {
@@ -29,6 +31,7 @@ namespace Advencursor
         private Camera camera;
 
         private GameData gameData;
+        private SkillData skillData;
 
 
         public Game1()
@@ -39,6 +42,7 @@ namespace Advencursor
             _sceneManager = new();
             camera = new Camera();
             gameData = new GameData();
+            skillData = new SkillData();
         }
 
 
@@ -72,9 +76,12 @@ namespace Advencursor
             Globals.SpriteFont = _font;
 
             gameData.LoadData();
+            skillData.LoadData();
+            AllSkills.skillData = skillData;
+            AllSkills.Reset();
 
 
-            _sceneManager.AddScene(new InventoryScene(Content, _sceneManager));
+            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

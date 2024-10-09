@@ -52,6 +52,7 @@ namespace Advencursor._SaveData
             }
             else
             {
+                SaveData();
                 return;
             }
         }

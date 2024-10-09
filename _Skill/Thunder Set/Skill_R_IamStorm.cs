@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 using Advencursor._Combat;
 using Microsoft.Xna.Framework.Audio;
+using Advencursor._SaveData;
 
 namespace Advencursor._Skill.Thunder_Set
 {
@@ -45,8 +46,10 @@ namespace Advencursor._Skill.Thunder_Set
         private float skillMultiplier = 1f;
         private int maxHit = 9;
         private int countHit = 0;
-        public Skill_R_IamStorm(string name, float cooldown) : base(name, cooldown)
+        public Skill_R_IamStorm(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
         {
+            skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
+            maxHit = (int)skillData.GetMultiplierNumber(name, "Max Hit");
             rarity = 4;
             setSkill = "Thunder";
             description = "As the power of sharp judgment, I will slash every enemy in the area. Inflicts all enemies with massive damage and inflict Paralysis status for a short period.";

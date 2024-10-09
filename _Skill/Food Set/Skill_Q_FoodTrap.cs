@@ -1,5 +1,6 @@
 ﻿using Advencursor._AI;
 using Advencursor._Models;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,9 +14,11 @@ namespace Advencursor._Skill.Food_Set
     public class Skill_Q_FoodTrap : Skill
     {
         private float buffTime;
+        private float duration;
         private Sprite tauntFood;
-        public Skill_Q_FoodTrap(string name, float cooldown) : base(name, cooldown)
+        public Skill_Q_FoodTrap(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
         {
+            duration = skillData.GetMultiplierNumber(name, "Duration");
             rarity = 1;
             setSkill = "Food";
             description = "\"Attractive Aroma!\" Creates a lure filled with an alluring scent that attracts all enemies. Enemies that come near the lure will be attracted and attack the lure instead, giving the player a chance to attack.";
@@ -30,7 +33,7 @@ namespace Advencursor._Skill.Food_Set
             base.Use(player);
             tauntFood.position = player.position;
             tauntFood.SetOpacity(0.8f);
-            buffTime = 5f;
+            buffTime = duration;
             
         }
 

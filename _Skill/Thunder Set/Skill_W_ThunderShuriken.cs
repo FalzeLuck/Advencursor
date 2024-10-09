@@ -3,6 +3,7 @@ using Advencursor._Managers;
 using Advencursor._Models;
 using Advencursor._Models.Enemy._CommonEnemy;
 using Advencursor._Models.Enemy.Stage1;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -40,7 +41,7 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 0.5f;
-        public Skill_W_ThunderShuriken(string name, float cooldown) : base(name, cooldown)
+        public Skill_W_ThunderShuriken(string name, float cooldown,SkillData skillData) : base(name, cooldown, skillData)
         {
             rarity = 2;
             setSkill = "Thunder";
@@ -49,6 +50,14 @@ namespace Advencursor._Skill.Thunder_Set
 
         public override void Use(Player player)
         {
+            skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
+            maxAmount = (int)skillData.GetMultiplierNumber(name, "Max Amount");
+            radius = skillData.GetMultiplierNumber(name, "Radius");
+            maxDuration = skillData.GetMultiplierNumber(name, "Duration");
+            rotation_speed = skillData.GetMultiplierNumber(name, "Speed");
+
+            
+
             base.Use(player);
             isUsing = true;
             stayDuration = 0f;

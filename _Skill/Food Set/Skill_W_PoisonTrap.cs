@@ -2,6 +2,7 @@
 using Advencursor._Animation;
 using Advencursor._Managers;
 using Advencursor._Models;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,11 +16,13 @@ namespace Advencursor._Skill.Food_Set
     public class Skill_W_PoisonTrap : Skill
     {
         private float buffTime;
+        private float duration;
         private Sprite poisonFood;
 
         private List<float> collisionCooldown = new List<float>();
-        public Skill_W_PoisonTrap(string name, float cooldown) : base(name, cooldown)
+        public Skill_W_PoisonTrap(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
         {
+            duration = skillData.GetMultiplierNumber(name, "Duration");
             rarity = 2;
             setSkill = "Food";
             description = "\"Haha, it's a trap!\" Place a poison trap on the ground. When enemies step in, enemies will be rapidly consumed by the poison!";
@@ -33,7 +36,7 @@ namespace Advencursor._Skill.Food_Set
             base.Use(player);
             poisonFood.position = player.position;
             poisonFood.SetOpacity(0.9f);
-            buffTime = 3f;
+            buffTime = duration;
 
             collisionCooldown = new List<float>(new float[100]);
         }

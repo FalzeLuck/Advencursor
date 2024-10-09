@@ -16,13 +16,12 @@ namespace Advencursor._Skill.Thunder_Set
     {
         private float buffTime;
         private Vector2 position;
-
-        private SkillData skillData;
+        private float duration = 8f;
 
         Animation aura;
-        public  Skill_Q_ThunderCore(string name, float cooldown) : base(name, cooldown)
+        public  Skill_Q_ThunderCore(string name, float cooldown,SkillData skillData) : base(name, cooldown,skillData)
         {
-            skillData = new SkillData();
+            duration = skillData.GetMultiplierNumber(name, "Duration");
             rarity = 1;
             setSkill = "Thunder";
             description = "Awake lightning power in your soul. Cause the mouse cursor to shine with lightning. When attacking enemies during this time, enemy will be shocked by lightning and inflict Paralysis for a short period.";
@@ -49,7 +48,7 @@ namespace Advencursor._Skill.Thunder_Set
                 player.isBuff = true;
                 player.buffIndicator = "Thunder_";
             }
-            if (buffTime > 8f)
+            if (buffTime > duration)
             {
                 player.isBuff = false;
                 player.buffIndicator = "Normal_";
@@ -58,7 +57,7 @@ namespace Advencursor._Skill.Thunder_Set
 
         public override void Draw()
         {
-            if (buffTime <= 8f && aura != null)
+            if (buffTime <= duration && aura != null)
             aura.Draw(position);
         }
     }

@@ -1,9 +1,11 @@
 ﻿using Advencursor._Models;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Advencursor._Skill
@@ -20,11 +22,18 @@ namespace Advencursor._Skill
         public int rarity;
 
         public string setSkill;
+        public SkillData skillData { get; set; }
 
-        public Skill(string name, float cooldown) 
+        public Skill()
+        {
+            
+        }
+
+        public Skill(string name, float cooldown,SkillData skillData) 
         {
             this.name = name;
             this.cooldown = cooldown;
+            this.skillData = skillData;
             cooldownTimer = 0;
             description = "";
         }
