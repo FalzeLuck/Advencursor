@@ -29,10 +29,11 @@ namespace Advencursor._Skill
             
         }
 
-        public Skill(string name, float cooldown,SkillData skillData) 
+        public Skill(string name,SkillData skillData) 
         {
             this.name = name;
-            this.cooldown = cooldown;
+            if(name != "null") this.cooldown = skillData.GetMultiplierNumber(name,"Cooldown");
+            else cooldown = 0.1f;
             this.skillData = skillData;
             cooldownTimer = 0;
             description = "";

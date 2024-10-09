@@ -28,7 +28,7 @@ namespace Advencursor._Skill.Food_Set
         private Animation aura;
         private Animation auraDamage;
         private Vector2 position;
-        public Skill_R_Invincibility(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_R_Invincibility(string name, SkillData skillData) : base(name, skillData)
         {
             duration = skillData.GetMultiplierNumber(name, "Duration");
             healPercent = skillData.GetMultiplierNumber(name, "Heal Percentage");

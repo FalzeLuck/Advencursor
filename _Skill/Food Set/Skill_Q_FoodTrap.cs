@@ -16,7 +16,7 @@ namespace Advencursor._Skill.Food_Set
         private float buffTime;
         private float duration;
         private Sprite tauntFood;
-        public Skill_Q_FoodTrap(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_Q_FoodTrap(string name, SkillData skillData) : base(name, skillData)
         {
             duration = skillData.GetMultiplierNumber(name, "Duration");
             rarity = 1;

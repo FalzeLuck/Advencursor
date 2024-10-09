@@ -23,7 +23,7 @@ namespace Advencursor._Skill.Food_Set
         private Animation auraHeal;
         private Animation auraDamage;
         private Vector2 position;
-        public Skill_E_EmergencyFood(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_E_EmergencyFood(string name, SkillData skillData) : base(name, skillData)
         {
             duration = skillData.GetMultiplierNumber(name, "Duration");
             healPercent = skillData.GetMultiplierNumber(name, "Heal Percentage");

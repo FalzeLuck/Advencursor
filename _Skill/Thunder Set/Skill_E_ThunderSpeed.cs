@@ -36,7 +36,7 @@ namespace Advencursor._Skill.Thunder_Set
         private Player player;
         private float skillMultiplier = 0.5f;
         private float speedMultiplier = 2f;
-        public Skill_E_ThunderSpeed(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_E_ThunderSpeed(string name, SkillData skillData) : base(name,skillData)
         {
             skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
             duration = skillData.GetMultiplierNumber(name, "Duration");

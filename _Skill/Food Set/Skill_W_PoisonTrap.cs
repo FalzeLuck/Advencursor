@@ -20,7 +20,7 @@ namespace Advencursor._Skill.Food_Set
         private Sprite poisonFood;
 
         private List<float> collisionCooldown = new List<float>();
-        public Skill_W_PoisonTrap(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_W_PoisonTrap(string name, SkillData skillData) : base(name, skillData)
         {
             duration = skillData.GetMultiplierNumber(name, "Duration");
             rarity = 2;

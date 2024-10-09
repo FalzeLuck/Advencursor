@@ -19,7 +19,7 @@ namespace Advencursor._Skill.Thunder_Set
         private float duration = 8f;
 
         Animation aura;
-        public  Skill_Q_ThunderCore(string name, float cooldown,SkillData skillData) : base(name, cooldown,skillData)
+        public  Skill_Q_ThunderCore(string name, SkillData skillData) : base(name,skillData)
         {
             duration = skillData.GetMultiplierNumber(name, "Duration");
             rarity = 1;

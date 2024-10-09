@@ -41,6 +41,7 @@ namespace Advencursor._SaveData
             ThunderCore = new Dictionary<string, float>()
             {
                 {"Duration", 8f },
+                {"Cooldown", 18f }
             };
             ThunderShuriken = new Dictionary<string, float>()
             {
@@ -49,31 +50,37 @@ namespace Advencursor._SaveData
                 {"Radius",200f },
                 {"Duration", 8f },
                 {"Speed", 5f},
+                {"Cooldown", 20f }
             };
             ThunderSpeed = new Dictionary<string, float>()
             {
                 {"Damage Multiplier", 0.5f },
                 {"Duration", 8f },
                 {"Speed Multiplier", 2f},
+                {"Cooldown", 15f }
             };
             IamStorm = new Dictionary<string, float>()
             {
                 {"Damage Multiplier", 1f },
                 {"Max Hit",9f },
+                {"Cooldown", 60f }
             };
             FoodTrap = new Dictionary<string, float>()
             {
                 {"Duration", 5f },
+                {"Cooldown", 12f }
             };
             PoisonTrap = new Dictionary<string, float>()
             {
                 {"Duration", 5f },
+                {"Cooldown", 15f }
             };
             EmergencyFood = new Dictionary<string, float>()
             {
                 {"Heal Percentage", 5f },
                 {"Attack Multiplier", 1.7f },
                 {"Duration", 8f },
+                {"Cooldown", 14f }
             };
             Invincibility = new Dictionary<string, float>()
             {
@@ -82,6 +89,7 @@ namespace Advencursor._SaveData
                 {"Attack Add", 800f },
                 {"Crit Rate Add",20f },
                 {"Crit Dam Add",200f },
+                {"Cooldown", 60f }
             };
 
             skillNameForDamageMultipliers.Add("Thunder Core", ThunderCore);

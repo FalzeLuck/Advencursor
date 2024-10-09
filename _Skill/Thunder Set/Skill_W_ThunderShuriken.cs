@@ -41,7 +41,7 @@ namespace Advencursor._Skill.Thunder_Set
         //For Multiplier
         private Player player;
         private float skillMultiplier = 0.5f;
-        public Skill_W_ThunderShuriken(string name, float cooldown,SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_W_ThunderShuriken(string name, SkillData skillData) : base(name, skillData)
         {
             rarity = 2;
             setSkill = "Thunder";

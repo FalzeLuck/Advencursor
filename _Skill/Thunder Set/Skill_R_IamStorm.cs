@@ -46,7 +46,7 @@ namespace Advencursor._Skill.Thunder_Set
         private float skillMultiplier = 1f;
         private int maxHit = 9;
         private int countHit = 0;
-        public Skill_R_IamStorm(string name, float cooldown, SkillData skillData) : base(name, cooldown, skillData)
+        public Skill_R_IamStorm(string name, SkillData skillData) : base(name, skillData)
         {
             skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
             maxHit = (int)skillData.GetMultiplierNumber(name, "Max Hit");
