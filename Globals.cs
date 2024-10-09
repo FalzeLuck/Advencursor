@@ -28,9 +28,7 @@ namespace Advencursor
         public static Point Bounds { get; set; }
         public static Rectangle fullScreenRectangle { get; set; }
         public static bool Paused = false;
-
         public static Random random { get; set; } = new Random();
-
         public static List<_Enemy> EnemyManager { get; set; } = new List<_Enemy>();
 
 

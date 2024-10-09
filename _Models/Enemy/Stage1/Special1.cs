@@ -15,17 +15,19 @@ namespace Advencursor._Models.Enemy.Stage1
     public class Special1 : _Enemy
     {
         private float walkTimer;
+        private float waitBombTimer = 5f;
+        public bool isBombed = false;
 
-        private float bombTimer = 0f;
-        public bool isBombed => bombTimer > 3f;
+        private Texture2D bombTexture;
 
         public Special1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
+            bombTexture = Globals.Content.Load<Texture2D>("Enemies/SpecialBomb");
             animations = new Dictionary<string, Animation>
             {
                 { "Right", new(texture, row, column,1,  4, true) },
                 { "Left", new(texture,row,column,1,4,true) },
-                { "Bomb", new(texture,row,column,1,30,true) }
+                { "Bomb", new(bombTexture,row,4,1,4,false) }
 
             };
             animations["Left"].SetFlip(false);
@@ -39,10 +41,23 @@ namespace Advencursor._Models.Enemy.Stage1
         public override void Update(GameTime gameTime)
         {
             collisionCooldown -= TimeManager.TimeGlobal;
+            waitBombTimer -= TimeManager.TimeGlobal;
+            if(waitBombTimer <= 0)
+            {
+                indicator = "Bomb";
+            }
+
+            if (animations["Bomb"].IsComplete)
+            {
+                isBombed = true;
+                Status.Kill();
+            }
+
+
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
-                collision = animations[indicator].GetCollision(position);
+                //collision = animations[indicator].GetCollision(position);
             }
             UpdateParryZone();
 
@@ -77,12 +92,6 @@ namespace Advencursor._Models.Enemy.Stage1
                 position += new Vector2(10, 0);
             }
 
-        }
-
-        public void Bomb()
-        {
-            indicator = "Bomb";
-            bombTimer += TimeManager.TimeGlobal;
         }
     }
 }

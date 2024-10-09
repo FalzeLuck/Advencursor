@@ -23,6 +23,7 @@ namespace Advencursor._UI
 
         public void AddElement(string name,UIElement element)
         {
+            if (uiElements.ContainsKey(name)) return;
             uiElements.Add(name,element);
         }
 

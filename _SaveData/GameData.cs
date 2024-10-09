@@ -26,6 +26,7 @@ namespace Advencursor._SaveData
 
         public int gems { get; set; } = 0;
         public int pityCounter { get; set; } = 0;
+        public string gachaSelectedSet { get; set; } = "Thunder";
 
         public void SaveData()
         {
@@ -47,6 +48,7 @@ namespace Advencursor._SaveData
                 this.stage = data.stage;
                 this.gems = data.gems;
                 this.pityCounter = data.pityCounter;
+                this.gachaSelectedSet = data.gachaSelectedSet;
             }
             else
             {

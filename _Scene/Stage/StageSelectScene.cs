@@ -70,9 +70,11 @@ namespace Advencursor._Scene.Stage
             //soundManager.PlaySong("Stage Select Song",bgsong,true);
             soundManager.SetSongVolume(gameData.volumeMusic);
 
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(Globals.Bounds.X - 100, 65), OnExitButtonClick);
             UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);
             UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 , Globals.Bounds.Y / 2), OnStage1ButtonClick);
             UIButton stage2Button = new(Globals.Content.Load<Texture2D>("Button/Stage2Button"), new Vector2(Globals.Bounds.X / 2 + 500, Globals.Bounds.Y / 2), OnStage2ButtonClick);
+            uiManager.AddElement("exitButton", exitButton);
             uiManager.AddElement("gachaButton", gachaButton);
             uiManager.AddElement("stage1Button", stage1Button);
             uiManager.AddElement("stage2Button", stage2Button);
@@ -244,6 +246,11 @@ namespace Advencursor._Scene.Stage
         {
             background = null;
 
+        }
+
+        private void OnExitButtonClick()
+        {
+            sceneManager.AddScene(new MenuScene(contentManager, sceneManager));
         }
     }
 }

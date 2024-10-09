@@ -34,11 +34,12 @@ namespace Advencursor._Scene
 
         private Dictionary<int, float> pullRates = new Dictionary<int, float>()
         {
-            {4, 0.01f }, //R
-            {3, 0.33f}, //E
-            {2, 0.33f}, //W
-            {1, 0.33f} //Q
+            {4, 0.04f }, //R
+            {3, 0.32f}, //E
+            {2, 0.32f}, //W
+            {1, 0.32f} //Q
         };
+        private string selectedSet;
 
         private float gachaInterval = 1f;
         private float gachaWaitTime;
@@ -70,6 +71,8 @@ namespace Advencursor._Scene
 
             inventory.LoadInventory(new(Globals.graphicsDevice, 1, 1));
             gameData.LoadData();
+            selectedSet = gameData.gachaSelectedSet;
+            selectedSet = "Food";
         }
 
         public void Update(GameTime gameTime)
@@ -156,7 +159,7 @@ namespace Advencursor._Scene
             if (gameData.gems - 10 < 0) return;
 
             gameData.gems -= 10;
-            Item tempItem = RandomItemsWithPity(skillPool,pullRates);
+            Item tempItem = RandomItemsWithPity(skillPool,pullRates,selectedSet);
 
 
             tempGachaItem.Clear();
@@ -176,7 +179,7 @@ namespace Advencursor._Scene
             List<Item> results = new List<Item>();
             for (int i = 0; i < rollNumber; i++)
             {
-                results.Add(RandomItemsWithPity(skillPool,pullRates));
+                results.Add(RandomItemsWithPity(skillPool,pullRates,selectedSet));
             }
 
             tempGachaItem.Clear();
@@ -187,7 +190,7 @@ namespace Advencursor._Scene
             gachaWaitTime = gachaInterval;
         }
 
-        private Item RandomItems(List<Skill> skillPool,Dictionary<int, float> rates)
+        private Item RandomItems(List<Skill> skillPool,Dictionary<int, float> rates,string set)
         {
             double roll = Globals.random.NextDouble();
             double cumulative = 0.0;
@@ -197,7 +200,7 @@ namespace Advencursor._Scene
                 cumulative += rate.Value;
                 if (roll < cumulative)
                 {
-                    var filteredItems = skillPool.Where(skill => skill.rarity == rate.Key).ToList();
+                    var filteredItems = skillPool.Where(skill => skill.rarity == rate.Key && skill.setSkill == set).ToList();
                     Skill tempSkill = filteredItems[Globals.random.Next(filteredItems.Count)];
                     string tempName = AllSkills.itemNameViaSkillName[tempSkill.name];
                     Keys tempKey = Keys.None;
@@ -226,21 +229,21 @@ namespace Advencursor._Scene
             return null;
         }
 
-        private Item RandomItemsWithPity(List<Skill> skillPool,Dictionary<int, float> rates)
+        private Item RandomItemsWithPity(List<Skill> skillPool,Dictionary<int, float> rates, string set)
         {
             gameData.pityCounter++;
 
             if (gameData.pityCounter >= pityUltimateSkillThreshold)
             {
                 gameData.pityCounter = 0;
-                var guaranteedItem = skillPool.Where(skill => skill.rarity == 4).ToList();
+                var guaranteedItem = skillPool.Where(skill => skill.rarity == 4 && skill.setSkill == set).ToList();
                 Skill tempSkill = guaranteedItem[Globals.random.Next(guaranteedItem.Count)];
                 string tempName = AllSkills.itemNameViaSkillName[tempSkill.name];
                 Keys tempKey = Keys.R;
                 return new Item(tempName, tempSkill, tempKey);
             }
 
-            return RandomItems(skillPool,rates);
+            return RandomItems(skillPool,rates,set);
         }
 
         private void OnExitButtonClick()

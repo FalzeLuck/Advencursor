@@ -26,6 +26,7 @@
     <Folder Include="Content\Animation\" />
     <Folder Include="Content\Button\" />
     <Folder Include="Content\Sound\" />
+    <Folder Include="_Skill\Fire Set\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

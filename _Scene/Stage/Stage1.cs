@@ -53,6 +53,10 @@ namespace Advencursor._Scene.Stage
         List<Item> items;
 
 
+        //Pause Variable
+        private bool isPause;
+        
+
 
         private readonly Timer timer;
         private Texture2D background;
@@ -77,6 +81,7 @@ namespace Advencursor._Scene.Stage
 
         //UI
         private UIManager uiManager = new UIManager();
+        private UIManager pauseUiManager = new UIManager();
 
 
         public Stage1(ContentManager contentManager, SceneManager sceneManager)
@@ -92,7 +97,7 @@ namespace Advencursor._Scene.Stage
                 font,
                 new(1920 / 2, 0)
                 );
-
+            isPause = false;
             timer.StartStop();
             timer.Repeat = true;
             boss_spawn_time = 0f;
@@ -178,80 +183,36 @@ namespace Advencursor._Scene.Stage
 
         public void Update(GameTime gameTime)
         {
-            EnemyManage();
+            CheckPause(gameTime);
 
-            //Boss Control
-            UpdateBoss(gameTime);
-
-
-            //Parry Control
-            /*
-            if (player.TryParryAttack(boss_obj))
+            if (!isPause)
             {
-                boss_obj.Stun(5f);
-                boss_obj.isAttacking = false;
-                boss_obj.charge = false ;
-                player.Status.immunity = true;
-                soundManager.PlaySound("Parry");
-                animationManager.SetOffset("Sparkle", new Vector2(0, 0));
-                animationManager.UpdatePosition("Sparkle", player.position);
-                animationManager.Play("Sparkle");
-            }
-            foreach (var enemy in commonEnemy)
-            {
-                if (player.TryParryAttack(enemy))
+                EnemyManage();
+                UpdateBoss(gameTime);
+                foreach (var enemy in Globals.EnemyManager)
                 {
-                    soundManager.PlaySound("Parry");
-                    animationManager.SetOffset("Sparkle", new Vector2(0, 0));
-                    animationManager.UpdatePosition("Sparkle", player.position);
-                    animationManager.Play("Sparkle");
-                    player.Status.immunity = true;
-                    enemy.DashStop();
+                    enemy.Update(gameTime);
                 }
+                UiManage(gameTime);
+                CollisionManage(gameTime);
+                UpdatePlayer();
+                UpdateEnemies(gameTime);
+                UpdateElites(gameTime);
+                UpdateSpecial(gameTime);
+                UpdatePoisonPool(gameTime);
+                timer.Update();
+                player.Update(gameTime);
+                animationManager.Update(gameTime);
+                animationManager.UpdatePosition("Slash", player.position);
+                ParticleManager.Update();
+                SceneManage();
             }
-            foreach (var elite in eliteEnemy)
-            {
-                if (player.TryParryAttack(elite))
-                {
-                    soundManager.PlaySound("Parry");
-                    animationManager.SetOffset("Sparkle", new Vector2(0, 0));
-                    animationManager.UpdatePosition("Sparkle", player.position);
-                    animationManager.Play("Sparkle");
-                    player.Status.immunity = true;
-                    elite.Stun(2.5f);
-                    elite.Status.TakeDamage(player.Status.Attack,player);
-                }
-            }*/
-
-            foreach (var enemy in Globals.EnemyManager)
-            {
-                enemy.Update(gameTime);
-            }
-            UiManage(gameTime);
-            CollisionManage(gameTime);
-
-            //Mash Update
-            UpdatePlayer();
-            UpdateEnemies(gameTime);
-            UpdateElites(gameTime);
-            UpdateSpecial(gameTime);
-            UpdatePoisonPool(gameTime);
-
-            timer.Update();
-            player.Update(gameTime);
-            animationManager.Update(gameTime);
-            animationManager.UpdatePosition("Slash", player.position);
-            ParticleManager.Update();
-
-
-
-
-            SceneManage();
 
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
             timer.Draw();
             foreach (var pool in poisonPool)
@@ -274,12 +235,16 @@ namespace Advencursor._Scene.Stage
             {
                 boss_obj.Draw();
             }
-            uiManager.Draw(spriteBatch);
             player.Draw();
-
             animationManager.Draw();
             ParticleManager.Draw();
             damageNumberManager.Draw();
+            uiManager.Draw(spriteBatch);
+
+            if (isPause)
+            {
+                DrawPause();
+            }
 
         }
 
@@ -660,7 +625,7 @@ namespace Advencursor._Scene.Stage
                        health: 600,
                        attack: 1,
                        row: 1,
-                       column: 4
+                       column: 8
                        )
                     {
                         movementAI = new FollowMovementAI
@@ -670,29 +635,28 @@ namespace Advencursor._Scene.Stage
                     };
                     specialEnemy.Add(enemy);
                     Globals.EnemyManager.Add(enemy);
-                    damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
                     special_count++;
                     special_spawn_time = 0f;
                 }
             }
             foreach (var special in specialEnemy)
             {
+                if (special.isBombed)
+                {
+                    poisonPool.Add(new PoisonPool(
+                        Globals.Content.Load<Texture2D>("GroundEffect/PoisonPool"),
+                        special.position,
+                        1,
+                        6
+                        ));
+                    
+                }
                 if (!special.Status.IsAlive())
                 {
-                    special.Bomb();
-                    if (special.isBombed)
-                    {
-                        poisonPool.Add(new PoisonPool(
-                            Globals.Content.Load<Texture2D>("GroundEffect/PoisonPool"),
-                            special.position,
-                            1,
-                            6
-                            ));
-                        damageNumberManager.UnSubscribeToTakeDamageEvent(special.Status, special);
-                        Globals.EnemyManager.Remove(special);
-                        specialEnemy.Remove(special);
-                        break;
-                    }
+                    special_count--;
+                    Globals.EnemyManager.Remove(special);
+                    specialEnemy.Remove(special);
+                    break;
                 }
             }
 
@@ -770,6 +734,44 @@ namespace Advencursor._Scene.Stage
             AllSkills.Reset();
             ParticleManager.RemoveAll();
             sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
+        }
+
+        private void CheckPause(GameTime gameTime)
+        {
+            pauseUiManager.Update(gameTime);
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                isPause = true;
+                TimeManager.ChangeGameSpeed(0f);
+
+                Vector2 screenOrigin = new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y/2);
+                Texture2D continueTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonPlay");
+
+                UIElement continueButton = new UIButton(continueTexture,screenOrigin,OnContinueClick);
+
+
+                pauseUiManager.AddElement("continue",continueButton);
+            }
+            
+        }
+
+        private void OnContinueClick()
+        {
+            isPause = false;
+            Mouse.SetPosition((int)player.position.X, (int)player.position.Y);
+            TimeManager.ChangeGameSpeed(1f);
+        }
+        
+        private void DrawPause()
+        {
+            Texture2D dimTexture = Globals.CreateRectangleTexture(Globals.Bounds.X,Globals.Bounds.Y,Color.Black);
+            Texture2D pauseBackground = Globals.Content.Load<Texture2D>("UI/PauseBackground");
+            Vector2 pauseBgOrigin = new Vector2(pauseBackground.Width/2,pauseBackground.Height/2);
+
+            Globals.SpriteBatch.Draw(dimTexture,Vector2.Zero,Color.White * 0.8f);
+            Globals.SpriteBatch.Draw(pauseBackground, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), null, Color.White, 0f, pauseBgOrigin, 1f, SpriteEffects.None, 0f);
+
+            pauseUiManager.Draw(Globals.SpriteBatch);
         }
 
     }

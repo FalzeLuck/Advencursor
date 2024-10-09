@@ -50,7 +50,7 @@ namespace Advencursor
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.IsFullScreen = false;
-            Window.IsBorderless = false;
+            Window.IsBorderless = true;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 
@@ -74,13 +74,11 @@ namespace Advencursor
             gameData.LoadData();
 
 
-            _sceneManager.AddScene(new Stage1(Content, _sceneManager));
+            _sceneManager.AddScene(new InventoryScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Globals.Game.Exit();
 
             if (IsActive)
             {

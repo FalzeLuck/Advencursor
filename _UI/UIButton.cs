@@ -33,11 +33,13 @@ namespace Advencursor._Models
 
             if (InputManager.MouseCursor.Intersects(_rect))
             {
-                _color = Color.DarkGray;
+                scale = 1.1f;
+                //_color = Color.DarkGray;
                 onHover?.Invoke();
             }
             else
             {
+                scale = 1f;
                 _color = Color.White;
             }
 
