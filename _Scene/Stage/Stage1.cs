@@ -137,7 +137,7 @@ namespace Advencursor._Scene.Stage
 
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 5, false, 1.5f);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 8, false, 1.5f);
             animationManager.AddAnimation("Slash", slashAnimation);
 
 
@@ -275,7 +275,33 @@ namespace Advencursor._Scene.Stage
                     player.StartParry();
                 }
 
-
+                if (player.CanNormalAttack() || animationManager.animations["Slash"].IsComplete)
+                {
+                    foreach (var enemy in commonEnemy)
+                    {
+                        if (enemy.Status.immunity)
+                        {
+                            enemy.Status.immunity = false;
+                        }
+                    }
+                    foreach (var elite in eliteEnemy)
+                    {
+                        if (elite.Status.immunity)
+                        {
+                            elite.Status.immunity = false;
+                        }
+                    }
+                    foreach (var enemy in specialEnemy)
+                    {
+                        if (enemy.Status.immunity)
+                        {
+                            enemy.Status.immunity = false;
+                        }
+                    }
+                    boss_obj.Status.immunity = false;
+                    player.ChangeAnimation("Idle");
+                    animationManager.Stop("Slash");
+                }
 
                 if (InputManager.MouseRightClicked && player.CanNormalAttack())
                 {
@@ -293,35 +319,10 @@ namespace Advencursor._Scene.Stage
                     animationManager.Play("Slash");
                     player.DoNormalAttack();
                 }
+
             }
 
-            if (player.CanNormalAttack())
-            {
-                foreach (var enemy in commonEnemy)
-                {
-                    if (enemy.Status.immunity)
-                    {
-                        enemy.Status.immunity = false;
-                    }
-                }
-                foreach (var elite in eliteEnemy)
-                {
-                    if (elite.Status.immunity)
-                    {
-                        elite.Status.immunity = false;
-                    }
-                }
-                foreach (var enemy in specialEnemy)
-                {
-                    if (enemy.Status.immunity)
-                    {
-                        enemy.Status.immunity = false;
-                    }
-                }
-                boss_obj.Status.immunity = false;
-                player.ChangeAnimation("Idle");
-                animationManager.Stop("Slash");
-            }
+            
 
         }
         private void UpdateEnemies(GameTime gameTime)

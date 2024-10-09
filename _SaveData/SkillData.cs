@@ -30,6 +30,8 @@ namespace Advencursor._SaveData
         public Dictionary<string, float> EmergencyFood { get; set; }
         public Dictionary<string, float> Invincibility { get; set; }
 
+        //Fire Set Dictionary
+
         public const string path = "skillData.json";
         public SkillData()
         {

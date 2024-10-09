@@ -1,5 +1,6 @@
 ﻿using Advencursor._Skill.Thunder_Set;
 using Advencursor._Skill.Food_Set;
+using Advencursor._Skill.Fire_Set;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap", skillData) },
             {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food", skillData) },
             {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win", skillData) },
+            //{"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
         };
         public static void Reset()
         {
@@ -45,6 +47,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap", skillData) },
             {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food", skillData) },
             {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win", skillData) },
+            //{"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
             };
         }
 
@@ -59,6 +62,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap",Globals.Content.Load<Texture2D>("Item/SetFood/W_Texture")},
             {"Emergency Food",Globals.Content.Load<Texture2D>("Item/SetFood/E_Texture")},
             {"Nah I'd win",Globals.Content.Load<Texture2D>("Item/SetFood/R_Texture")},
+            {"Fire Domain",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture")},
         };
 
 
@@ -73,6 +77,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap","(W)Poison Inhaler Orb"},
             {"Emergency Food","(E)Heal Inhaler Orb"},
             {"Nah I'd win","(R)Invincibility Orb"},
+            {"Fire Domain","Fire Domain Orb"},
         };
 
         public static Dictionary<string,Keys> itemKeyViaSkillName = new Dictionary<string, Keys>
@@ -86,6 +91,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap",Keys.W},
             {"Emergency Food",Keys.E},
             {"Nah I'd win",Keys.R},
+            {"Fire Domain",Keys.Q},
         };
     }
 }

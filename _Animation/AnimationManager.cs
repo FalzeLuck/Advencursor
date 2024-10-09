@@ -12,7 +12,7 @@ namespace Advencursor._Animation
 {
     public class AnimationManager
     {
-        Dictionary<string, Animation> animations;
+        public Dictionary<string, Animation> animations;
         private List<Animation> activeAnimations;
 
         public AnimationManager()

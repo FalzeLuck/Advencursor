@@ -71,6 +71,22 @@ namespace Advencursor
             texture.SetData(colorData);
             return texture;
         }
+        public static List<Vector2> CreateCircleOutline(Vector2 center, float radius, int pointCount)
+        {
+            List<Vector2> circlePoints = new List<Vector2>();
+
+            for (int i = 0; i < pointCount; i++)
+            {
+                float angle = MathHelper.TwoPi * i / pointCount;
+
+                float x = center.X + radius * (float)Math.Cos(angle);
+                float y = center.Y + radius * (float)Math.Sin(angle);
+
+                circlePoints.Add(new Vector2(x, y));
+            }
+
+            return circlePoints;
+        }
 
         public static Texture2D CreateRectangleTexture(int width, int height,Color color)
         {

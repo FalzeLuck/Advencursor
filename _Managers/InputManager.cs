@@ -23,11 +23,11 @@ namespace Advencursor._Managers
             _lastmouseState = MouseState;
             MouseState = Mouse.GetState();
 
-            MouseLeftClicked = Mouse.GetState().LeftButton == ButtonState.Pressed
-                                && _lastmouseState.LeftButton == ButtonState.Released;
+            MouseLeftClicked = Mouse.GetState().LeftButton == ButtonState.Pressed;
+            //&& _lastmouseState.LeftButton == ButtonState.Released;
 
-            MouseRightClicked = Mouse.GetState().RightButton == ButtonState.Pressed
-                && _lastmouseState.RightButton == ButtonState.Released;
+            MouseRightClicked = Mouse.GetState().RightButton == ButtonState.Pressed;
+                //&& _lastmouseState.RightButton == ButtonState.Released;
 
 
             MouseCursor = new((int)_mousePosition.X, (int)_mousePosition.Y, 1, 1);
