@@ -1,5 +1,6 @@
 ﻿using Advencursor._Animation;
 using Advencursor._Models;
+using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,9 +17,12 @@ namespace Advencursor._Skill.Thunder_Set
         private float buffTime;
         private Vector2 position;
 
+        private SkillData skillData;
+
         Animation aura;
         public  Skill_Q_ThunderCore(string name, float cooldown) : base(name, cooldown)
         {
+            skillData = new SkillData();
             rarity = 1;
             setSkill = "Thunder";
             description = "Awake lightning power in your soul. Cause the mouse cursor to shine with lightning. When attacking enemies during this time, enemy will be shocked by lightning and inflict Paralysis for a short period.";
