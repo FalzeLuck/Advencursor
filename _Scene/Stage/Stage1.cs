@@ -32,9 +32,10 @@ namespace Advencursor._Scene.Stage
 {
     public class Stage1 : StageAbstract
     {
-
+        private List<Elite1> eliteEnemy;
         private List<Special1> specialEnemy;
         private List<PoisonPool> poisonPool;
+        private Boss1 boss_obj;
 
         protected float special_spawn_time;
         protected int special_count = 0;
@@ -617,6 +618,7 @@ namespace Advencursor._Scene.Stage
 
             if (boss_obj.animations["Die"].currentFrame == 15)
             {
+                damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
                 soundManager.StopAllSounds();
                 boss_spawned = false;
                 boss_obj.position = new(9999, 9999);

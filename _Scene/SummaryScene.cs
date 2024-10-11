@@ -1,5 +1,8 @@
 ﻿using Advencursor._Animation;
+using Advencursor._Models;
 using Advencursor._SaveData;
+using Advencursor._Scene.Stage;
+using Advencursor._Scene.Transition;
 using Advencursor._UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -22,33 +25,44 @@ namespace Advencursor._Scene
 
         private Texture2D bg;
         private bool win;
-        private float gemAmount;
+        private int gemAmount;
         private float time;
-        private string formattedText;
-        private char[] displayText;
+        private GameData gameData;
         private SpriteFont font;
         private Animation summaryScreen;
 
-        private Random random;
-        private float shuffleTimer = 0f;
-        private float shuffleInterval = 0.00001f;
-        private int shuffleMax = 4;
-        private int shuffleIndex = 0;
-        private int currentCharIndex = 0;
-        private string charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.";
-        private bool shuffleComplete = false;
 
-        public SummaryScene(ContentManager contentManager, SceneManager sceneManager, bool win, float gemAmount, GameData gameData, float time)
+        //TimeText
+        private string formattedTime;
+        private char[] displayTime;
+        private float shuffleTimeTimer = 0f;
+        private float shuffleTimeInterval = 0.0001f;
+        private int shuffleTimeMax = 20;
+        private int shuffleTimeIndex = 0;
+        private int currentTimeCharIndex = 0;
+        private bool shuffleTimeComplete = false;
+
+        //Gem Text
+        private string formattedGems;
+        private char[] displayGems;
+        private float shuffleGemsTimer = 0f;
+        private float shuffleGemsInterval = 0.0001f;
+        private int shuffleGemsMax = 20;
+        private int shuffleGemsIndex = 0;
+        private int currentGemsCharIndex = 0;
+        private bool shuffleGemsComplete = false;
+
+        private string charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:. ";
+
+        public SummaryScene(ContentManager contentManager, SceneManager sceneManager, bool win, int gemAmount, GameData gameData, float time)
         {
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
-            uiManager = new UIManager();
+            this.uiManager = new UIManager();
             this.win = win;
             this.gemAmount = gemAmount;
             this.time = time;
-
-            random = new Random();
-
+            this.gameData = gameData;
             switch (gameData.stage)
             {
                 case 1:
@@ -63,6 +77,7 @@ namespace Advencursor._Scene
         public void Load()
         {
             font = Globals.Content.Load<SpriteFont>("Font/TextFont");
+
             if (win)
             {
                 summaryScreen = new Animation(Globals.Content.Load<Texture2D>("UI/Summary/Win"), 1, 2, 2, true);
@@ -72,7 +87,18 @@ namespace Advencursor._Scene
                 summaryScreen = new Animation(Globals.Content.Load<Texture2D>("UI/Summary/Lose"), 1, 7, 8, false);
             }
 
-            FormatTime();
+            StartShuffleTime();
+            StartShuffleGems();
+
+            gameData.gems += gemAmount;
+            gameData.SaveData();
+
+            int buttonY = (Globals.Bounds.Y / 2) + 150;
+            int buttonX = (Globals.Bounds.X / 2) - 200;
+            UIElement menuButton = new UIButton(Globals.Content.Load<Texture2D>("UI/Summary/MenuButton"), new Vector2(buttonX, buttonY),OnMenuClick);
+            UIElement restartButton = new UIButton(Globals.Content.Load<Texture2D>("UI/Summary/RestartButton"), new Vector2(buttonX + 400, buttonY), OnRestartClick);
+            uiManager.AddElement("menuButton", menuButton);
+            uiManager.AddElement("restartButton", restartButton);
         }
 
         public void Update(GameTime gameTime)
@@ -81,45 +107,74 @@ namespace Advencursor._Scene
             {
                 summaryScreen.Update();
             }
-
-            if (!win)
+            if (!win && summaryScreen.currentFrame != 6)
             {
-                if (summaryScreen.currentFrame != 6)
-                {
-                    summaryScreen.Update();
-                }
-            };
+                summaryScreen.Update();
+            }
 
-            if (!shuffleComplete)
+            if (!shuffleTimeComplete)
             {
-                shuffleTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (shuffleTimer >= shuffleInterval && currentCharIndex < displayText.Length)
+                shuffleTimeTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (shuffleTimeTimer >= shuffleTimeInterval && currentTimeCharIndex < displayTime.Length)
                 {
-                    shuffleTimer = 0f;
+                    shuffleTimeTimer = 0f;
 
-                    if (shuffleIndex >= shuffleMax)
+                    if (shuffleTimeIndex >= shuffleTimeMax)
                     {
-                        shuffleIndex = 0;
-                        displayText[currentCharIndex] = formattedText[currentCharIndex];
-                        currentCharIndex++;
+                        shuffleTimeIndex = 0;
+                        displayTime[currentTimeCharIndex] = formattedTime[currentTimeCharIndex];
+                        currentTimeCharIndex++;
                     }
-                    else if (displayText[currentCharIndex] != formattedText[currentCharIndex])
+                    else if (displayTime[currentTimeCharIndex] != formattedTime[currentTimeCharIndex])
                     {
-                        displayText[currentCharIndex] = GetRandomChar();
-                        shuffleIndex++;
+                        displayTime[currentTimeCharIndex] = GetRandomChar();
+                        shuffleTimeIndex++;
                     }
                     else
                     {
-                        shuffleIndex = 0;
-                        currentCharIndex++;
+                        shuffleTimeIndex = 0;
+                        currentTimeCharIndex++;
                     }
 
-                    if (currentCharIndex >= displayText.Length)
+                    if (currentTimeCharIndex >= displayTime.Length)
                     {
-                        shuffleComplete = true;
+                        shuffleTimeComplete = true;
                     }
                 }
             }
+
+            if (!shuffleGemsComplete)
+            {
+                shuffleGemsTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (shuffleGemsTimer >= shuffleGemsInterval && currentGemsCharIndex < displayGems.Length)
+                {
+                    shuffleGemsTimer = 0f;
+
+                    if (shuffleGemsIndex >= shuffleGemsMax)
+                    {
+                        shuffleGemsIndex = 0;
+                        displayGems[currentGemsCharIndex] = formattedGems[currentGemsCharIndex];
+                        currentGemsCharIndex++;
+                    }
+                    else if (displayGems[currentGemsCharIndex] != formattedGems[currentGemsCharIndex])
+                    {
+                        displayGems[currentGemsCharIndex] = GetRandomChar();
+                        shuffleGemsIndex++;
+                    }
+                    else
+                    {
+                        shuffleGemsIndex = 0;
+                        currentGemsCharIndex++;
+                    }
+
+                    if (currentGemsCharIndex >= displayGems.Length)
+                    {
+                        shuffleGemsComplete = true;
+                    }
+                }
+            }
+
+            uiManager.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -129,32 +184,82 @@ namespace Advencursor._Scene
             spriteBatch.Draw(black, Vector2.Zero, Color.White);
             spriteBatch.Draw(bg, Vector2.Zero, Color.White * 0.2f);
             summaryScreen.Draw(screenCenter);
-            spriteBatch.DrawString(font, new string(displayText), new Vector2(screenCenter.X - 270, screenCenter.Y - 230), Color.Black, 0, Vector2.Zero, 1.1f, SpriteEffects.None, 0);
+
+            spriteBatch.DrawString(font, new string(displayTime), new Vector2(screenCenter.X - 270, screenCenter.Y - 230), Color.Black, 0, Vector2.Zero, 0.22f, SpriteEffects.None, 0);
+            Vector2 gemSize = font.MeasureString(formattedGems);
+            Vector2 gemOrigin = new Vector2(gemSize.X / 2, gemSize.Y / 2);
+            spriteBatch.DrawString(font, new string(displayGems), new Vector2(screenCenter.X, screenCenter.Y), Color.Black, 0, gemOrigin, 0.8f, SpriteEffects.None, 0);
+
+            uiManager.Draw(spriteBatch);
 
             Globals.DrawCursor();
         }
 
-        private void FormatTime()
+        private void StartShuffleTime()
         {
-            formattedText = TimeSpan.FromSeconds(time).ToString(@"mm\:ss\.ff");
-            displayText = new char[formattedText.Length];
+            formattedTime = TimeSpan.FromSeconds(time).ToString(@"mm\:ss\.ff");
+            displayTime = new char[formattedTime.Length];
 
-            for (int i = 0; i < displayText.Length; i++)
+            for (int i = 0; i < displayTime.Length; i++)
             {
-                if (char.IsDigit(formattedText[i]) || formattedText[i] == ':' || formattedText[i] == '.')
+                if (char.IsDigit(formattedTime[i]) || formattedTime[i] == ':' || formattedTime[i] == '.')
                 {
-                    displayText[i] = GetRandomChar();
+                    displayTime[i] = GetRandomChar();
                 }
                 else
                 {
-                    displayText[i] = formattedText[i];
+                    displayTime[i] = formattedTime[i];
                 }
             }
+
+            shuffleTimeComplete = false;
+            currentTimeCharIndex = 0;
         }
+
+        private void StartShuffleGems()
+        {
+            formattedGems = $"{gemAmount}";
+            displayGems = new char[formattedGems.Length];
+
+            for (int i = 0; i < displayGems.Length; i++)
+            {
+                if (char.IsDigit(formattedGems[i]) || formattedGems[i] == ' ')
+                {
+                    displayGems[i] = GetRandomChar();
+                }
+                else
+                {
+                    displayGems[i] = formattedGems[i];
+                }
+            }
+
+            shuffleGemsComplete = false;
+            currentGemsCharIndex = 0;
+        }
+
         private char GetRandomChar()
         {
-            int index = random.Next(charPool.Length);
+            int index = Globals.random.Next(charPool.Length);
             return charPool[index];
         }
+
+        private void OnMenuClick()
+        {
+            sceneManager.AddScene(new StageSelectScene(contentManager,sceneManager),new CircleTransition(Globals.graphicsDevice));
+        }
+
+        private void OnRestartClick()
+        {
+            switch (gameData.stage)
+            {
+                case 1:
+                    sceneManager.AddScene(new Stage1(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                    break;
+                case 2:
+                    sceneManager.AddScene(new Stage2(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                    break;
+            }
+        }
     }
+
 }

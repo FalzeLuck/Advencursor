@@ -20,50 +20,14 @@ using System.Threading.Tasks;
 using Advencursor._Models.Enemy.Stage1;
 using Advencursor._Models.Enemy.Stage2;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Advencursor._Scene.Stage
 {
-    public class Stage2 : IScene
+    public class Stage2 : StageAbstract
     {
-        private ContentManager contentManager;
-        private SceneManager sceneManager;
-        private AnimationManager animationManager = new AnimationManager();
-        private SoundManager soundManager = new SoundManager();
-        private DamageNumberManager damageNumberManager;
-
-        private SpriteFont font;
-
-
-        private Player player;
-        private Inventory inventory = new Inventory();
-
-        List<Common1> commonEnemy;
         List<Elite2> eliteEnemy;
-        private Boss2 boss_obj;
-        List<Item> items;
-
-
-
-        private readonly Timer timer;
-        private Texture2D background;
-
-
-        //Stage Timer & Controls
-        private float boss_spawn_time;
-        private float boss_dash_cooldown;
-        private bool boss_spawned;
-        private float enemy_spawn_time;
-        private float elite_spawn_time;
-        private float special_spawn_time;
-        private int enemy_count = 0;
-        private int elite_count = 0;
-        private int enemy_max = 30;
-        private int elite_max = 2;
-        private int enemy_killed = 0;
-
-        //UI
-        private UIManager uiManager = new UIManager();
-
+        Boss2 boss_obj;
 
         public Stage2(ContentManager contentManager, SceneManager sceneManager)
         {
@@ -88,8 +52,9 @@ namespace Advencursor._Scene.Stage
         }
 
 
-        public void Load()
+        public override void Load()
         {
+            base.Load();
             Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
 
             //Load Background
@@ -105,84 +70,44 @@ namespace Advencursor._Scene.Stage
             //Load enemies
             commonEnemy = new List<Common1>();
             eliteEnemy = new List<Elite2>();
-
             boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 3, 8)
             {
                 movementAI = new FollowMovementAI()
             };
-
-
-            //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 8, false, 1.5f);
-            animationManager.AddAnimation("Slash", slashAnimation);
-
-
-
-
-            //Load UI
-            UIBackground uIBackground = new(Globals.Content.Load<Texture2D>("UI/SkillBackground"), new(Globals.Bounds.X / 2, 930));
-            int startX = (int)uIBackground.position.X - (uIBackground.texture.Width / 2);
-            int space = uIBackground.texture.Width / 10;
-            int skillY = 950;
-
-
-            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), player.Skills[Keys.Q]);
-            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), player.Skills[Keys.W]);
-            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), player.Skills[Keys.E]);
-            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), player.Skills[Keys.R]);
-            UIPlayerCheckPanel uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
-
-            Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
-            Texture2D fg = Globals.Content.Load<Texture2D>("UI/HealthBarFull");
-            ProgressBarAnimated playerHpBar = new ProgressBarAnimated(bg, fg, player.Status.MaxHP, new(Globals.Bounds.X / 2, uIBackground.position.Y - 75));
-
-
-            uiManager.AddElement("uiBackground", uIBackground);
-            uiManager.AddElement("playerBar", playerHpBar);
-            uiManager.AddElement("skillUI_Q", skillUI_Q);
-            uiManager.AddElement("skillUI_W", skillUI_W);
-            uiManager.AddElement("skillUI_E", skillUI_E);
-            uiManager.AddElement("skillUI_R", skillUI_R);
-
-            //Load Sound
-            SoundEffect beep = Globals.Content.Load<SoundEffect>("Sound/Beep");
-            soundManager.LoadSound("Beep", beep);
-            SoundEffect charge = Globals.Content.Load<SoundEffect>("Sound/Boss1Charge");
-            soundManager.LoadSound("Charge", charge);
-            soundManager.SetVolume("Charge", 0.2f);
-            SoundEffect parry = Globals.Content.Load<SoundEffect>("Sound/Parry");
-            soundManager.LoadSound("Parry", parry);
-            Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            EnemyManage();
-
-            //Boss Control
-            UpdateBoss(gameTime);
-            foreach (var enemy in Globals.EnemyManager)
+            CheckPause(gameTime);
+            if (!isPause)
             {
-                enemy.Update(gameTime);
+                EnemyManage();
+
+                //Boss Control
+                UpdateBoss(gameTime);
+                foreach (var enemy in Globals.EnemyManager)
+                {
+                    enemy.Update(gameTime);
+                }
+                UiManage(gameTime);
+                CollisionManage(gameTime);
+
+                UpdatePlayer();
+                UpdateEnemies(gameTime);
+                UpdateElites(gameTime);
+
+                timer.Update();
+                player.Update(gameTime);
+                animationManager.Update(gameTime);
+                animationManager.UpdatePosition("Slash", player.position);
+                ParticleManager.Update();
+
+                SceneManage();
             }
-            UiManage(gameTime);
-            CollisionManage(gameTime);
-
-            UpdatePlayer();
-            UpdateEnemies(gameTime);
-            UpdateElites(gameTime);
-
-            timer.Update();
-            player.Update(gameTime);
-            animationManager.Update(gameTime);
-            animationManager.UpdatePosition("Slash", player.position);
-            ParticleManager.Update();
-
-            SceneManage();
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
             timer.Draw();
@@ -205,78 +130,12 @@ namespace Advencursor._Scene.Stage
             ParticleManager.Draw();
             damageNumberManager.Draw();
 
-        }
-
-        private void UpdatePlayer()
-        {
-            if (!player.isStun && !player.isStop)
+            if (isPause)
             {
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Q))
-                {
-                    player.UseSkill(Keys.Q);
-                    player.ChangeAnimation("Idle");
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
-                {
-                    player.UseSkill(Keys.W);
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.E))
-                {
-                    player.UseSkill(Keys.E);
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.R))
-                {
-                    player.UseSkill(Keys.R);
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
-                {
-                    player.StartParry();
-                }
-
-                if (player.CanNormalAttack() || animationManager.animations["Slash"].IsComplete)
-                {
-                    foreach (var enemy in commonEnemy)
-                    {
-                        if (enemy.Status.immunity)
-                        {
-                            enemy.Status.immunity = false;
-                        }
-                    }
-                    foreach (var elite in eliteEnemy)
-                    {
-                        if (elite.Status.immunity)
-                        {
-                            elite.Status.immunity = false;
-                        }
-                    }
-                    boss_obj.Status.immunity = false;
-                    player.ChangeAnimation("Idle");
-                    animationManager.Stop("Slash");
-                }
-
-                if (InputManager.MouseRightClicked && player.CanNormalAttack())
-                {
-                    animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
-                    player.ChangeAnimation("Attack", true);
-                    animationManager.Flip("Slash", true);
-                    animationManager.Play("Slash");
-                    player.DoNormalAttack();
-                }
-                if (InputManager.MouseLeftClicked && player.CanNormalAttack())
-                {
-                    animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
-                    player.ChangeAnimation("Attack", false);
-                    animationManager.Flip("Slash", false);
-                    animationManager.Play("Slash");
-                    player.DoNormalAttack();
-                }
-
+                DrawPause();
             }
-
-
-
         }
+
         private void UpdateEnemies(GameTime gameTime)
         {
             foreach (var enemy in commonEnemy)
@@ -305,8 +164,14 @@ namespace Advencursor._Scene.Stage
         }
         private void UpdateBoss(GameTime gameTime)
         {
-            
 
+            if (boss_obj.Status.IsAlive())
+            {
+                if (animationManager.IsComplete("Slash"))
+                {
+                    boss_obj.Status.immunity = false;
+                }
+            }
         }
 
         private void EnemyManage()
@@ -315,7 +180,6 @@ namespace Advencursor._Scene.Stage
             boss_spawn_time += TimeManager.TimeGlobal;
             enemy_spawn_time += TimeManager.TimeGlobal;
             elite_spawn_time += TimeManager.TimeGlobal;
-            special_spawn_time += TimeManager.TimeGlobal;
 
             //Common1
             if (enemy_spawn_time >= 0.1f)
@@ -451,7 +315,7 @@ namespace Advencursor._Scene.Stage
                 }
             }
 
-            //Boss1
+            //Boss2
             if (boss_spawn_time > 120f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
             {
                 boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 3, 8)
@@ -540,31 +404,23 @@ namespace Advencursor._Scene.Stage
             damageNumberManager.Update();
         }
 
-        private void SceneManage()
+        protected override void SceneManage()
         {
-            if (!player.Status.IsAlive())
+            base.SceneManage();
+            if (boss_obj.animations["Die"].currentFrame == 15)
             {
-                UnloadScene();
+                damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
+                soundManager.StopAllSounds();
+                boss_spawned = false;
+                boss_obj.position = new(9999, 9999);
+                uiManager.RemoveElement("bossBar");
+                enemy_max = 0;
+                foreach (var enemy in Globals.EnemyManager)
+                {
+                    enemy.Status.Kill();
+                }
+                GotoSummary(true);
             }
-
-        }
-
-        private void UnloadScene()
-        {
-            damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
-            damageNumberManager.UnSubscribeToTakeDamageEvent(player.Status, player);
-            foreach (var enemy in Globals.EnemyManager)
-            {
-                damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
-            }
-            Globals.EnemyManager.Clear();
-            inventory.Items.Clear();
-            commonEnemy.Clear();
-            eliteEnemy.Clear();
-            TimeManager.ChangeGameSpeed(1);
-            AllSkills.Reset();
-            ParticleManager.RemoveAll();
-            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
     }
 }

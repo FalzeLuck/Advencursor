@@ -2,7 +2,6 @@
 using Advencursor._Combat;
 using Advencursor._Managers;
 using Advencursor._Models.Enemy._CommonEnemy;
-using Advencursor._Models.Enemy.Stage1;
 using Advencursor._Models;
 using Advencursor._SaveData;
 using Advencursor._Skill;
@@ -11,9 +10,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Advencursor._Particles;
@@ -37,8 +33,6 @@ namespace Advencursor._Scene.Stage
         protected GameData gameData = new GameData();
 
         protected List<Common1> commonEnemy;
-        protected List<Elite1> eliteEnemy;
-        protected Boss1 boss_obj;
         protected List<Item> items;
 
 
@@ -154,14 +148,6 @@ namespace Advencursor._Scene.Stage
                             enemy.Status.immunity = false;
                         }
                     }
-                    foreach (var elite in eliteEnemy)
-                    {
-                        if (elite.Status.immunity)
-                        {
-                            elite.Status.immunity = false;
-                        }
-                    }
-                    boss_obj.Status.immunity = false;
                     player.ChangeAnimation("Idle");
                     animationManager.Stop("Slash");
                 }
@@ -195,25 +181,9 @@ namespace Advencursor._Scene.Stage
             {
                 GotoSummary(false);
             }
-
-
-            if (boss_obj.animations["Die"].IsComplete)
-            {
-                soundManager.StopAllSounds();
-                boss_spawned = false;
-                boss_obj.position = new(9999, 9999);
-                uiManager.RemoveElement("bossBar");
-                enemy_max = 0;
-                foreach (var enemy in Globals.EnemyManager)
-                {
-                    enemy.Status.Kill();
-                }
-                GotoSummary(true);
-            }
         }
-        protected void UnloadScene()
+        protected virtual void UnloadScene()
         {
-            damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
             damageNumberManager.UnSubscribeToTakeDamageEvent(player.Status, player);
             foreach (var enemy in Globals.EnemyManager)
             {
@@ -222,7 +192,6 @@ namespace Advencursor._Scene.Stage
             Globals.EnemyManager.Clear();
             inventory.Items.Clear();
             commonEnemy.Clear();
-            eliteEnemy.Clear();
             TimeManager.ChangeGameSpeed(1);
             AllSkills.Reset();
             ParticleManager.RemoveAll();

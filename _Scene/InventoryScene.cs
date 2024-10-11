@@ -221,8 +221,8 @@ namespace Advencursor._Scene
             Globals.SpriteBatch.Draw(backgroundInventory, Vector2.Zero, Color.White);
             Globals.SpriteBatch.Draw(midgroundInventory, Vector2.Zero, Color.White);
             Color fontColor = new Color(85, 17, 95);
-            Globals.SpriteBatch.DrawString(textFont, $"Stage {gameData.stage}", new(73, 43), fontColor, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(textFont, $"Inventory", new(1300, 155), fontColor, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, $"Stage {gameData.stage}", new(73, 43), fontColor, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, $"Inventory", new(1300, 155), fontColor, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             uiManager.Draw(spriteBatch);
 
             float itemScale = 0.57f;
@@ -346,20 +346,20 @@ namespace Advencursor._Scene
             Vector2 mainStatOrigin = new(mainStatSize.X / 2, mainStatSize.Y / 2);
             Vector2 nameSize = textFont.MeasureString(inventory.Items[selectedItemIndex].name);
             Vector2 nameOrigin = new(nameSize.X / 2, nameSize.Y / 2);
-            Globals.SpriteBatch.DrawString(textFont, $"\"{inventory.Items[selectedItemIndex].name}\"", new(bigItemPosition.X, bigItemPosition.Y - 220), fontColor, 0, nameOrigin, 1.2f, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(textFont, mainStatString, new(bigItemPosition.X, bigItemPosition.Y + 155), fontColor, 0, mainStatOrigin, 1.2f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, $"\"{inventory.Items[selectedItemIndex].name}\"", new(bigItemPosition.X, bigItemPosition.Y - 220), fontColor, 0, nameOrigin, 0.24f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, mainStatString, new(bigItemPosition.X, bigItemPosition.Y + 155), fontColor, 0, mainStatOrigin, 0.24f, SpriteEffects.None, 0f);
 
 
             //Skill Description
             
             string skillName = $"Skill : {(char)34}{inventory.Items[selectedItemIndex].skill.name}{(char)34}";
-            string skillDesc = WrapText(textFont, inventory.Items[selectedItemIndex].skill.description, 500);
+            string skillDesc = WrapText(textFont, inventory.Items[selectedItemIndex].skill.description, 2000);
             Vector2 skillNameSize = textFont.MeasureString(skillName);
             Vector2 skillNameOrigin = new(skillNameSize.X / 2, skillNameSize.Y / 2);
             Vector2 skillDescSize = textFont.MeasureString(skillDesc);
             Vector2 skillDescOrigin = new(skillDescSize.X / 2, 0);
-            Globals.SpriteBatch.DrawString(textFont, skillName, new(bigItemPosition.X, bigItemPosition.Y + 210), fontColor, 0, skillNameOrigin, 1.2f, SpriteEffects.None, 0f);
-            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 250), fontColor, 0, skillDescOrigin, 1f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, skillName, new(bigItemPosition.X, bigItemPosition.Y + 210), fontColor, 0, skillNameOrigin, 0.24f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, skillDesc, new(bigItemPosition.X, bigItemPosition.Y + 250), fontColor, 0, skillDescOrigin, 0.2f, SpriteEffects.None, 0f);
 
 
 
@@ -447,11 +447,11 @@ namespace Advencursor._Scene
                 string CritRate = $"Critical Rate = {player.Status.CritRate.ToString("F2")}%";
                 string CritDam = $"Critical Damage = {player.Status.CritDam.ToString("F2")}%";
                 Globals.SpriteBatch.Draw(playerStatBackground, pos, Color.White);
-                Globals.SpriteBatch.DrawString(textFont, Header, new Vector2(pos.X + playerStatBackground.Width / 2, pos.Y + HeaderSize.Y), Color.Black, 0, HeaderOrigin, 1.5f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, HP, new Vector2(pos.X + 10, pos.Y + 100), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 10, pos.Y + 150), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 10, pos.Y + 200), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 10, pos.Y + 250), Color.Black, 0, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, Header, new Vector2(pos.X + playerStatBackground.Width / 2, pos.Y + HeaderSize.Y), Color.Black, 0, HeaderOrigin, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, HP, new Vector2(pos.X + 10, pos.Y + 100), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 10, pos.Y + 150), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 10, pos.Y + 200), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 10, pos.Y + 250), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             }
         }
 
