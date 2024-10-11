@@ -92,7 +92,7 @@ namespace Advencursor._Scene.Stage
 
         public void Update(GameTime gameTime)
         {
-            Globals.Game.IsMouseVisible = true;
+            Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
             Vector2 mousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
 
@@ -171,6 +171,7 @@ namespace Advencursor._Scene.Stage
         {
             Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
+            Globals.DrawCursor();
         }
 
 

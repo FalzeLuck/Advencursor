@@ -32,56 +32,13 @@ namespace Advencursor._Scene.Stage
 {
     public class Stage1 : StageAbstract
     {
-        /*private ContentManager contentManager;
-        private SceneManager sceneManager;
-        private AnimationManager animationManager = new AnimationManager();
-        private SoundManager soundManager = new SoundManager();
-        private DamageNumberManager damageNumberManager;
 
-        private SpriteFont font;
+        private List<Special1> specialEnemy;
+        private List<PoisonPool> poisonPool;
 
-
-        private Player player;
-        private Inventory inventory = new Inventory();
-        private GameData gameData = new GameData();
-
-        List<Common1> commonEnemy;
-        List<Elite1> eliteEnemy;
-        List<Special1> specialEnemy;
-        List<PoisonPool> poisonPool;
-        private Boss1 boss_obj;
-        List<Item> items;
-
-
-        //Pause Variable
-        private bool isPause;
-        
-
-
-        private readonly Timer timer;
-        private Texture2D background;
-
-        private readonly Random random = new Random();
-
-
-        //Stage Timer & Controls
-        private float boss_spawn_time;
-        private float boss_dash_cooldown;
-        private bool boss_spawned;
-        private float enemy_spawn_time;
-        private float elite_spawn_time;
-        private float special_spawn_time;
-        private int enemy_count = 0;
-        private int elite_count = 0;
-        private int special_count = 0;
-        private int enemy_max = 30;
-        private int elite_max = 2;
-        private int special_max = 3;
-        private int enemy_killed = 0;
-
-        //UI
-        private UIManager uiManager = new UIManager();
-        private UIManager pauseUiManager = new UIManager();*/
+        protected float special_spawn_time;
+        protected int special_count = 0;
+        protected int special_max = 3;
 
 
         public Stage1(ContentManager contentManager, SceneManager sceneManager)
@@ -195,9 +152,82 @@ namespace Advencursor._Scene.Stage
             }
 
         }
+        protected override void UpdatePlayer()
+        {
+            if (!player.isStun && !player.isStop)
+            {
 
-       
-        private void UpdateEnemies(GameTime gameTime)
+                if (Keyboard.GetState().IsKeyDown(Keys.Q))
+                {
+                    player.UseSkill(Keys.Q);
+                    player.ChangeAnimation("Idle");
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    player.UseSkill(Keys.W);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.E))
+                {
+                    player.UseSkill(Keys.E);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.R))
+                {
+                    player.UseSkill(Keys.R);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                {
+                    player.StartParry();
+                }
+
+                if (player.CanNormalAttack() || animationManager.animations["Slash"].IsComplete)
+                {
+                    foreach (var enemy in commonEnemy)
+                    {
+                        if (enemy.Status.immunity)
+                        {
+                            enemy.Status.immunity = false;
+                        }
+                    }
+                    foreach (var elite in eliteEnemy)
+                    {
+                        if (elite.Status.immunity)
+                        {
+                            elite.Status.immunity = false;
+                        }
+                    }
+                    foreach (var enemy in specialEnemy)
+                    {
+                        if (enemy.Status.immunity)
+                        {
+                            enemy.Status.immunity = false;
+                        }
+                    }
+                    boss_obj.Status.immunity = false;
+                    player.ChangeAnimation("Idle");
+                    animationManager.Stop("Slash");
+                }
+
+                if (InputManager.MouseRightClicked && player.CanNormalAttack())
+                {
+                    animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
+                    player.ChangeAnimation("Attack", true);
+                    animationManager.Flip("Slash", true);
+                    animationManager.Play("Slash");
+                    player.DoNormalAttack();
+                }
+                if (InputManager.MouseLeftClicked && player.CanNormalAttack())
+                {
+                    animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
+                    player.ChangeAnimation("Attack", false);
+                    animationManager.Flip("Slash", false);
+                    animationManager.Play("Slash");
+                    player.DoNormalAttack();
+                }
+
+            }
+        }
+
+            private void UpdateEnemies(GameTime gameTime)
         {
             foreach (var enemy in commonEnemy)
             {
@@ -577,74 +607,30 @@ namespace Advencursor._Scene.Stage
             damageNumberManager.Update();
         }
 
-        private void SceneManage()
+        protected override void SceneManage()
         {
             if (!player.Status.IsAlive())
             {
-                gameData.gems += 5;
-                gameData.SaveData();
-                UnloadScene();
+                GotoSummary(false);
             }
-        }
 
-        private void UnloadScene()
-        {
-            boss_obj.checkRadius = new Rectangle(9999, 9999, 0, 0);
-            damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
-            damageNumberManager.UnSubscribeToTakeDamageEvent(player.Status, player);
-            foreach (var enemy in Globals.EnemyManager)
+
+            if (boss_obj.animations["Die"].currentFrame == 15)
             {
-                damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+                soundManager.StopAllSounds();
+                boss_spawned = false;
+                boss_obj.position = new(9999, 9999);
+                uiManager.RemoveElement("bossBar");
+                enemy_max = 0;
+                foreach (var enemy in Globals.EnemyManager)
+                {
+                    enemy.Status.Kill();
+                }
+                GotoSummary(true);
             }
-            Globals.EnemyManager.Clear();
-            inventory.Items.Clear();
-            commonEnemy.Clear();
-            eliteEnemy.Clear();
-            specialEnemy.Clear();
-            poisonPool.Clear();
-            TimeManager.ChangeGameSpeed(1);
-            AllSkills.Reset();
-            ParticleManager.RemoveAll();
-            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
-        }
-        /*
-        private void CheckPause(GameTime gameTime)
-        {
-            pauseUiManager.Update(gameTime);
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                isPause = true;
-                TimeManager.ChangeGameSpeed(0f);
-
-                Vector2 screenOrigin = new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y/2);
-                Texture2D continueTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonPlay");
-
-                UIElement continueButton = new UIButton(continueTexture,screenOrigin,OnContinueClick);
-
-
-                pauseUiManager.AddElement("continue",continueButton);
-            }
-            
         }
 
-        private void OnContinueClick()
-        {
-            isPause = false;
-            Mouse.SetPosition((int)player.position.X, (int)player.position.Y);
-            TimeManager.ChangeGameSpeed(1f);
-        }
-        
-        private void DrawPause()
-        {
-            Texture2D dimTexture = Globals.CreateRectangleTexture(Globals.Bounds.X,Globals.Bounds.Y,Color.Black);
-            Texture2D pauseBackground = Globals.Content.Load<Texture2D>("UI/PauseBackground");
-            Vector2 pauseBgOrigin = new Vector2(pauseBackground.Width/2,pauseBackground.Height/2);
 
-            Globals.SpriteBatch.Draw(dimTexture,Vector2.Zero,Color.White * 0.8f);
-            Globals.SpriteBatch.Draw(pauseBackground, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), null, Color.White, 0f, pauseBgOrigin, 1f, SpriteEffects.None, 0f);
 
-            pauseUiManager.Draw(Globals.SpriteBatch);
-        }
-        */
     }
 }

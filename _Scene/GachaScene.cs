@@ -77,7 +77,7 @@ namespace Advencursor._Scene
 
         public void Update(GameTime gameTime)
         {
-            Globals.Game.IsMouseVisible = true;
+            Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
 
             if(Keyboard.GetState().IsKeyDown(Keys.LeftControl) 
@@ -152,6 +152,7 @@ namespace Advencursor._Scene
                     }
                 }
             }
+            Globals.DrawCursor();
         }
 
         private void OnRoll1ButtonClick()

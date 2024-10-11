@@ -16,6 +16,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Advencursor._Particles;
+using System.Diagnostics;
 
 namespace Advencursor._Scene.Stage
 {
@@ -36,8 +38,6 @@ namespace Advencursor._Scene.Stage
 
         protected List<Common1> commonEnemy;
         protected List<Elite1> eliteEnemy;
-        protected List<Special1> specialEnemy;
-        protected List<PoisonPool> poisonPool;
         protected Boss1 boss_obj;
         protected List<Item> items;
 
@@ -59,13 +59,10 @@ namespace Advencursor._Scene.Stage
         protected bool boss_spawned;
         protected float enemy_spawn_time;
         protected float elite_spawn_time;
-        protected float special_spawn_time;
         protected int enemy_count = 0;
         protected int elite_count = 0;
-        protected int special_count = 0;
         protected int enemy_max = 30;
         protected int elite_max = 2;
-        protected int special_max = 3;
         protected int enemy_killed = 0;
 
         //UI
@@ -121,7 +118,7 @@ namespace Advencursor._Scene.Stage
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(SpriteBatch spriteBatch);
 
-        protected void UpdatePlayer()
+        protected virtual void UpdatePlayer()
         {
             if (!player.isStun && !player.isStop)
             {
@@ -164,13 +161,6 @@ namespace Advencursor._Scene.Stage
                             elite.Status.immunity = false;
                         }
                     }
-                    foreach (var enemy in specialEnemy)
-                    {
-                        if (enemy.Status.immunity)
-                        {
-                            enemy.Status.immunity = false;
-                        }
-                    }
                     boss_obj.Status.immunity = false;
                     player.ChangeAnimation("Idle");
                     animationManager.Stop("Slash");
@@ -199,6 +189,44 @@ namespace Advencursor._Scene.Stage
 
         }
 
+        protected virtual void SceneManage()
+        {
+            if (!player.Status.IsAlive())
+            {
+                GotoSummary(false);
+            }
+
+
+            if (boss_obj.animations["Die"].IsComplete)
+            {
+                soundManager.StopAllSounds();
+                boss_spawned = false;
+                boss_obj.position = new(9999, 9999);
+                uiManager.RemoveElement("bossBar");
+                enemy_max = 0;
+                foreach (var enemy in Globals.EnemyManager)
+                {
+                    enemy.Status.Kill();
+                }
+                GotoSummary(true);
+            }
+        }
+        protected void UnloadScene()
+        {
+            damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
+            damageNumberManager.UnSubscribeToTakeDamageEvent(player.Status, player);
+            foreach (var enemy in Globals.EnemyManager)
+            {
+                damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+            }
+            Globals.EnemyManager.Clear();
+            inventory.Items.Clear();
+            commonEnemy.Clear();
+            eliteEnemy.Clear();
+            TimeManager.ChangeGameSpeed(1);
+            AllSkills.Reset();
+            ParticleManager.RemoveAll();
+        }
 
         protected void CheckPause(GameTime gameTime)
         {
@@ -236,6 +264,15 @@ namespace Advencursor._Scene.Stage
             Globals.SpriteBatch.Draw(pauseBackground, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), null, Color.White, 0f, pauseBgOrigin, 1f, SpriteEffects.None, 0f);
 
             pauseUiManager.Draw(Globals.SpriteBatch);
+            Globals.DrawCursor();
+        }
+
+        protected void GotoSummary(bool win)
+        {
+            timer.StartStop();
+            float time = timer.timeLeft;
+            UnloadScene();
+            sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, 100,gameData,time));
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Advencursor._Scene
 
 
 
-            scrollbarPosition = new Vector2(gridStartPos.X + 780, gridStartPos.Y + 51);
+            scrollbarPosition = new Vector2(gridStartPos.X + 770, gridStartPos.Y + 51);
         }
 
         public void Load()
@@ -147,7 +147,7 @@ namespace Advencursor._Scene
                 CheatInventory();
             }
 
-            Globals.Game.IsMouseVisible = true;
+            Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
 
             int currentScrollValue = Mouse.GetState().ScrollWheelValue;
@@ -286,6 +286,8 @@ namespace Advencursor._Scene
             DrawOnHover();
 
             drawOnHover = false;
+
+            Globals.DrawCursor();
         }
 
         private void DrawScrollbar(SpriteBatch spriteBatch, Texture2D scrollbarTexture, Texture2D thumbTexture)

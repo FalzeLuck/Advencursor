@@ -39,7 +39,7 @@ namespace Advencursor._Scene
 
         public void Update(GameTime gameTime)
         {
-            Globals.Game.IsMouseVisible = true;
+            Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
         }
 
@@ -47,6 +47,7 @@ namespace Advencursor._Scene
         {
             Globals.SpriteBatch.Draw(background,Vector2.Zero,Color.White);
             uiManager.Draw(spriteBatch);
+            Globals.DrawCursor();
         }
 
         private void OnPlayButtonClick()

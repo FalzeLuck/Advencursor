@@ -132,6 +132,12 @@ namespace Advencursor
                 (int)(maxY - minY) 
             );
         }
+        public static void DrawCursor()
+        {
+            Texture2D cursor = Content.Load<Texture2D>("Cursor");
+
+            SpriteBatch.Draw(cursor, InputManager._mousePosition,Color.White);
+        }
 
 
     }

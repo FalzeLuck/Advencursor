@@ -38,7 +38,7 @@ namespace Advencursor
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            IsMouseVisible = false;
             _sceneManager = new();
             camera = new Camera();
             gameData = new GameData();
@@ -81,7 +81,7 @@ namespace Advencursor
             AllSkills.Reset();
 
 
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+            _sceneManager.AddScene(new Stage1(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
