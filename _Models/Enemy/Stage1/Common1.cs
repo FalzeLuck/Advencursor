@@ -226,6 +226,13 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             base.Draw();
         }
 
+        public void ChangeColor(Color color)
+        {
+            foreach (var animation in animations.Values)
+            {
+                animation.color = color;
+            }
+        }
         private void DrawShadow()
         {
             float distance = Math.Abs(position.Y - shadowLockEndPos.Y);

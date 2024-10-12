@@ -386,6 +386,7 @@ namespace Advencursor._Scene.Stage
                             target = player,
                         }
                     });
+                    enemy.ChangeColor( Color.White );
                     commonEnemy.Add(enemy);
                     Globals.EnemyManager.Add(enemy);
                     damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
