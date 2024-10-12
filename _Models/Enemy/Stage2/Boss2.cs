@@ -8,11 +8,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Advencursor._Particles;
+using Advencursor._Particles.Emitter;
 
 namespace Advencursor._Models.Enemy.Stage2
 {
     public class Boss2 : _Enemy
     {
+        //Water
+        private SpriteEmitter spriteEmitter;
+        private List<Sprite> waterSprite;
+
+        private ParticleEmitterData ped;
+        private ParticleEmitter pe;
+
         private Texture2D warningTexture;
         private Vector2 warningDirection;
         private Sprite player;
@@ -20,6 +29,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private float warningOpacity;
 
         private Texture2D rayTexture;
+        private Animation rayAnimation;
         private int rayWidth;
         private int rayHeight;
 
@@ -36,7 +46,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private bool isRayAttack;
         private bool isRayUltimate;
 
-        public float moveTimeToCenter = 5f;
+        public float moveTimeToCenter = 3f;
         private float standTime;
 
         private Vector2 screenCenter;
@@ -47,17 +57,20 @@ namespace Advencursor._Models.Enemy.Stage2
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Idle", new(texture, row, column,4,1,8, true) },
-                { "Walk", new(texture, row, column,1,8, true) },
-                { "Dash", new(texture,row,column,1,8,true) },
-                {"Die", new(texture,row,column,2,8,false) },
+                { "Open",new Animation(Globals.Content.Load<Texture2D>("Enemies/Boss2Open"),1,24,8,false)},
+                { "Idle", new(texture, row, column,2,8, true) },
+                { "Walk", new(texture, row, column,3,8, true) },
+                { "WalkOpen", new(texture, row, column,1,8, true) },
+                { "Attack", new(texture, row, column,4,8, true) },
+                {"Die", new(texture,row,column,5,8,false) },
 
             };
-            indicator = "Idle";
+            indicator = "WalkOpen";
             rayWidth = Globals.Bounds.X + 500;
-            rayHeight = 250;
+            rayHeight = 300;
             warningTexture = Globals.CreateRectangleTexture(rayWidth, rayHeight, Color.Red);
-            rayTexture = Globals.CreateRectangleTexture(rayWidth, rayHeight, Color.Yellow);
+            rayTexture = Globals.Content.Load<Texture2D>("Enemies/Boss2Ray");
+            rayAnimation = new Animation(rayTexture,1,8,8,false);
             screenCenter = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             isStart = false;
             isCenter = true;
@@ -79,7 +92,7 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 collisionCooldown -= TimeManager.TimeGlobal;
                 Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
-
+                
 
 
                 if (animations.ContainsKey(indicator))
@@ -92,13 +105,21 @@ namespace Advencursor._Models.Enemy.Stage2
                 if (Status.IsAlive())
                 {
                     movementAI.Stop();
-                    if (isCenter || isDashLeft || isDashRight)
+                    if (isCenter && animations["Open"].IsComplete || isDashLeft || isDashRight)
                     {
                         collision = animations[indicator].GetCollision(position);
                         collision = ChangeRectangleSize(collision,100,true);
                     }
                     if (isCenter)
                     {
+                        if (!animations["Open"].IsComplete)
+                        {
+                            indicator = "WalkOpen";
+                        }
+                        else
+                        {
+                            indicator = "Walk";
+                        }
                         moveTimeToCenter -= TimeManager.TimeGlobal;
                         Vector2 direction = screenCenter - position;
                         direction.Normalize();
@@ -106,6 +127,10 @@ namespace Advencursor._Models.Enemy.Stage2
                         position += direction * 200 * TimeManager.TimeGlobal;
                         if (moveTimeToCenter <= 0 || position == screenCenter)
                         {
+                            if (!animations["Open"].IsComplete)
+                            {
+                                indicator = "Open";
+                            }
                             isCenter = false;
                             isStand = true;
                             standTime = 5f;
@@ -116,7 +141,11 @@ namespace Advencursor._Models.Enemy.Stage2
                     {
                         standTime -= TimeManager.TimeGlobal;
                         velocity = Vector2.Zero;
-                        if (standTime <= 0)
+                        if (animations["Open"].IsComplete)
+                        {
+                            indicator = "Idle";
+                        }
+                        if (animations["Open"].IsComplete && standTime <= 0f)
                         {
                             isStand = false;
                             isDashLeft = true;
@@ -125,6 +154,8 @@ namespace Advencursor._Models.Enemy.Stage2
 
                     if (isDashLeft)
                     {
+                        indicator = "Walk";
+                        RotateTo(90);
                         velocity = new Vector2(-2000, 0);
                         position += velocity * TimeManager.TimeGlobal;
                         if (position.X <= 0)
@@ -133,11 +164,14 @@ namespace Advencursor._Models.Enemy.Stage2
                             isRayAttack = true;
                             rayChargeTime = 1f;
                             rayDuration = 6f;
+                            rayAnimation.Reset();
                         }
                     }
 
                     if (isDashRight)
                     {
+                        indicator = "Walk";
+                        RotateTo(-90);
                         velocity = new Vector2(2000, 0);
                         position += velocity * TimeManager.TimeGlobal;
                         if (position.X >= Globals.Bounds.X)
@@ -146,11 +180,13 @@ namespace Advencursor._Models.Enemy.Stage2
                             isRayAttack = true;
                             rayChargeTime = 1f;
                             rayDuration = 6f;
+                            rayAnimation.Reset();
                         }
                     }
-
+                    
                     if (isRayAttack)
                     {
+                        indicator = "WalkOpen";
                         Rectangle rayCollision = new(
                             (int)position.X + (collision.Width / 2),
                             (int)position.Y - (collision.Height / 2),
@@ -166,19 +202,29 @@ namespace Advencursor._Models.Enemy.Stage2
                         rayChargeTime -= TimeManager.TimeGlobal;
                         if (rayChargeTime <= 0f)
                         {
+                            rayAnimation.Update();
                             rayDuration -= TimeManager.TimeGlobal;
                             if(!isShake)
                                 Globals.Camera.Shake(0.2f,3);
                             isShake = true;
+
+                        }
+                        if (rayDuration > 0.4f)
+                        {
+                            if (rayAnimation.currentFrame == 5)
+                            {
+                                rayAnimation.currentFrame = 3;
+                            }
                         }
                         if (rayDamageInterval <= 0 && rayChargeTime <= 0)
                         {
+                            
                             if (rayCollision.Intersects(player.collision))
                             {
                                 player.Status.TakeDamage(1000, this);
                                 rayDamageInterval = 1f;
                             }
-
+                            
                             if (rayDuration <= 0f)
                             {
                                 isRayAttack = false;
@@ -192,6 +238,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                     isRayUltimate = true;
                                     rayChargeTime = 2f;
                                     rayDuration = 5f;
+                                    rayAnimation.Reset();
                                 }
                             }
                         }
@@ -200,6 +247,9 @@ namespace Advencursor._Models.Enemy.Stage2
                     if (isRayUltimate)
                     {
                         collision = new Rectangle();
+
+                        Rectangle temp = player.collision;
+                        OrientedRectangle playerBox = RectangleToOrientedRectangle(temp);
                         Vector2 pivot1 = Vector2.Zero;
                         Vector2 pivot2 = new(Globals.Bounds.X, 0);
                         Vector2 dir1 = screenCenter - pivot1;
@@ -221,16 +271,26 @@ namespace Advencursor._Models.Enemy.Stage2
 
                         OrientedRectangle rayBox1 = new OrientedRectangle(topLeft1, topRight1, bottomLeft1, bottomRight1);
                         OrientedRectangle rayBox2 = new OrientedRectangle(topLeft2, topRight2, bottomLeft2, bottomRight2);
-                        OrientedRectangle playerBox = RectangleToOrientedRectangle(player.collision);
 
+                        
 
+                        RotateTo(0);
+                        position += new Vector2(-10);
                         rayDamageInterval -= TimeManager.TimeGlobal;
                         rayChargeTime -= TimeManager.TimeGlobal;
                         if (rayChargeTime <= 0f)
                         {
+                            rayAnimation.Update();
                             rayDuration -= TimeManager.TimeGlobal;
                             if (!isShake)
                                 Globals.Camera.Shake(0.2f, 3);
+                        }
+                        if (rayDuration > 0.4f)
+                        {
+                            if (rayAnimation.currentFrame == 5)
+                            {
+                                rayAnimation.currentFrame = 3;
+                            }
                         }
                         if (rayDamageInterval <= 0 && rayChargeTime <= 0)
                         {
@@ -239,13 +299,14 @@ namespace Advencursor._Models.Enemy.Stage2
                                 player.Status.TakeDamage(2000, this);
                                 rayDamageInterval = 1f;
                             }
-
+                            
                             if (rayDuration <= 0f)
                             {
                                 isRayUltimate = false;
                                 isShake = false;
                                 isCenter = true;
                                 moveTimeToCenter = 5f;
+                                position = new Vector2(screenCenter.X, -100);
                             }
                         }
                     }
@@ -255,6 +316,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
         public override void Draw()
         {
+            
             DrawRayAttack();
             if (isRayUltimate)
             {
@@ -290,7 +352,7 @@ namespace Advencursor._Models.Enemy.Stage2
                 }
                 if (rayChargeTime <= 0 && isRayUltimate)
                 {
-                    Vector2 rayOrigin = new Vector2(0, rayHeight / 2);
+                    Vector2 rayOffset = new Vector2(rayWidth / 2, 0);
                     Vector2 pivot1 = Vector2.Zero;
                     Vector2 pivot2 = new(Globals.Bounds.X, 0);
                     Vector2 dir1 = screenCenter - pivot1;
@@ -299,13 +361,25 @@ namespace Advencursor._Models.Enemy.Stage2
                     dir2.Normalize();
                     float angle1 = (float)Math.Atan2(dir1.Y, dir1.X);
                     float angle2 = (float)Math.Atan2(dir2.Y, dir2.X);
-                    Globals.SpriteBatch.Draw(rayTexture, Vector2.Zero, null, Color.White, angle1, rayOrigin, 1f, SpriteEffects.None, 0f);
-                    Globals.SpriteBatch.Draw(rayTexture, new Vector2(Globals.Bounds.X, 0), null, Color.White, angle2, rayOrigin, 1f, SpriteEffects.None, 0f);
+                    rayAnimation.scale = 1.3f;
+                    rayAnimation.offset = rayOffset;
+                    animations["WalkOpen"].rotation = angle1 + MathHelper.ToRadians(90);
+                    animations["WalkOpen"].Draw(pivot1);
+                    rayAnimation.rotation = angle1;
+                    rayAnimation.Draw(Globals.MoveVector(pivot1,-300,angle1));
+                    //rayAnimation.Draw(pivot1);
+                    animations["WalkOpen"].rotation = angle2 + MathHelper.ToRadians(90);
+                    animations["WalkOpen"].Draw(pivot2);
+                    rayAnimation.rotation = angle2;
+                    rayAnimation.Draw(Globals.MoveVector(pivot2, -300, angle2));
+                    //rayAnimation.Draw(pivot2);
+                    
                 }
             }
-
             base.Draw();
 
+            
+            //DrawCollisionCheck();
         }
 
         public void Start()
@@ -313,6 +387,20 @@ namespace Advencursor._Models.Enemy.Stage2
             isStart = true;
         }
 
+        public void RotateTo(float degree)
+        {
+            if (MathHelper.ToDegrees(rotation) < degree)
+            {
+                rotation += 0.05f;
+            }else
+            {
+                rotation -= 0.05f;
+            }
+            foreach (var anim in animations.Values)
+            {
+                anim.rotation = rotation;
+            }
+        }
         private void DrawRayAttack()
         {
             if (rayChargeTime > 0 && isRayAttack)
@@ -348,7 +436,7 @@ namespace Advencursor._Models.Enemy.Stage2
             }
             if (rayChargeTime <= 0 && isRayAttack)
             {
-                Vector2 rayOrigin = new Vector2(0, rayHeight / 2);
+                Vector2 rayOrigin = new Vector2(rayAnimation.GetCollision(Vector2.Zero).Width/2, 0);
                 float rotation;
                 if (position.X >= Globals.Bounds.X)
                 {
@@ -359,7 +447,10 @@ namespace Advencursor._Models.Enemy.Stage2
                     rotation = 0f;
                 }
                 rotation = MathHelper.ToRadians(rotation);
-                Globals.SpriteBatch.Draw(rayTexture, position, null, Color.White, rotation, rayOrigin, 1f, SpriteEffects.None, 0f);
+                rayAnimation.scale = 1f;
+                rayAnimation.rotation = rotation;
+                rayAnimation.offset = rayOrigin;
+                rayAnimation.Draw(position);
             }
         }
         private Rectangle RotateRayCollision(Rectangle rayCollision, float angle,Vector2 pivot)
@@ -431,6 +522,66 @@ namespace Advencursor._Models.Enemy.Stage2
         public bool ProjectionsOverlap((float min, float max) proj1, (float min, float max) proj2)
         {
             return proj1.max >= proj2.min && proj2.max >= proj1.min;
+        }
+
+        private void LitWater(Sprite sprite)
+        {
+            spriteEmitter = new SpriteEmitter(() => sprite.position);
+            ped = new()
+            {
+                
+                particleData = new ParticleData()
+                {
+                    sizeStart = 18f,
+                    sizeEnd = 18f,
+                    colorStart = Color.Purple,
+                    colorEnd = Color.Blue,
+                },
+                interval = 0.07f,
+                emitCount = 32,
+                angleVariance = 180f,
+                speedMax = 0.5f,
+                speedMin = 0.5f,
+                lifeSpanMax = 1,
+                lifeSpanMin = 1,
+                rotationMax = 180,
+            };
+
+            pe = new(spriteEmitter, ped);
+        }
+
+        public void DrawCollisionCheck()
+        {
+            Rectangle temp = player.collision;
+            OrientedRectangle playerBox = RectangleToOrientedRectangle(temp);
+            Vector2 pivot1 = Vector2.Zero;
+            Vector2 pivot2 = new(Globals.Bounds.X, 0);
+            Vector2 dir1 = screenCenter - pivot1;
+            Vector2 dir2 = screenCenter - pivot2;
+            dir1.Normalize();
+            dir2.Normalize();
+            float angle1 = (float)Math.Atan2(dir1.Y, dir1.X);
+            float angle2 = (float)Math.Atan2(dir2.Y, dir2.X);
+
+            Vector2 topLeft1 = Globals.RotatePoint(new Vector2(0, 0 - (rayHeight / 2)), pivot1, angle1);
+            Vector2 topRight1 = Globals.RotatePoint(new Vector2(rayWidth, 0 - (rayHeight / 2)), pivot1, angle1);
+            Vector2 bottomLeft1 = Globals.RotatePoint(new Vector2(0, 0 + (rayHeight / 2)), pivot1, angle1);
+            Vector2 bottomRight1 = Globals.RotatePoint(new Vector2(rayWidth, 0 + (rayHeight / 2)), pivot1, angle1);
+
+            Vector2 topLeft2 = Globals.RotatePoint(new Vector2(Globals.Bounds.X, 0 - (rayHeight / 2)), pivot2, angle2);
+            Vector2 topRight2 = Globals.RotatePoint(new Vector2(Globals.Bounds.X + rayWidth, 0 - (rayHeight / 2)), pivot2, angle2);
+            Vector2 bottomLeft2 = Globals.RotatePoint(new Vector2(Globals.Bounds.X, 0 + (rayHeight / 2)), pivot2, angle2);
+            Vector2 bottomRight2 = Globals.RotatePoint(new Vector2(Globals.Bounds.X + rayWidth, 0 + (rayHeight / 2)), pivot2, angle2);
+
+            OrientedRectangle rayBox1 = new OrientedRectangle(topLeft1, topRight1, bottomLeft1, bottomRight1);
+            OrientedRectangle rayBox2 = new OrientedRectangle(topLeft2, topRight2, bottomLeft2, bottomRight2);
+
+            Globals.DrawLine(topLeft1,topRight1,Color.Red,1);
+            Globals.DrawLine(bottomLeft1, bottomRight1, Color.Red, 1);
+            Globals.DrawLine(topLeft2, topRight2, Color.Red, 1);
+            Globals.DrawLine(bottomLeft2, bottomRight2, Color.Red, 1);
+            Globals.DrawLine(new Vector2(temp.X,temp.Y), new Vector2(temp.X + temp.Width, temp.Y), Color.Green, 1);
+            Globals.DrawLine(new Vector2(temp.X, temp.Y+temp.Height), new Vector2(temp.X + temp.Width, temp.Y+temp.Height), Color.Green, 1);
         }
     }
 }

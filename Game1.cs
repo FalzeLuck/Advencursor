@@ -86,15 +86,11 @@ namespace Advencursor
 
         protected override void Update(GameTime gameTime)
         {
-
-            if (IsActive)
-            {
-                Globals.Update(gameTime);
-                InputManager.Update();
-                TimeManager.Update(gameTime);
-                _sceneManager.Update(gameTime);
-                base.Update(gameTime);
-            }
+            Globals.Update(gameTime);
+            InputManager.Update();
+            TimeManager.Update(gameTime);
+            _sceneManager.Update(gameTime);
+            base.Update(gameTime);
         }
 
 

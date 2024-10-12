@@ -27,6 +27,7 @@ namespace Advencursor._Animation
         public Vector2 offset { get; set; }
         public Vector2 position { get; set; }
         public float scale { get; set; }
+        public float rotation { get; set; }
 
         public float opacityValue {  get; set; }
         public float blinkingDuration { get; set; } = 0f;
@@ -39,7 +40,7 @@ namespace Advencursor._Animation
             this.Row = row;
             this.Column = column;
             maxColumn = column;
-            Startrow = 0;
+            Startrow = 1;
             TotalFrame = row * column;
             this.FrameTime = 1 / fps;
             this.IsLooping = IsLooping;
@@ -51,6 +52,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            rotation = 0f;
         }
 
         public Animation(Texture2D texture, int row, int column,int startrow, float fps, bool IsLooping, float scale = 1f)
@@ -71,6 +73,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            rotation = 0f;
         }
         public Animation(Texture2D texture, int row, int column, int maxColumn, int startrow, float fps, bool IsLooping, float scale = 1f)
         {
@@ -91,6 +94,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            rotation = 0f;
         }
 
         public Animation(Texture2D texture, int row, int column,int startColumn,int maxColumn, int startrow, float fps, bool IsLooping, float scale = 1f)
@@ -112,6 +116,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            rotation = 0f;
         }
 
 
@@ -200,7 +205,7 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White * opacityValue, 0, origin - offset, scale, flip, 1);
+                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White * opacityValue, rotation, origin - offset, scale, flip, 1);
             }
             else if (Startrow != 0)
             {
@@ -211,7 +216,7 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White * opacityValue, 0, origin - offset, scale, flip, 1);
+                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, Color.White * opacityValue, rotation, origin - offset, scale, flip, 1);
             }
         }
 

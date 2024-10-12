@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Advencursor._Particles;
 using System.Diagnostics;
+using Advencursor._Scene.Transition;
 
 namespace Advencursor._Scene.Stage
 {
@@ -141,7 +142,7 @@ namespace Advencursor._Scene.Stage
 
                 if (player.CanNormalAttack() || animationManager.animations["Slash"].IsComplete)
                 {
-                    foreach (var enemy in commonEnemy)
+                    foreach (var enemy in Globals.EnemyManager)
                     {
                         if (enemy.Status.immunity)
                         {
@@ -200,18 +201,25 @@ namespace Advencursor._Scene.Stage
         protected void CheckPause(GameTime gameTime)
         {
             pauseUiManager.Update(gameTime);
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape) || !Globals.Game.IsActive)
             {
+                Mouse.SetPosition(Globals.Bounds.X/2, Globals.Bounds.Y/2);
                 isPause = true;
                 TimeManager.ChangeGameSpeed(0f);
 
-                Vector2 screenOrigin = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
+                Vector2 buttonPosition = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2 - 50);
+                Vector2 buttonIncrement = new Vector2(0, 150);
                 Texture2D continueTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonPlay");
+                Texture2D restartTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonRestart");
+                Texture2D exitTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonExit");
 
-                UIElement continueButton = new UIButton(continueTexture, screenOrigin, OnContinueClick);
-
+                UIElement continueButton = new UIButton(continueTexture, buttonPosition, OnContinueClick);
+                UIElement restartButton = new UIButton(restartTexture, buttonPosition + buttonIncrement*1, OnRestartClick);
+                UIElement exitButton = new UIButton(exitTexture, buttonPosition + buttonIncrement * 2, OnExitClick);
 
                 pauseUiManager.AddElement("continue", continueButton);
+                pauseUiManager.AddElement("restart", restartButton);
+                pauseUiManager.AddElement("exit", exitButton);
             }
 
         }
@@ -219,8 +227,29 @@ namespace Advencursor._Scene.Stage
         protected void OnContinueClick()
         {
             isPause = false;
+            pauseUiManager.RemoveAll();
             Mouse.SetPosition((int)player.position.X, (int)player.position.Y);
             TimeManager.ChangeGameSpeed(1f);
+        }
+
+        protected void OnRestartClick()
+        {
+            UnloadScene();
+            switch (gameData.stage)
+            {
+                case 1:
+                    sceneManager.AddScene(new Stage1(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                    break;
+                case 2:
+                    sceneManager.AddScene(new Stage2(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                    break;
+            }
+        }
+
+        private void OnExitClick()
+        {
+            UnloadScene();
+            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
         }
 
         protected void DrawPause()

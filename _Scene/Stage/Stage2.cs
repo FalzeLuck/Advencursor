@@ -40,7 +40,7 @@ namespace Advencursor._Scene.Stage
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
                 font,
-                new(1920 / 2, 0)
+                new(0, 0)
                 );
 
             timer.StartStop();
@@ -49,6 +49,8 @@ namespace Advencursor._Scene.Stage
             elite_spawn_time = 0f;
             enemy_spawn_time = 0f;
             boss_spawned = false;
+            elite_count = 0;
+            enemy_max = 30;
         }
 
 
@@ -70,7 +72,7 @@ namespace Advencursor._Scene.Stage
             //Load enemies
             commonEnemy = new List<Common1>();
             eliteEnemy = new List<Elite2>();
-            boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 3, 8)
+            boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
             {
                 movementAI = new FollowMovementAI()
             };
@@ -82,9 +84,6 @@ namespace Advencursor._Scene.Stage
             if (!isPause)
             {
                 EnemyManage();
-
-                //Boss Control
-                UpdateBoss(gameTime);
                 foreach (var enemy in Globals.EnemyManager)
                 {
                     enemy.Update(gameTime);
@@ -160,17 +159,6 @@ namespace Advencursor._Scene.Stage
                 }
 
 
-            }
-        }
-        private void UpdateBoss(GameTime gameTime)
-        {
-
-            if (boss_obj.Status.IsAlive())
-            {
-                if (animationManager.IsComplete("Slash"))
-                {
-                    boss_obj.Status.immunity = false;
-                }
             }
         }
 
@@ -259,30 +247,30 @@ namespace Advencursor._Scene.Stage
                         int spawnDirection = Globals.random.Next(1, 5);
                         Vector2 spawnpoint = Vector2.Zero;
                         int spawnExpand = 100;
-                        if (spawnDirection == 1 && player.position.Y > Globals.Bounds.Y/2)
+                        if (spawnDirection == 1)
                         {
                             spawnpoint = new(Globals.random.Next(0, 1920), 0 - spawnExpand);
                         }
-                        else if (spawnDirection == 2 && player.position.Y < Globals.Bounds.Y/2)
+                        else if (spawnDirection == 2)
                         {
                             spawnpoint = new(Globals.random.Next(0, 1920), 1080 + spawnExpand);
                         }
-                        else if (spawnDirection == 3 && player.position.X > Globals.Bounds.X/2)
+                        else if (spawnDirection == 3)
                         {
                             spawnpoint = new(0 - spawnExpand, Globals.random.Next(0, 1080));
                         }
-                        else if (spawnDirection == 4 && player.position.X < Globals.Bounds.X / 2)
+                        else if (spawnDirection == 4)
                         {
                             spawnpoint = new(1920 + spawnExpand, Globals.random.Next(0, 1080));
                         }
-                        
+
                         Elite2 enemy = (new Elite2(
-                            Globals.Content.Load<Texture2D>("Enemies/Elite1"),
+                            Globals.Content.Load<Texture2D>("Enemies/Elite2"),
                             spawnpoint,
                             health: 10000,
                             attack: 1,
                             row: 3,
-                            column: 8
+                            column: 4
                             )
                         {
                             movementAI = new FollowMovementAI
@@ -306,8 +294,7 @@ namespace Advencursor._Scene.Stage
                     if (enemy.animations["Die"].IsComplete)
                     {
                         elite_count--;
-                        player.Status.SetCritRate(player.Status.CritRate + 4);
-                        damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+                        //player.Status.SetCritRate(player.Status.CritRate + 4);
                         Globals.EnemyManager.Remove(enemy);
                         eliteEnemy.Remove(enemy);
                         break;
@@ -318,7 +305,7 @@ namespace Advencursor._Scene.Stage
             //Boss2
             if (boss_spawn_time > 120f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
             {
-                boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 3, 8)
+                boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss2"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
                 {
                     movementAI = new FollowMovementAI()
                     {
@@ -347,22 +334,9 @@ namespace Advencursor._Scene.Stage
             if (!boss_obj.Status.IsAlive() && boss_spawned)
             {
                 boss_obj.Die();
+                boss_obj.position = new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y/2);
             }
 
-            if (boss_obj.animations["Die"].currentFrame == 15)
-            {
-                soundManager.StopAllSounds();
-                boss_spawned = false;
-                boss_obj.position = new(9999, 9999);
-                uiManager.RemoveElement("bossBar");
-                enemy_max = 0;
-                foreach (var enemy in Globals.EnemyManager)
-                {
-                    enemy.Status.Kill();
-
-                }
-                UnloadScene();
-            }
 
 
         }
@@ -407,7 +381,7 @@ namespace Advencursor._Scene.Stage
         protected override void SceneManage()
         {
             base.SceneManage();
-            if (boss_obj.animations["Die"].currentFrame == 15)
+            if (boss_obj.animations["Die"].IsComplete)
             {
                 damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
                 soundManager.StopAllSounds();

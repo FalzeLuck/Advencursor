@@ -138,7 +138,32 @@ namespace Advencursor
 
             SpriteBatch.Draw(cursor, InputManager._mousePosition,Color.White);
         }
+        public static void DrawLine(Vector2 start, Vector2 end, Color color, int thickness = 1)
+        {
+            Texture2D pixel = Globals.CreateRectangleTexture(1, 1, Color.White);
 
+            float distance = Vector2.Distance(start, end);
+
+            float angle = (float)Math.Atan2(end.Y - start.Y, end.X - start.X);
+
+            SpriteBatch.Draw(pixel,
+                             start,
+                             null,  
+                             color, 
+                             angle, 
+                             Vector2.Zero, 
+                             new Vector2(distance, thickness),
+                             SpriteEffects.None,
+                             0);
+        }
+
+        public static Vector2 MoveVector(Vector2 start, float distance, float angleInRadians)
+        {
+            float newX = start.X + distance * (float)Math.Cos(angleInRadians);
+            float newY = start.Y + distance * (float)Math.Sin(angleInRadians);
+
+            return new Vector2(newX, newY);
+        }
 
     }
 }

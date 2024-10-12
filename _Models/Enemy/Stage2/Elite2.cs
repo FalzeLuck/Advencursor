@@ -30,7 +30,8 @@ namespace Advencursor._Models.Enemy.Stage2
             animations = new Dictionary<string, Animation>
             {
                 { "Dash",new(texture,row,column,1,8,true) },
-                { "Die",new(texture,row,column,2,8,false) }
+                { "Shake",new(texture,row,column,2,8,true) },
+                { "Die",new(texture,row,column,3,8,false) }
             };
             indicator = "Dash";
 
@@ -39,7 +40,9 @@ namespace Advencursor._Models.Enemy.Stage2
             isDamage = false;
             warningOpacity = 0.8f;
             bombTextureWarning = Globals.CreateRectangleTexture(bombRadiusSize, bombRadiusSize, Color.Red);
+            bombTextureAnimation = new Animation(Globals.Content.Load<Texture2D>("Enemies/Elite2_Effect"), 1, 8, 8, false);
             velocity = new Vector2(dashSpeed);
+            shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow3");
         }
         public override void Update(GameTime gameTime)
         {
@@ -51,7 +54,7 @@ namespace Advencursor._Models.Enemy.Stage2
             }
             bombRadius = new Rectangle((int)(position.X - bombRadiusSize / 2), (int)(position.Y - bombRadiusSize / 2), bombRadiusSize, bombRadiusSize);
 
-
+            
             if (!isBomb && bombRadius.Contains(movementAI.target.position))
             {
                 velocity = Vector2.Zero;
@@ -66,10 +69,14 @@ namespace Advencursor._Models.Enemy.Stage2
             if (isBomb)
             {
                 bombTimer -= TimeManager.TimeGlobal;
-
+                if (bombTimer > 0)
+                {
+                    indicator = "Shake";
+                }
                 if (bombTimer <= 0)
                 {
                     Status.Kill();
+                    bombTextureAnimation.Update();
                     if (!isDamage)
                     {
                         foreach (var enemy in Globals.EnemyManager)
@@ -88,7 +95,6 @@ namespace Advencursor._Models.Enemy.Stage2
                                 isDamage = true;
                             }
                         }
-
                     }
                 }
             }
@@ -96,6 +102,7 @@ namespace Advencursor._Models.Enemy.Stage2
         }
         public override void Draw()
         {
+            DrawShadow();
             if (isBomb)
             {
                 if (warningOpacity <= 0.3f)
@@ -114,11 +121,27 @@ namespace Advencursor._Models.Enemy.Stage2
                 {
                     warningOpacity += 1 * TimeManager.TimeGlobal;
                 }
-                Vector2 warningOrigin = new Vector2((bombTextureWarning.Width / 2), bombTextureWarning.Height / 2);
-                Globals.SpriteBatch.Draw(bombTextureWarning, position, null, Color.White * warningOpacity, rotation, warningOrigin, 1f, spriteEffects, 0f);
+                if (bombTimer > 0)
+                {
+                    Vector2 warningOrigin = new Vector2((bombTextureWarning.Width / 2), bombTextureWarning.Height / 2);
+                    Globals.SpriteBatch.Draw(bombTextureWarning, position, null, Color.White * warningOpacity, rotation, warningOrigin, 1f, spriteEffects, 0f);
+                }
+                else if(bombTimer <= 0f)
+                {
+                    bombTextureAnimation.Draw(position);
+                }
             }
 
             base.Draw();
+        }
+
+        private void DrawShadow()
+        {
+            Vector2 shadowPosition = new Vector2(position.X, position.Y + 150 / 2);
+            float shadowScale = 1f;
+
+            Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
+            Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White, rotation, shadowOrigin, shadowScale, spriteEffects, 0f);
         }
     }
 }

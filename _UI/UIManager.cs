@@ -38,6 +38,12 @@ namespace Advencursor._UI
             progressBarDictionary?.Remove(name);
         }
 
+        public void RemoveAll()
+        {
+            uiElements?.Clear();
+            progressBarDictionary?.Clear();
+        }
+
         public Vector2 GetElementPosition(string name)
         {
             return uiElements[name].position;

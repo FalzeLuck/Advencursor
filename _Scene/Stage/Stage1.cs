@@ -53,7 +53,7 @@ namespace Advencursor._Scene.Stage
 
             timer = new(Globals.Content.Load<Texture2D>("TestUI"),
                 font,
-                new(1920 / 2, 0)
+                new(0, 0)
                 );
             isPause = false;
             timer.StartStop();
