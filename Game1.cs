@@ -29,9 +29,10 @@ namespace Advencursor
         private SpriteFont _font;
         private readonly SceneManager _sceneManager;
         private Camera camera;
-
         private GameData gameData;
         private SkillData skillData;
+        float blendFactor = 0.0f; // Start in full color
+        float globalOpacity = 1.0f; // Full opacity
 
 
         public Game1()
@@ -53,7 +54,7 @@ namespace Advencursor
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             Window.IsBorderless = false;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
@@ -63,6 +64,7 @@ namespace Advencursor
             Globals.graphicsDevice = GraphicsDevice;
             Globals.Viewport = GraphicsDevice.Viewport;
             Globals.Camera = camera;
+            Globals.grayScaleEffect = Content.Load<Effect>("greyScale");
             Globals.fullScreenRectangle = new Rectangle(0, 0, Globals.Bounds.X, Globals.Bounds.Y);
 
             base.Initialize();
@@ -79,8 +81,6 @@ namespace Advencursor
             skillData.LoadData();
             AllSkills.skillData = skillData;
             AllSkills.Reset();
-
-
             _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
         }
 
@@ -99,7 +99,7 @@ namespace Advencursor
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.White);
 
-            _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);
+            _spriteBatch.Begin(effect:Globals.grayScaleEffect, transformMatrix: Globals.Camera.transform);
             _sceneManager.Draw(_spriteBatch);
             _spriteBatch.End();
 

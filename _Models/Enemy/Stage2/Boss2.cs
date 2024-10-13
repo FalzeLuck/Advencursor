@@ -80,6 +80,8 @@ namespace Advencursor._Models.Enemy.Stage2
             isRayAttack = false;
             isRayUltimate = false;
 
+            shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow2");
+
         }
 
         public override void Update(GameTime gameTime)
@@ -91,8 +93,9 @@ namespace Advencursor._Models.Enemy.Stage2
             if (isStart)
             {
                 collisionCooldown -= TimeManager.TimeGlobal;
+                burnDuration -= TimeManager.TimeGlobal;
                 Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
-                
+
 
 
                 if (animations.ContainsKey(indicator))
@@ -376,6 +379,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     
                 }
             }
+            DrawShadow();
             base.Draw();
 
             
@@ -582,6 +586,14 @@ namespace Advencursor._Models.Enemy.Stage2
             Globals.DrawLine(bottomLeft2, bottomRight2, Color.Red, 1);
             Globals.DrawLine(new Vector2(temp.X,temp.Y), new Vector2(temp.X + temp.Width, temp.Y), Color.Green, 1);
             Globals.DrawLine(new Vector2(temp.X, temp.Y+temp.Height), new Vector2(temp.X + temp.Width, temp.Y+temp.Height), Color.Green, 1);
+        }
+        private void DrawShadow()
+        {
+            Vector2 shadowPosition = new Vector2(position.X, position.Y + 250);
+            float shadowScale = 1.5f;
+
+            Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
+            Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White * 0.6f, 0f, shadowOrigin, shadowScale, spriteEffects, 0f);
         }
     }
 }

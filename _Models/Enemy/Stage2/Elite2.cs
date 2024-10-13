@@ -91,7 +91,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         {
                             if (movementAI.target.collision.Intersects(bombRadius))
                             {
-                                movementAI.target.Status.TakeDamageNoCrit(5000, this);
+                                movementAI.target.Status.TakeDamageNoCrit(2500, this,new (31,81,255));
                                 isDamage = true;
                             }
                         }

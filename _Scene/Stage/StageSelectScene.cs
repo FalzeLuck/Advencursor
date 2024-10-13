@@ -40,6 +40,8 @@ namespace Advencursor._Scene.Stage
         private Vector2 posStage1des;
         private Vector2 posStage2;
         private Vector2 posStage2des;
+        private Vector2 posStage3;
+        private Vector2 posStage3des;
 
         private enum Stage
         {
@@ -74,10 +76,12 @@ namespace Advencursor._Scene.Stage
             UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);
             UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 , Globals.Bounds.Y / 2), OnStage1ButtonClick);
             UIButton stage2Button = new(Globals.Content.Load<Texture2D>("Button/Stage2Button"), new Vector2(Globals.Bounds.X / 2 + 500, Globals.Bounds.Y / 2), OnStage2ButtonClick);
+            UIButton stage3Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 + 1000, Globals.Bounds.Y / 2), OnStage3ButtonClick); ;
             uiManager.AddElement("exitButton", exitButton);
             uiManager.AddElement("gachaButton", gachaButton);
             uiManager.AddElement("stage1Button", stage1Button);
             uiManager.AddElement("stage2Button", stage2Button);
+            uiManager.AddElement("stage3Button", stage3Button);
 
 
             gachaPos = uiManager.GetElementPosition("gachaButton");
@@ -86,6 +90,8 @@ namespace Advencursor._Scene.Stage
             posStage1des = uiManager.GetElementPosition("stage1Button");
             posStage2 = uiManager.GetElementPosition("stage2Button");
             posStage2des = uiManager.GetElementPosition("stage2Button");
+            posStage3 = uiManager.GetElementPosition("stage3Button");
+            posStage3des = uiManager.GetElementPosition("stage3Button");
             background = Globals.Content.Load<Texture2D>("Background/Stage1_2");
 
         }
@@ -164,7 +170,31 @@ namespace Advencursor._Scene.Stage
                     }
                 }
             }
+            else if (currentStage == 3)
+            {
+                Vector2 direction = GetVectorDirection(posStage3, posStage3des);
+                if (direction.X < 0)
+                {
+                    MoveAllButton(direction);
+                    if (posStage3.X <= posStage3des.X)
+                    {
+                        posStage3 = screenCenter;
+                        uiManager.SetElementPosition(posStage3, "stage3Button");
+                    }
+                }
+                else if (direction.X > 0)
+                {
+                    MoveAllButton(direction);
+                    if (posStage3.X >= posStage3des.X)
+                    {
+                        posStage3 = screenCenter;
+                        uiManager.SetElementPosition(posStage3, "stage3Button");
+                    }
+                }
+            }
 
+
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -183,6 +213,8 @@ namespace Advencursor._Scene.Stage
             uiManager.SetElementPosition(posStage1, "stage1Button");
             posStage2 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
             uiManager.SetElementPosition(posStage2, "stage2Button");
+            posStage3 += direction * moveButtonSpeed * TimeManager.TotalSeconds;
+            uiManager.SetElementPosition(posStage3, "stage3Button");
         }
 
 
@@ -199,6 +231,7 @@ namespace Advencursor._Scene.Stage
             }
             else if (uiManager.GetElementPosition("gachaButton").X > screenCenter.X || uiManager.GetElementPosition("gachaButton").X < screenCenter.X)
             {
+                gameData.SaveData();
                 gachaPosdes = screenCenter;
                 currentStage = (int)Stage.Gacha;
                 uiManager.SetElementPosition(gachaPos, "gachaButton");
@@ -215,6 +248,7 @@ namespace Advencursor._Scene.Stage
             }
             else if (uiManager.GetElementPosition("stage1Button").X > screenCenter.X || uiManager.GetElementPosition("stage1Button").X < screenCenter.X)
             {
+                gameData.SaveData();
                 posStage1des = screenCenter;
                 currentStage = (int)Stage.Stage1;
                 uiManager.SetElementPosition(posStage1, "stage1Button");
@@ -230,9 +264,26 @@ namespace Advencursor._Scene.Stage
             }
             else if (uiManager.GetElementPosition("stage2Button").X > screenCenter.X || uiManager.GetElementPosition("stage2Button").X < screenCenter.X)
             {
+                gameData.SaveData();
                 posStage2des = screenCenter;
                 currentStage = (int)Stage.Stage2;
                 uiManager.SetElementPosition(posStage2, "stage2Button");
+            }
+        }
+        private void OnStage3ButtonClick()
+        {
+            if (uiManager.GetElementPosition("stage3Button") == screenCenter)
+            {
+                gameData.stage = currentStage = (int)Stage.Stage3;
+                gameData.SaveData();
+                sceneManager.AddScene(new InventoryScene(contentManager, sceneManager));
+            }
+            else if (uiManager.GetElementPosition("stage3Button").X > screenCenter.X || uiManager.GetElementPosition("stage3Button").X < screenCenter.X)
+            {
+                gameData.SaveData();
+                posStage3des = screenCenter;
+                currentStage = (int)Stage.Stage3;
+                uiManager.SetElementPosition(posStage3, "stage3Button");
             }
         }
         private Vector2 GetVectorDirection(Vector2 position, Vector2 destination)

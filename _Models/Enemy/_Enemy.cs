@@ -20,6 +20,11 @@ namespace Advencursor._Models.Enemy
         public bool isAttacking;
         protected Texture2D shadowTexture;
 
+        public bool isAmp = false;
+        public float ampMultiplier = 1f;
+        public float burnDuration = 0f;
+        public bool isBurn => burnDuration > 0;
+
         public float collisionCooldown { get; set; }
 
         public _Enemy(Texture2D texture, Vector2 position, int health, int attack) : base(texture, position)
@@ -31,6 +36,7 @@ namespace Advencursor._Models.Enemy
         public override void Update(GameTime gameTime)
         {
             collisionCooldown -= TimeManager.TimeGlobal;
+            burnDuration -= TimeManager.TimeGlobal;
             Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
             FlipAuto(playerPosition);
         }
@@ -83,20 +89,32 @@ namespace Advencursor._Models.Enemy
             int newHeight = parryZone.Height + increaseamount;
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
         }
+        public void BurnDamage(Sprite player)
+        {
+            if (isBurn)
+            {
+                if (player is Player)
+                {
+                    Status.TakeDamageNoCrit(player.Status.Attack, player, Color.OrangeRed);
+                    burnDuration = 0;
+                }
+            }
+        }
         public virtual void TakeDamage(float fixedDamage, Sprite fromwho)
         {
-            Status.TakeDamageNoCrit(fixedDamage, fromwho);
+            Status.TakeDamageNoCrit(fixedDamage * ampMultiplier, fromwho,Color.White);
+            BurnDamage(fromwho);
         }
 
         public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(multiplier * player.Status.Attack, player,NoCrit);
+                Status.TakeDamageNoImmune(multiplier * player.Status.Attack * ampMultiplier, player,NoCrit);
             }
             else
             {
-                Status.TakeDamage(multiplier * player.Status.Attack, player);
+                Status.TakeDamage(multiplier * player.Status.Attack * ampMultiplier, player);
             }
         }
 
@@ -104,16 +122,16 @@ namespace Advencursor._Models.Enemy
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(fixedDamage, player , NoCrit);
+                Status.TakeDamageNoImmune(fixedDamage * ampMultiplier, player , NoCrit);
             }
             else
             {
                 if (NoCrit)
                 {
-                    Status.TakeDamageNoCrit(fixedDamage, player);
+                    Status.TakeDamageNoCrit(fixedDamage * ampMultiplier, player,Color.White);
                 }
                 else
-                    Status.TakeDamage(fixedDamage, player);
+                    Status.TakeDamage(fixedDamage * ampMultiplier, player);
             }
         }
 

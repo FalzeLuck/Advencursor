@@ -33,7 +33,7 @@ namespace Advencursor._UI
                 Globals.SpriteBatch.Draw(texture, position, null, Color.White * opacity, rotation, origin, scale, SpriteEffects.None, 1);
                 string cooldown = skill.cooldownTimer.ToString("F1");
                 Vector2 textSize = font.MeasureString(cooldown);
-                Globals.SpriteBatch.DrawString(font, cooldown, new(position.X + (texture.Width - textSize.X) / 2, position.Y + (texture.Height - textSize.Y) / 2), Color.White, rotation, origin, scale, spriteEffects, 1);
+                Globals.SpriteBatch.DrawString(font, cooldown, new(position.X + (texture.Width - textSize.X) / 2, position.Y + (texture.Height - textSize.Y) / 2), Color.Black, rotation, origin, scale, spriteEffects, 1);
             }
         }
     }

@@ -71,7 +71,6 @@ namespace Advencursor._Skill.Thunder_Set
                 lifeSpanMin = 0.2f,
                 rotationMax = 180,
             };
-
             ped1 = new()
             {
                 particleData = new LightningParticleData()

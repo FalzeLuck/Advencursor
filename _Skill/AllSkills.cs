@@ -32,7 +32,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap", skillData) },
             {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food", skillData) },
             {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win", skillData) },
-            //{"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
+            {"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
         };
         public static void Reset()
         {
@@ -47,7 +47,7 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap",new Skill_W_PoisonTrap("HAHAHA It's A Trap", skillData) },
             {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food", skillData) },
             {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win", skillData) },
-            //{"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
+            {"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
             };
         }
 

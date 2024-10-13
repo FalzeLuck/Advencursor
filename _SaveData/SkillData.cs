@@ -31,6 +31,7 @@ namespace Advencursor._SaveData
         public Dictionary<string, float> Invincibility { get; set; }
 
         //Fire Set Dictionary
+        public Dictionary<string, float> FireDomain { get; set; }
 
         public const string path = "skillData.json";
         public SkillData()
@@ -93,6 +94,15 @@ namespace Advencursor._SaveData
                 {"Crit Dam Add",200f },
                 {"Cooldown", 60f }
             };
+            FireDomain = new Dictionary<string, float>()
+            {
+                {"Damage Amplifier", 0.25f },
+                {"Duration", 7f },
+                {"Heal Percentage", 1f },
+                {"Heal Interval", 1f },
+                {"Radius", 600f },
+                {"Cooldown", 15f }
+            };
 
             skillNameForDamageMultipliers.Add("Thunder Core", ThunderCore);
             skillNameForDamageMultipliers.Add("Thunder Shuriken", ThunderShuriken);
@@ -102,6 +112,7 @@ namespace Advencursor._SaveData
             skillNameForDamageMultipliers.Add("HAHAHA It's A Trap", PoisonTrap);
             skillNameForDamageMultipliers.Add("Emergency Food", EmergencyFood);
             skillNameForDamageMultipliers.Add("Nah I'd win", Invincibility);
+            skillNameForDamageMultipliers.Add("Fire Domain", FireDomain);
         }
 
         public float GetMultiplierNumber(string skillName,string multiplierName)
@@ -115,7 +126,6 @@ namespace Advencursor._SaveData
         {
             SkillData data = this;
             string serializedData = JsonSerializer.Serialize<SkillData>(data);
-            Trace.WriteLine(serializedData);
             File.WriteAllText(path, serializedData);
         }
 
@@ -125,7 +135,6 @@ namespace Advencursor._SaveData
             {
                 string deserializedData = File.ReadAllText(path);
                 SkillData data = JsonSerializer.Deserialize<SkillData>(deserializedData);
-
                 this.skillNameForDamageMultipliers = data.skillNameForDamageMultipliers;
                 UpdateDictionariesFromSkillMultipliers();
             }
@@ -144,6 +153,7 @@ namespace Advencursor._SaveData
             PoisonTrap = skillNameForDamageMultipliers["HAHAHA It's A Trap"];
             EmergencyFood = skillNameForDamageMultipliers["Emergency Food"];
             Invincibility = skillNameForDamageMultipliers["Nah I'd win"];
+            FireDomain = skillNameForDamageMultipliers["Fire Domain"];
         }
     }
 }

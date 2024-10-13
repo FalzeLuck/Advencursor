@@ -24,12 +24,16 @@ using System.ComponentModel;
 
 namespace Advencursor._Scene.Stage
 {
-    public class Stage2 : StageAbstract
+    public class Stage3 : StageAbstract
     {
-        List<Elite2> eliteEnemy;
+        List<Elite1> eliteEnemy;
+        List<Elite2> eliteEnemy2;
+        private int elite1_killed = 0;
+        private float elite1_reset_time = 0;
+        private float elite2_reset_time = 0;
         Boss2 boss_obj;
 
-        public Stage2(ContentManager contentManager, SceneManager sceneManager)
+        public Stage3(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
@@ -62,10 +66,10 @@ namespace Advencursor._Scene.Stage
             //Load Background
             background = Globals.Content.Load<Texture2D>("Background/BG_Stage2");
 
-
             //Load enemies
             commonEnemy = new List<Common1>();
-            eliteEnemy = new List<Elite2>();
+            eliteEnemy = new List<Elite1>();
+            eliteEnemy2 = new List<Elite2>();
             boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
             {
                 movementAI = new FollowMovementAI()
@@ -150,13 +154,19 @@ namespace Advencursor._Scene.Stage
             {
                 if (elite.Status.IsAlive())
                 {
-                    if (animationManager.IsComplete("Slash"))
+                    if (elite.slamRadius.Intersects(player.collision) && !elite.isSlam)
                     {
-                        elite.Status.immunity = false;
+                        elite.Slam();
                     }
+
+                    if (elite.isSlamming && elite.slamRadius.Intersects(player.collision))
+                    {
+                        player.Stun(1);
+                        player.Status.TakeDamage(2500, elite);
+                        player.Immunity(0.5f);
+                    }
+
                 }
-
-
             }
         }
 
@@ -166,6 +176,8 @@ namespace Advencursor._Scene.Stage
             boss_spawn_time += TimeManager.TimeGlobal;
             enemy_spawn_time += TimeManager.TimeGlobal;
             elite_spawn_time += TimeManager.TimeGlobal;
+            elite1_reset_time -= TimeManager.TimeGlobal;
+            elite2_reset_time -= TimeManager.TimeGlobal;
 
             //Common1
             if (enemy_spawn_time >= 0.1f)
@@ -199,7 +211,7 @@ namespace Advencursor._Scene.Stage
                         Globals.Content.Load<Texture2D>("Enemies/Common1"),
                         spawnpoint,
                         health: 6000,
-                        attack: 300,
+                        attack: 200,
                         row: 3,
                         column: 8
                         )
@@ -234,9 +246,61 @@ namespace Advencursor._Scene.Stage
                 }
 
             }
-
-            //Elite
-            if (elite_spawn_time > 10f && !startWarning)
+            //Elite1
+            if (elite_spawn_time > 10f && !boss_spawned && elite1_reset_time <= 0)
+            {
+                if (elite_count < elite_max)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        float spawnSide = Globals.RandomFloat(0, Globals.Bounds.X);
+                        Elite1 enemy = (new Elite1(
+                            Globals.Content.Load<Texture2D>("Enemies/Elite1"),
+                            new(spawnSide, -100),
+                            health: 20000,
+                            attack: 1500,
+                            row: 3,
+                            column: 8
+                            )
+                        {
+                            movementAI = new FollowMovementAI
+                            {
+                                target = player,
+                            }
+                        });
+                        eliteEnemy.Add(enemy);
+                        Globals.EnemyManager.Add(enemy);
+                        damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
+                        elite_count++;
+                        elite1_reset_time = 20f;
+                    }
+                }
+            }
+            foreach (var enemy in eliteEnemy)
+            {
+                if (!enemy.Status.IsAlive())
+                {
+                    enemy.Die();
+                    if (enemy.animations["Die"].IsComplete)
+                    {
+                        elite_count--;
+                        enemy_killed++;
+                        elite_killed++;
+                        elite1_killed++;
+                        if (elite1_killed < 5)
+                        {
+                            player.Status.SetCritRate(player.Status.CritRate + 4);
+                            player.Status.AddAttack(100);
+                        }
+                        damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
+                        Globals.EnemyManager.Remove(enemy);
+                        eliteEnemy.Remove(enemy);
+                        break;
+                    }
+                }
+            }
+            //Elite2
+            if (elite_spawn_time > 15f && !startWarning && elite2_reset_time <= 0 && !boss_spawned)
             {
                 if (elite_count < elite_max)
                 {
@@ -276,12 +340,12 @@ namespace Advencursor._Scene.Stage
                                 target = player,
                             }
                         });
-                        eliteEnemy.Add(enemy);
+                        eliteEnemy2.Add(enemy);
                         Globals.EnemyManager.Add(enemy);
                         elite_count++;
-                        elite_spawn_time = 0f;
+                        elite2_reset_time = 7.5f;
                     }
-                    
+
                 }
             }
             foreach (var enemy in eliteEnemy)
@@ -292,7 +356,7 @@ namespace Advencursor._Scene.Stage
                     if (enemy.animations["Die"].IsComplete)
                     {
                         elite_count--;
-                        //player.Status.SetCritRate(player.Status.CritRate + 4);
+                        elite_killed++;
                         Globals.EnemyManager.Remove(enemy);
                         eliteEnemy.Remove(enemy);
                         break;
@@ -300,10 +364,9 @@ namespace Advencursor._Scene.Stage
                 }
             }
             //Warning
-            if(Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
+            if (Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
             {
                 boss_spawn_time = 115f;
-                timer.TimeSet(115f);
             }
             if (boss_spawn_time > 115f && !boss_spawned)
             {
@@ -317,7 +380,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Boss2
-            if (boss_spawn_time > 120f && !boss_spawned )
+            if (boss_spawn_time > 120f && !boss_spawned)
             {
                 startWarning = false;
                 elite_spawn_time = 0f;
@@ -350,7 +413,7 @@ namespace Advencursor._Scene.Stage
             if (!boss_obj.Status.IsAlive() && boss_spawned)
             {
                 boss_obj.Die();
-                boss_obj.position = new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y/2);
+                boss_obj.position = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             }
 
 
@@ -409,7 +472,6 @@ namespace Advencursor._Scene.Stage
                 {
                     enemy.Status.Kill();
                 }
-                boss_killed = true;
                 GotoSummary(true);
             }
         }

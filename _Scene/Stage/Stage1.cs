@@ -40,6 +40,7 @@ namespace Advencursor._Scene.Stage
         protected float special_spawn_time;
         protected int special_count = 0;
         protected int special_max = 3;
+        protected float elite_reset_time = 10f;
 
 
         public Stage1(ContentManager contentManager, SceneManager sceneManager)
@@ -120,6 +121,10 @@ namespace Advencursor._Scene.Stage
         {
 
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
+            if (startWarning)
+            {
+                DrawWarning();
+            }
             timer.Draw();
             foreach (var pool in poisonPool)
             {
@@ -146,7 +151,7 @@ namespace Advencursor._Scene.Stage
             ParticleManager.Draw();
             damageNumberManager.Draw();
             uiManager.Draw(spriteBatch);
-
+            
             if (isPause)
             {
                 DrawPause();
@@ -252,7 +257,7 @@ namespace Advencursor._Scene.Stage
 
                     if (elite.isSlamming && elite.slamRadius.Intersects(player.collision))
                     {
-                        player.Stun(2);
+                        player.Stun(1);
                         player.Status.TakeDamage(3000, elite);
                         player.Immunity(0.5f);
                     }
@@ -331,6 +336,7 @@ namespace Advencursor._Scene.Stage
             enemy_spawn_time += TimeManager.TimeGlobal;
             elite_spawn_time += TimeManager.TimeGlobal;
             special_spawn_time += TimeManager.TimeGlobal;
+            elite_reset_time -= TimeManager.TimeGlobal;
             if (boss_spawned)
             {
                 if (boss_obj.dashed)
@@ -345,7 +351,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Common1
-            if (enemy_spawn_time >= 0.1f)
+            if (enemy_spawn_time >= 0.1f && !startWarning) 
             {
                 if (enemy_count < enemy_max)
                 {
@@ -414,7 +420,7 @@ namespace Advencursor._Scene.Stage
             }
 
             //Elite1
-            if (elite_spawn_time > 30f && !boss_spawned)
+            if (elite_spawn_time > 30f && !boss_spawned && elite_reset_time <= 0)
             {
                 if (elite_count < elite_max)
                 {
@@ -439,7 +445,7 @@ namespace Advencursor._Scene.Stage
                         Globals.EnemyManager.Add(enemy);
                         damageNumberManager.SubscribeToTakeDamageEvent(enemy.Status, enemy);
                         elite_count++;
-                        elite_spawn_time = 0f;
+                        elite_reset_time = 10f;
                     }
                 }
             }
@@ -452,7 +458,12 @@ namespace Advencursor._Scene.Stage
                     {
                         elite_count--;
                         enemy_killed++;
-                        player.Status.SetCritRate(player.Status.CritRate + 4);
+                        elite_killed++;
+                        if (elite_killed < 5)
+                        {
+                            player.Status.SetCritRate(player.Status.CritRate + 4);
+                            player.Status.AddAttack(100);
+                        }
                         damageNumberManager.UnSubscribeToTakeDamageEvent(enemy.Status, enemy);
                         Globals.EnemyManager.Remove(enemy);
                         eliteEnemy.Remove(enemy);
@@ -460,10 +471,28 @@ namespace Advencursor._Scene.Stage
                     }
                 }
             }
+            //Warning
+            if (Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
+            {
+                boss_spawn_time = 115f;
+                timer.TimeSet(115f);
+            }
+            if (boss_spawn_time > 115f && !boss_spawned)
+            {
+                foreach (var enemy in Globals.EnemyManager)
+                {
+                    enemy.Status.Kill();
+                }
+                startWarning = true;
+                enemy_count = 0;
+                enemy_max = 0;
+            }
 
             //Boss1
-            if (boss_spawn_time > 120f && !boss_spawned || Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
+            if (boss_spawn_time > 120f && !boss_spawned)
             {
+                startWarning = false;
+                elite_spawn_time = 0f;
                 special_spawn_time = 10f;
                 boss_obj = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: 100000, attack: 3000, row: 3, column: 8)
                 {
@@ -503,21 +532,6 @@ namespace Advencursor._Scene.Stage
                 boss_obj.Die();
             }
 
-            if (boss_obj.animations["Die"].currentFrame == 15)
-            {
-                soundManager.StopAllSounds();
-                boss_spawned = false;
-                boss_obj.position = new(9999, 9999);
-                uiManager.RemoveElement("bossBar");
-                enemy_max = 0;
-                foreach (var enemy in Globals.EnemyManager)
-                {
-                    enemy.Status.Kill();
-                }
-                gameData.gems += 10;
-                gameData.SaveData();
-                UnloadScene();
-            }
 
 
             if (boss_spawned && special_spawn_time > 5f)
@@ -629,6 +643,7 @@ namespace Advencursor._Scene.Stage
                 {
                     enemy.Status.Kill();
                 }
+                boss_killed = true;
                 GotoSummary(true);
             }
         }

@@ -66,7 +66,7 @@ namespace Advencursor._Skill.Thunder_Set
             base.Use(player);
             foreach (var enemy in Globals.EnemyManager)
             {
-                enemy.TakeDamage(skillMultiplier, player,(enemy.Status.MaxHP*30)/100,true,true);
+                enemy.TakeDamage(skillMultiplier, player,(enemy.Status.MaxHP*15)/100,true,true);
                 enemy.Status.Paralysis(5f);
             }
 

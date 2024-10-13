@@ -56,6 +56,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         public override void Update(GameTime gameTime)
         {
             collisionCooldown -= TimeManager.TimeGlobal;
+            burnDuration -= TimeManager.TimeGlobal;
             Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
             if (animations.ContainsKey(indicator))
             {

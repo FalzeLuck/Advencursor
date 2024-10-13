@@ -45,6 +45,8 @@ namespace Advencursor._Scene
         private float gachaWaitTime;
         private List<Item> tempGachaItem;
 
+        private Texture2D gemBG;
+
         public GachaScene(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
@@ -59,20 +61,26 @@ namespace Advencursor._Scene
 
         public void Load()
         {
-            UIButton roll1Button = new(Globals.Content.Load<Texture2D>("Gacha/Roll1"), new Vector2(Globals.Bounds.X/2, Globals.Bounds.Y / 2 + 300), OnRoll1ButtonClick);
-            UIButton roll5Button = new(Globals.Content.Load<Texture2D>("Gacha/Roll5"), new Vector2(Globals.Bounds.X - 500, Globals.Bounds.Y / 2 + 300), OnRoll5ButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(Globals.Bounds.X / 2 - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
+            UIButton roll1Button = new(Globals.Content.Load<Texture2D>("UI/Gacha/Roll1"), new Vector2(Globals.Bounds.X / 2 - 100, Globals.Bounds.Y / 2 + 400), OnRoll1ButtonClick);
+            UIButton roll5Button = new(Globals.Content.Load<Texture2D>("UI/Gacha/Roll5"), new Vector2(Globals.Bounds.X - 500, Globals.Bounds.Y / 2 + 400), OnRoll5ButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonExit"), new Vector2(Globals.Bounds.X - 110, 75), OnExitButtonClick);
+            UIButton thunderButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonThunder"), new Vector2(220, 250), OnThunderButtonClick);
+            UIButton buffButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonBuff"), new Vector2(220, 250 + 350), OnBuffButtonClick);
             uiManager.AddElement("roll1Button", roll1Button);
             uiManager.AddElement("roll5Button", roll5Button);
             uiManager.AddElement("exitButton", exitButton);
+            uiManager.AddElement("thunderButton", thunderButton);
+            uiManager.AddElement("buffButton", buffButton);
 
-            background = Globals.Content.Load<Texture2D>("Background/Menu");
+
+            background = Globals.Content.Load<Texture2D>("UI/Gacha/BannerThunder");
             textFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
+            gemBG = Globals.Content.Load<Texture2D>("UI/Gacha/GemAmount");
 
             inventory.LoadInventory(new(Globals.graphicsDevice, 1, 1));
             gameData.LoadData();
             selectedSet = gameData.gachaSelectedSet;
-            selectedSet = "Food";
+            selectedSet = "Thunder";
         }
 
         public void Update(GameTime gameTime)
@@ -80,7 +88,7 @@ namespace Advencursor._Scene
             Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
 
-            if(Keyboard.GetState().IsKeyDown(Keys.LeftControl) 
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)
                 && Keyboard.GetState().IsKeyDown(Keys.Q)
                 && Keyboard.GetState().IsKeyDown(Keys.W)
                 && Keyboard.GetState().IsKeyDown(Keys.E)
@@ -89,7 +97,7 @@ namespace Advencursor._Scene
                 gameData.gems = 999999;
             }
 
-            if(gachaWaitTime > 0)
+            if (gachaWaitTime > 0)
             {
                 uiManager.HideAll();
                 gachaWaitTime -= TimeManager.TotalSeconds;
@@ -102,25 +110,27 @@ namespace Advencursor._Scene
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
+            Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
-
-            Globals.SpriteBatch.DrawString(textFont,$"Gems : {gameData.gems}",Vector2.Zero,Color.Black);
-            Globals.SpriteBatch.DrawString(textFont, $"Pity : {gameData.pityCounter}/{pityUltimateSkillThreshold}", new Vector2(0,100), Color.Black);
+            Globals.SpriteBatch.Draw(gemBG, new Vector2(Globals.Bounds.X - 400, 150), Color.White);
+            Vector2 textSize = textFont.MeasureString($"{gameData.gems}");
+            float rightAlignedX = (Globals.Bounds.X - 200) - (textSize.X * 0.35f);
+            Globals.SpriteBatch.DrawString(textFont, $"{gameData.gems}", new Vector2(rightAlignedX, 170), Color.Black, 0f, Vector2.Zero, 0.35f, SpriteEffects.None, 0f
+            );
 
             if (gachaWaitTime > 0)
             {
                 if (tempGachaItem.Count == 1)
                 {
-                    Vector2 itemOrigin = new Vector2(tempGachaItem[0].texture.Width/2, tempGachaItem[0].texture.Height/2);
+                    Vector2 itemOrigin = new Vector2(tempGachaItem[0].texture.Width / 2, tempGachaItem[0].texture.Height / 2);
                     Vector2 itemPos = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
-                    Globals.SpriteBatch.Draw(tempGachaItem[0].texture,itemPos,null,Color.White,0,itemOrigin,1f,SpriteEffects.None,0f);
+                    Globals.SpriteBatch.Draw(tempGachaItem[0].texture, itemPos, null, Color.White, 0, itemOrigin, 1f, SpriteEffects.None, 0f);
 
                     string name = $"{(char)34}{tempGachaItem[0].name}{(char)34}";
                     Vector2 namePos = itemPos + new Vector2(0, 200);
                     Vector2 nameSize = textFont.MeasureString(name);
-                    Vector2 nameOrigin = new Vector2(nameSize.X/2, nameSize.Y/2);
-                    Globals.SpriteBatch.DrawString(textFont,name,namePos,Color.Black,0f,nameOrigin,1f,SpriteEffects.None,0f);
+                    Vector2 nameOrigin = new Vector2(nameSize.X / 2, nameSize.Y / 2);
+                    Globals.SpriteBatch.DrawString(textFont, name, namePos, Color.Black, 0f, nameOrigin, 1f, SpriteEffects.None, 0f);
 
                     string stat = $"{(char)34}{tempGachaItem[0].statDesc}:{tempGachaItem[0].statValue.ToString("F2")}{(char)34}";
                     Vector2 statPos = namePos + new Vector2(0, 100);
@@ -134,7 +144,7 @@ namespace Advencursor._Scene
                     for (int i = 0; i < tempGachaItem.Count; i++)
                     {
                         Vector2 itemOrigin = new Vector2(tempGachaItem[i].texture.Width / 2, tempGachaItem[i].texture.Height / 2);
-                        Vector2 itemPos = new Vector2((Globals.Bounds.X / tempGachaItem.Count) + (i* tempGachaItem[i].texture.Width), Globals.Bounds.Y / 2);
+                        Vector2 itemPos = new Vector2((Globals.Bounds.X / tempGachaItem.Count) + (i * tempGachaItem[i].texture.Width), Globals.Bounds.Y / 2);
                         Globals.SpriteBatch.Draw(tempGachaItem[i].texture, itemPos, null, Color.White, 0, itemOrigin, scale, SpriteEffects.None, 0f);
 
                         string name = $"{(char)34}{tempGachaItem[i].name}{(char)34}";
@@ -160,7 +170,7 @@ namespace Advencursor._Scene
             if (gameData.gems - 10 < 0) return;
 
             gameData.gems -= 10;
-            Item tempItem = RandomItemsWithPity(skillPool,pullRates,selectedSet);
+            Item tempItem = RandomItemsWithPity(skillPool, pullRates, selectedSet);
 
 
             tempGachaItem.Clear();
@@ -174,13 +184,13 @@ namespace Advencursor._Scene
         private void OnRoll5ButtonClick()
         {
             int rollNumber = 6;
-            if (gameData.gems - 10*(rollNumber-1) < 0) return;
+            if (gameData.gems - 10 * (rollNumber - 1) < 0) return;
 
-            gameData.gems -= 10*(rollNumber-1);
+            gameData.gems -= 10 * (rollNumber - 1);
             List<Item> results = new List<Item>();
             for (int i = 0; i < rollNumber; i++)
             {
-                results.Add(RandomItemsWithPity(skillPool,pullRates,selectedSet));
+                results.Add(RandomItemsWithPity(skillPool, pullRates, selectedSet));
             }
 
             tempGachaItem.Clear();
@@ -191,7 +201,19 @@ namespace Advencursor._Scene
             gachaWaitTime = gachaInterval;
         }
 
-        private Item RandomItems(List<Skill> skillPool,Dictionary<int, float> rates,string set)
+        private void OnThunderButtonClick()
+        {
+            selectedSet = "Thunder";
+            background = Globals.Content.Load<Texture2D>("UI/Gacha/BannerThunder");
+        }
+
+        private void OnBuffButtonClick()
+        {
+            selectedSet = "Food";
+            background = Globals.Content.Load<Texture2D>("UI/Gacha/BannerBuff");
+        }
+
+        private Item RandomItems(List<Skill> skillPool, Dictionary<int, float> rates, string set)
         {
             double roll = Globals.random.NextDouble();
             double cumulative = 0.0;
@@ -223,14 +245,14 @@ namespace Advencursor._Scene
                         tempKey = Keys.Q;
                     }
 
-                    return new Item(tempName, tempSkill,tempKey);
+                    return new Item(tempName, tempSkill, tempKey);
                 }
             }
 
             return null;
         }
 
-        private Item RandomItemsWithPity(List<Skill> skillPool,Dictionary<int, float> rates, string set)
+        private Item RandomItemsWithPity(List<Skill> skillPool, Dictionary<int, float> rates, string set)
         {
             gameData.pityCounter++;
 
@@ -244,7 +266,7 @@ namespace Advencursor._Scene
                 return new Item(tempName, tempSkill, tempKey);
             }
 
-            return RandomItems(skillPool,rates,set);
+            return RandomItems(skillPool, rates, set);
         }
 
         private void OnExitButtonClick()

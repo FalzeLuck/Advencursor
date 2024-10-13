@@ -27,6 +27,8 @@ namespace Advencursor._Models
         public Dictionary<Keys, Skill> Skills {  get; private set; }
         public Inventory Inventory { get; set; }
 
+        private GameData gameData;
+
 
         public float parryDuration = 0.1f;
         public float parryCooldown = 1.0f;
@@ -89,6 +91,11 @@ namespace Advencursor._Models
                 {Keys.E,nullSkill},
                 {Keys.R,nullSkill},
             };
+        }
+
+        public void LoadGameData(GameData gameData)
+        {
+            this.gameData = gameData;
         }
 
         public void EquipItem(Item item)
@@ -197,7 +204,6 @@ namespace Advencursor._Models
             if (!Status.immunity)
             {
                 Status.TakeDamage(damage,fromwho);
-                //Immunity(0.5f);
             }
         }
 
@@ -226,18 +232,41 @@ namespace Advencursor._Models
                             Common1 common1 = (Common1)enemy;
                             if (common1.isDashing)
                             {
-                                TakeDamage((enemy.Status.Attack * 2.5f), enemy);
+                                switch (gameData.stage)
+                                {
+                                    case 1:
+                                        TakeDamage(250f, enemy);
+                                        break;
+                                    case 2:
+                                        TakeDamage(250f, enemy);
+                                        break;
+                                    case 3:
+                                        TakeDamage(300f, enemy);
+                                        break;
+                                }
+
+                                
                             }
                             else
                             {
-                                TakeDamage((enemy.Status.Attack), enemy);
+                                switch (gameData.stage)
+                                {
+                                    case 1:
+                                        TakeDamage(100f, enemy);
+                                        break;
+                                    case 2:
+                                        TakeDamage(100f, enemy);
+                                        break;
+                                    case 3:
+                                        TakeDamage(200f, enemy);
+                                        break;
+                                }
                             }
                             enemy.CollisionCooldownReset(takeDamageCooldown);
                         }
                         if (enemy is Elite1)
                         {
                             Elite1 elite1 = (Elite1)enemy;
-
                             TakeDamage(enemy.Status.Attack, elite1);
                             enemy.CollisionCooldownReset(takeDamageCooldown);
                         }
@@ -247,12 +276,12 @@ namespace Advencursor._Models
 
                             if (boss1.dashing)
                             {
-                                TakeDamage(enemy.Status.Attack + 2000, enemy);
-                                Immunity(0.5f);
+                                TakeDamage(5000, enemy);
+                                Immunity(1f);
                             }
                             else
                             {
-                                TakeDamage(enemy.Status.Attack, enemy);
+                                TakeDamage(3000, enemy);
                             }
                             enemy.CollisionCooldownReset(takeDamageCooldown);
                         }
@@ -287,17 +316,17 @@ namespace Advencursor._Models
                     animations[finalIndicator].Update();
                     collision = animations[finalIndicator].GetCollision(position);
                     int decreaseamount = 80;
-                    int newX = collision.X + decreaseamount / 2;
-                    int newY = collision.Y + decreaseamount / 2;
                     int newWidth = collision.Width - decreaseamount;
                     int newHeight = collision.Height - decreaseamount;
-                    if (!animations[finalIndicator].IsFlip)
+                    int newX = collision.X + decreaseamount / 2;
+                    int newY = collision.Y + decreaseamount / 2;
+                    if (animations[finalIndicator].IsFlip)
                     {
-                        collision = new(newX, newY, newWidth / 4, newHeight/2);
+                        collision = new(newX, newY + newHeight/2, newWidth / 4, newHeight/2);
                     }
                     else
                     {
-                        collision = new(newX + 3 * newWidth / 4, newY, newWidth / 4, newHeight/2);
+                        collision = new(newX + 3 * newWidth / 4, newY + newHeight / 2, newWidth / 4, newHeight/2);
                     }
                 }
             }
@@ -365,6 +394,14 @@ namespace Advencursor._Models
             {
                 skill.Draw();
             }
+
+            DrawCollision();
+        }
+
+        public void DrawCollision()
+        {
+            Globals.DrawLine(new Vector2(collision.X, collision.Y), new Vector2(collision.X + collision.Width, collision.Y), Color.Green, 1);
+            Globals.DrawLine(new Vector2(collision.X, collision.Y + collision.Height), new Vector2(collision.X + collision.Width, collision.Y + collision.Height), Color.Green, 1);
         }
 
         public void SavePlayer()

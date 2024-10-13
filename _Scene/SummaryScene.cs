@@ -51,6 +51,7 @@ namespace Advencursor._Scene
         private int shuffleGemsIndex = 0;
         private int currentGemsCharIndex = 0;
         private bool shuffleGemsComplete = false;
+        private Texture2D gemTexture;
 
         private string charPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:. ";
 
@@ -77,6 +78,7 @@ namespace Advencursor._Scene
         public void Load()
         {
             font = Globals.Content.Load<SpriteFont>("Font/TextFont");
+            gemTexture = Globals.Content.Load<Texture2D>("UI/Gacha/Gem");
 
             if (win)
             {
@@ -189,6 +191,11 @@ namespace Advencursor._Scene
             Vector2 gemSize = font.MeasureString(formattedGems);
             Vector2 gemOrigin = new Vector2(gemSize.X / 2, gemSize.Y / 2);
             spriteBatch.DrawString(font, new string(displayGems), new Vector2(screenCenter.X, screenCenter.Y), Color.Black, 0, gemOrigin, 0.8f, SpriteEffects.None, 0);
+
+            Vector2 stringSize = font.MeasureString(new string(displayGems));
+            Vector2 gemPos = new Vector2(screenCenter.X + stringSize.X/2 + 50, screenCenter.Y - 20);
+            Vector2 gemTextureOrigin = new Vector2(gemTexture.Width/2,gemTexture.Height/2);
+            spriteBatch.Draw(gemTexture, gemPos,null, Color.White,0,gemOrigin,0.5f,SpriteEffects.None,0f);
 
             uiManager.Draw(spriteBatch);
 

@@ -12,7 +12,7 @@ namespace Advencursor._Particles
     {
         private static readonly List<Particle> particles = new();
 
-        private static readonly List<ParticleEmitter> particleEmitters = new();
+        public static readonly List<ParticleEmitter> particleEmitters = new();
         public static void AddParticle(Particle particle)
         {
             particles.Add(particle);

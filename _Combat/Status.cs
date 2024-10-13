@@ -101,17 +101,70 @@ namespace Advencursor._Combat
 
 
         }
+        public void TakeDamage(float damage, Sprite fromwho,float ampAmount)
+        {
+            if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
+            float tempDamage;
+            Color tempColor;
+            float tempScale;
+            string tempString;
+            if (IsCrit(fromwho.Status.CritRate))
+            {
+                tempScale = numberScale * 1.75f;
+                tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
+                tempString = $"{tempDamage.ToString("F0")}!";
+                tempColor = new Color(255, 16, 240);
+            }
+            else
+            {
+                if (fromwho is _Enemy)
+                {
+                    tempColor = Color.Red;
+                }
+                else
+                {
+                    tempColor = new Color(248, 228, 249, 1);
+                }
+                tempScale = numberScale;
+                tempDamage = damage * ampAmount;
+                tempString = tempDamage.ToString("F0");
+            }
 
-        public void TakeDamageNoCrit(float damage, Sprite fromwho)
+
+            if (immunity == false)
+            {
+                if (Shield >= tempDamage)
+                {
+                    Shield -= tempDamage;
+                }
+                else if (Shield < tempDamage)
+                {
+                    float remainDamage = (tempDamage - Shield);
+                    Shield = 0;
+                    CurrentHP -= remainDamage;
+                }
+                else if (Shield == 0)
+                {
+                    CurrentHP -= tempDamage;
+                }
+                OnTakeDamage?.Invoke(tempString, tempColor, tempScale);
+            }
+
+            if (CurrentHP < 0) { CurrentHP = 0; }
+
+
+        }
+
+        public void TakeDamageNoCrit(float damage, Sprite fromwho,Color color)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
             float tempDamage = damage;
-            Color tempColor = Color.White;
+            Color tempColor = color;
 
-            if (fromwho is _Enemy)
+            /*if (fromwho is _Enemy)
             {
                 tempColor = Color.Red;
-            }
+            }*/
 
 
 

@@ -22,6 +22,8 @@ namespace Advencursor._Particles
         protected Vector2 origin;
         protected Vector2 direction;
         protected float rotation;
+        protected float range;
+        protected float rangeIndex = 0f;
 
         public Particle(Vector2 position, ParticleData data) 
         {
@@ -38,6 +40,7 @@ namespace Advencursor._Particles
             {
                 this.data.angle = MathHelper.ToRadians(this.data.angle);
                 direction = new Vector2((float)Math.Sin(this.data.angle), (float)Math.Cos(this.data.angle));
+                range = Math.Abs(data.rangeMax);
             }
             else
             {
@@ -58,7 +61,11 @@ namespace Advencursor._Particles
             color = Color.Lerp(data.colorEnd, data.colorStart, lifespanAmount);
             opacity = MathHelper.Clamp(MathHelper.Lerp(data.opacityEnd, data.opacityStart, lifespanAmount), 0f, 1f);
             scale = MathHelper.Lerp(data.sizeEnd,data.sizeStart, lifespanAmount) / data.texture.Width;
-            position += direction * data.speed * TimeManager.TimeGlobal;
+            if (rangeIndex < range)
+            {
+                rangeIndex += data.speed * TimeManager.TimeGlobal;
+                position += direction * data.speed * TimeManager.TimeGlobal;
+            }
 
 
         }

@@ -45,6 +45,10 @@ namespace Advencursor._Scene.Stage
         protected Timer timer;
         protected Texture2D background;
 
+        protected bool startWarning = false;
+        private bool warningTrigger;
+        private float warningOpacity;
+
         protected readonly Random random = new Random();
 
 
@@ -59,6 +63,8 @@ namespace Advencursor._Scene.Stage
         protected int enemy_max = 30;
         protected int elite_max = 2;
         protected int enemy_killed = 0;
+        protected int elite_killed = 0;
+        protected bool boss_killed = false;
 
         //UI
         protected UIManager uiManager = new UIManager();
@@ -75,6 +81,7 @@ namespace Advencursor._Scene.Stage
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
             inventory.LoadInventory(tempTexture);
             gameData.LoadData();
+            player.LoadGameData(gameData);
 
 
 
@@ -243,6 +250,9 @@ namespace Advencursor._Scene.Stage
                 case 2:
                     sceneManager.AddScene(new Stage2(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
                     break;
+                case 3:
+                    sceneManager.AddScene(new Stage3(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                    break;
             }
         }
 
@@ -265,12 +275,90 @@ namespace Advencursor._Scene.Stage
             Globals.DrawCursor();
         }
 
+        protected void DrawWarning()
+        {
+            Texture2D warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Red);
+            if (warningOpacity <= 0.3f)
+            {
+                warningTrigger = true;
+            }
+            else if (warningOpacity >= 0.8f)
+            {
+                warningTrigger = false;
+            }
+            if (!warningTrigger)
+            {
+                warningOpacity -= 1 * TimeManager.TimeGlobal;
+            }
+            else
+            {
+                warningOpacity += 1 * TimeManager.TimeGlobal;
+            }
+
+            Globals.SpriteBatch.Draw(warningTexture,Vector2.Zero,Color.Red * warningOpacity);
+        }
+
         protected void GotoSummary(bool win)
         {
             timer.StartStop();
             float time = timer.timeLeft;
+            int gems = CalculateReward();
             UnloadScene();
-            sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, 100,gameData,time));
+            sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, gems,gameData,time));
+        }
+
+        protected int CalculateReward()
+        {
+            int gems = 0;
+            float tempMultiplier = 0;
+
+            if(timer.timeLeft > 120)
+            {
+                tempMultiplier = 0.3f;
+
+            }
+            else if (timer.timeLeft > 60)
+            {
+                tempMultiplier = 0.2f;
+            }
+            else if (timer.timeLeft > 0)
+            {
+                tempMultiplier = 0.1f;
+            }
+
+            gems += (int)(enemy_killed * tempMultiplier);
+
+            switch (gameData.stage)
+            {
+                case 1:
+                    gems += elite_killed * 2;
+                    break;
+                case 2:
+                    gems += elite_killed * 4;
+                    break;
+                case 3:
+                    gems += elite_killed * 6;
+                    break;
+            }
+
+            if (boss_killed)
+            {
+                switch (gameData.stage)
+                {
+                    case 1:
+                        gems += 100;
+                        break;
+                    case 2:
+                        gems += 200;
+                        break;
+                    case 3:
+                        gems += 300;
+                        break;
+                }
+            }
+
+            return gems;
+            
         }
     }
 }

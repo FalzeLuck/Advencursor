@@ -47,6 +47,10 @@ namespace Advencursor._Combat
             FormatText();
         }
 
+        public void TimeSet(float time)
+        {
+            timeLeft = time;
+        }
         public void Update()
         {
             if (!active) return;

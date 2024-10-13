@@ -24,6 +24,8 @@ namespace Advencursor
         public static SpriteFont SpriteFont { get; set; }
         public static GraphicsDevice graphicsDevice { get; set; }
         public static Camera Camera { get; set; }
+
+        public static Effect grayScaleEffect { get; set; }
         public static Viewport Viewport { get; set; }
         public static Point Bounds { get; set; }
         public static Rectangle fullScreenRectangle { get; set; }
@@ -165,5 +167,9 @@ namespace Advencursor
             return new Vector2(newX, newY);
         }
 
+        public static void SetGreyScale(float amount)
+        {
+            grayScaleEffect.Parameters["grayscaleAmount"].SetValue(amount);
+        }
     }
 }
