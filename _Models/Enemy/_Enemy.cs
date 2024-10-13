@@ -116,6 +116,7 @@ namespace Advencursor._Models.Enemy
             {
                 Status.TakeDamage(multiplier * player.Status.Attack * ampMultiplier, player);
             }
+            BurnDamage(player);
         }
 
         public virtual void TakeDamage(float multiplier, Player player, float fixedDamage, bool throughImmune = false, bool NoCrit = false)
@@ -133,6 +134,7 @@ namespace Advencursor._Models.Enemy
                 else
                     Status.TakeDamage(fixedDamage * ampMultiplier, player);
             }
+            BurnDamage(player);
         }
 
         

@@ -32,6 +32,7 @@ namespace Advencursor._SaveData
 
         //Fire Set Dictionary
         public Dictionary<string, float> FireDomain { get; set; }
+        public Dictionary<string, float> FireBall { get; set; }
 
         public const string path = "skillData.json";
         public SkillData()
@@ -101,6 +102,13 @@ namespace Advencursor._SaveData
                 {"Heal Percentage", 1f },
                 {"Heal Interval", 1f },
                 {"Radius", 600f },
+                {"Cooldown", 20f }
+            };
+            FireBall = new Dictionary<string, float>()
+            {
+                {"Damage Multiplier", 1.5f },
+                {"Ball Amount",8f },
+                {"Speed", 1000f},
                 {"Cooldown", 15f }
             };
 
@@ -113,6 +121,7 @@ namespace Advencursor._SaveData
             skillNameForDamageMultipliers.Add("Emergency Food", EmergencyFood);
             skillNameForDamageMultipliers.Add("Nah I'd win", Invincibility);
             skillNameForDamageMultipliers.Add("Fire Domain", FireDomain);
+            skillNameForDamageMultipliers.Add("Katon goukakyuu no jutsu", FireBall);
         }
 
         public float GetMultiplierNumber(string skillName,string multiplierName)
@@ -154,6 +163,7 @@ namespace Advencursor._SaveData
             EmergencyFood = skillNameForDamageMultipliers["Emergency Food"];
             Invincibility = skillNameForDamageMultipliers["Nah I'd win"];
             FireDomain = skillNameForDamageMultipliers["Fire Domain"];
+            FireBall = skillNameForDamageMultipliers["Katon goukakyuu no jutsu"];
         }
     }
 }

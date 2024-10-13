@@ -92,6 +92,7 @@ namespace Advencursor._Skill.Fire_Set
                 {
                     enemy.ampMultiplier = 1;
                 }
+                activeEmitters.Clear();
             }
 
             if (skillDuration > 0)

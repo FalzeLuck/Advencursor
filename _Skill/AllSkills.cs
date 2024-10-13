@@ -33,6 +33,7 @@ namespace Advencursor._Skill
             {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food", skillData) },
             {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win", skillData) },
             {"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
+            {"Katon goukakyuu no jutsu",new Skill_W_Fireball("Katon goukakyuu no jutsu",skillData) },
         };
         public static void Reset()
         {
@@ -48,6 +49,7 @@ namespace Advencursor._Skill
             {"Emergency Food",new Skill_E_EmergencyFood("Emergency Food", skillData) },
             {"Nah I'd win",new Skill_R_Invincibility("Nah I'd win", skillData) },
             {"Fire Domain",new Skill_Q_FireDomain("Fire Domain",skillData) },
+            {"Katon goukakyuu no jutsu",new Skill_W_Fireball("Katon goukakyuu no jutsu",skillData) },
             };
         }
 
@@ -63,6 +65,7 @@ namespace Advencursor._Skill
             {"Emergency Food",Globals.Content.Load<Texture2D>("Item/SetFood/E_Texture")},
             {"Nah I'd win",Globals.Content.Load<Texture2D>("Item/SetFood/R_Texture")},
             {"Fire Domain",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture")},
+            {"Katon goukakyuu no jutsu",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture") },
         };
 
 
@@ -77,7 +80,8 @@ namespace Advencursor._Skill
             {"HAHAHA It's A Trap","(W)Poison Inhaler Orb"},
             {"Emergency Food","(E)Heal Inhaler Orb"},
             {"Nah I'd win","(R)Invincibility Orb"},
-            {"Fire Domain","Fire Domain Orb"},
+            {"Fire Domain","(Q)Fire Domain Orb"},
+            {"Katon goukakyuu no jutsu","(W)Fire Ball Orb" },
         };
 
         public static Dictionary<string,Keys> itemKeyViaSkillName = new Dictionary<string, Keys>
@@ -92,6 +96,7 @@ namespace Advencursor._Skill
             {"Emergency Food",Keys.E},
             {"Nah I'd win",Keys.R},
             {"Fire Domain",Keys.Q},
+            {"Katon goukakyuu no jutsu",Keys.W },
         };
     }
 }
