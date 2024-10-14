@@ -114,7 +114,7 @@ namespace Advencursor._Skill.Fire_Set
                         {
                             Globals.EnemyManager[i].TakeDamage(multiplier,player,true,false);
                             Globals.EnemyManager[i].burnDuration = 5f;
-                            collisionCooldown[i] = 1f;
+                            collisionCooldown[i] = 0.5f;
                         }
                     }
                 }

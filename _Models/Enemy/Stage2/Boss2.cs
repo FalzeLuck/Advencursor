@@ -319,64 +319,65 @@ namespace Advencursor._Models.Enemy.Stage2
 
         public override void Draw()
         {
-            
-            DrawRayAttack();
-            if (isRayUltimate)
+            if (Status.CurrentHP > 0)
             {
-                if (rayChargeTime > 0 && isRayUltimate)
+                DrawRayAttack();
+                if (isRayUltimate)
                 {
-                    Vector2 origin = new Vector2(0, warningTexture.Height / 2);
-                    if (warningOpacity <= 0.3f)
+                    if (rayChargeTime > 0 && isRayUltimate)
                     {
-                        warningTrigger = true;
+                        Vector2 origin = new Vector2(0, warningTexture.Height / 2);
+                        if (warningOpacity <= 0.3f)
+                        {
+                            warningTrigger = true;
+                        }
+                        else if (warningOpacity >= 0.8f)
+                        {
+                            warningTrigger = false;
+                        }
+                        if (!warningTrigger)
+                        {
+                            warningOpacity -= 1 * TimeManager.TimeGlobal;
+                        }
+                        else
+                        {
+                            warningOpacity += 1 * TimeManager.TimeGlobal;
+                        }
+                        Vector2 pivot1 = Vector2.Zero;
+                        Vector2 pivot2 = new(Globals.Bounds.X, 0);
+                        Vector2 dir1 = screenCenter - pivot1;
+                        Vector2 dir2 = screenCenter - pivot2;
+                        dir1.Normalize();
+                        dir2.Normalize();
+                        float angle1 = (float)Math.Atan2(dir1.Y, dir1.X);
+                        float angle2 = (float)Math.Atan2(dir2.Y, dir2.X);
+                        Globals.SpriteBatch.Draw(warningTexture, Vector2.Zero, null, Color.White * warningOpacity, angle1, origin, 1f, SpriteEffects.None, 0f);
+                        Globals.SpriteBatch.Draw(warningTexture, new Vector2(Globals.Bounds.X, 0), null, Color.White * warningOpacity, angle2, origin, 1f, SpriteEffects.None, 0f);
                     }
-                    else if (warningOpacity >= 0.8f)
+                    if (rayChargeTime <= 0 && isRayUltimate)
                     {
-                        warningTrigger = false;
+                        Vector2 rayOffset = new Vector2(rayWidth / 2, 0);
+                        Vector2 pivot1 = Vector2.Zero;
+                        Vector2 pivot2 = new(Globals.Bounds.X, 0);
+                        Vector2 dir1 = screenCenter - pivot1;
+                        Vector2 dir2 = screenCenter - pivot2;
+                        dir1.Normalize();
+                        dir2.Normalize();
+                        float angle1 = (float)Math.Atan2(dir1.Y, dir1.X);
+                        float angle2 = (float)Math.Atan2(dir2.Y, dir2.X);
+                        rayAnimation.scale = 1.3f;
+                        rayAnimation.offset = rayOffset;
+                        animations["WalkOpen"].rotation = angle1 + MathHelper.ToRadians(90);
+                        animations["WalkOpen"].Draw(pivot1);
+                        rayAnimation.rotation = angle1;
+                        rayAnimation.Draw(Globals.MoveVector(pivot1, -300, angle1));
+                        //rayAnimation.Draw(pivot1);
+                        animations["WalkOpen"].rotation = angle2 + MathHelper.ToRadians(90);
+                        animations["WalkOpen"].Draw(pivot2);
+                        rayAnimation.rotation = angle2;
+                        rayAnimation.Draw(Globals.MoveVector(pivot2, -300, angle2));
+                        //rayAnimation.Draw(pivot2);
                     }
-                    if (!warningTrigger)
-                    {
-                        warningOpacity -= 1 * TimeManager.TimeGlobal;
-                    }
-                    else
-                    {
-                        warningOpacity += 1 * TimeManager.TimeGlobal;
-                    }
-                    Vector2 pivot1 = Vector2.Zero;
-                    Vector2 pivot2 = new(Globals.Bounds.X, 0);
-                    Vector2 dir1 = screenCenter - pivot1;
-                    Vector2 dir2 = screenCenter - pivot2;
-                    dir1.Normalize();
-                    dir2.Normalize();
-                    float angle1 = (float)Math.Atan2(dir1.Y, dir1.X);
-                    float angle2 = (float)Math.Atan2(dir2.Y, dir2.X);
-                    Globals.SpriteBatch.Draw(warningTexture, Vector2.Zero, null, Color.White * warningOpacity, angle1, origin, 1f, SpriteEffects.None, 0f);
-                    Globals.SpriteBatch.Draw(warningTexture, new Vector2(Globals.Bounds.X,0), null, Color.White * warningOpacity, angle2, origin, 1f, SpriteEffects.None, 0f);
-                }
-                if (rayChargeTime <= 0 && isRayUltimate)
-                {
-                    Vector2 rayOffset = new Vector2(rayWidth / 2, 0);
-                    Vector2 pivot1 = Vector2.Zero;
-                    Vector2 pivot2 = new(Globals.Bounds.X, 0);
-                    Vector2 dir1 = screenCenter - pivot1;
-                    Vector2 dir2 = screenCenter - pivot2;
-                    dir1.Normalize();
-                    dir2.Normalize();
-                    float angle1 = (float)Math.Atan2(dir1.Y, dir1.X);
-                    float angle2 = (float)Math.Atan2(dir2.Y, dir2.X);
-                    rayAnimation.scale = 1.3f;
-                    rayAnimation.offset = rayOffset;
-                    animations["WalkOpen"].rotation = angle1 + MathHelper.ToRadians(90);
-                    animations["WalkOpen"].Draw(pivot1);
-                    rayAnimation.rotation = angle1;
-                    rayAnimation.Draw(Globals.MoveVector(pivot1,-300,angle1));
-                    //rayAnimation.Draw(pivot1);
-                    animations["WalkOpen"].rotation = angle2 + MathHelper.ToRadians(90);
-                    animations["WalkOpen"].Draw(pivot2);
-                    rayAnimation.rotation = angle2;
-                    rayAnimation.Draw(Globals.MoveVector(pivot2, -300, angle2));
-                    //rayAnimation.Draw(pivot2);
-                    
                 }
             }
             DrawShadow();

@@ -57,7 +57,7 @@ namespace Advencursor._Skill.Fire_Set
             {
                 particleData = new ParticleData()
                 {
-                    sizeStart = 3f,
+                    sizeStart = 12f,
                     sizeEnd = 3f,
                     colorStart = Color.Red,
                     colorEnd = Color.Yellow,

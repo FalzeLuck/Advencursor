@@ -24,11 +24,12 @@ namespace Advencursor._Particles
         protected float rotation;
         protected float range;
         protected float rangeIndex = 0f;
-
+        private Vector2 initialPosition;
         public Particle(Vector2 position, ParticleData data) 
         {
             this.data = data;
             this.position = position;
+            this.initialPosition = position;
             lifespanLeft = data.lifespan;
             lifespanAmount = 1f;
             color = data.colorStart;
@@ -61,7 +62,9 @@ namespace Advencursor._Particles
             color = Color.Lerp(data.colorEnd, data.colorStart, lifespanAmount);
             opacity = MathHelper.Clamp(MathHelper.Lerp(data.opacityEnd, data.opacityStart, lifespanAmount), 0f, 1f);
             scale = MathHelper.Lerp(data.sizeEnd,data.sizeStart, lifespanAmount) / data.texture.Width;
-            if (rangeIndex < range)
+
+            float distanceFromOrigin = Vector2.Distance(initialPosition, position);
+            if (distanceFromOrigin < range)
             {
                 rangeIndex += data.speed * TimeManager.TimeGlobal;
                 position += direction * data.speed * TimeManager.TimeGlobal;
