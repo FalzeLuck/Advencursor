@@ -9,7 +9,7 @@ namespace Advencursor._Particles.Emitter
     public struct ParticleEmitterData
     {
         public ParticleData particleData = new();
-        public float angle = 0f;
+        public float angle = 270f;
         public float angleVariance = 45f;
         public float lifeSpanMin = 0.1f;
         public float lifeSpanMax = 2.0f;

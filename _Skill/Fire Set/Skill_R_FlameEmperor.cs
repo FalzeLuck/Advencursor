@@ -18,8 +18,6 @@ namespace Advencursor._Skill.Fire_Set
     public class Skill_R_FlameEmperor : Skill
     {
         private float multiplier;
-        private int countdownTick;
-        private float countdownInterval;
         private float radius;
 
         private float countdownTimer;
@@ -35,6 +33,7 @@ namespace Advencursor._Skill.Fire_Set
 
         private ParticleEmitterData ped;
         private ParticleEmitter pe;
+        private ParticleEmitter peBomb;
 
         private Circle circleCollision;
 
@@ -43,11 +42,12 @@ namespace Advencursor._Skill.Fire_Set
         public Skill_R_FlameEmperor(string name, SkillData skillData) : base(name, skillData)
         {
             multiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
+            radius = 600;
             litPoint = new List<Vector2>();
             litSprite = new List<Sprite>();
             rarity = 4;
             setSkill = "Fire";
-            description = "Accumulates fire energy for 5 seconds and then violently explodes, dealing damage around you. Enemies in range are knocked back and inflicted with the Burning effect.";
+            description = "";
         }
 
         public override void Use(Player player)
@@ -55,40 +55,56 @@ namespace Advencursor._Skill.Fire_Set
             base.Use(player);
             this.player = player;
             isBomb = false;
-            countdownTick = 5;
-            countdownTimer = 0;
+
             ped = new()
             {
                 particleData = new ParticleData()
                 {
-                    sizeStart = 12f,
-                    sizeEnd = 10f,
-                    colorStart = Color.Red,
-                    colorEnd = Color.Yellow,
+                    lifespan = 0.5f,
+                    colorEnd = Color.Red,
+                    colorStart = Color.Orange,
+                    opacityStart = 1,
+                    opacityEnd = 0,
+                    sizeEnd = 4f,
+                    sizeStart = 32f,
+                    speed = 75,
+                    angle = 270,
+                    rotation = 0f,
+                    rangeMax = 300f,
                 },
-                interval = 0.01f,
-                emitCount = 5,
-                angleVariance = 90f,
-                speedMax = 100,
-                speedMin = 10,
-                lifeSpanMax = 1,
+                angle = 0,
+                angleVariance = 15,
                 lifeSpanMin = 0.5f,
+                lifeSpanMax = 0.5f,
+                speedMin = 50f,
+                speedMax = 150f,
+                rotationMin = 0,rotationMax = 0,
+                interval = 0.05f,
+                emitCount = 10
             };
 
+
+
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
-            fireLine = new RotatableLine(Globals.graphicsDevice,100,player.position,2);
-            fireLine.SetRotation(-45);
+            fireLine = new RotatableLine(Globals.graphicsDevice, 25, player.position, 20);
+            fireLine.SetRotation(MathHelper.ToRadians(135));
             litPoint = fireLine.GetPointList();
+
+
             for (int i = 0; i < litPoint.Count; i++)
             {
                 litSprite.Add(new Sprite(nullTexture, player.position));
                 litSprite[i].position = litPoint[i];
             }
 
+            foreach (Sprite sprite in litSprite)
+            {
+                LitFire(sprite);
+            }
 
             previousPlayerPosition = player.position;
 
-            duration = 10f;
+            duration = 15f;
             collisionCooldown = new List<float>(new float[100]);
         }
 
@@ -97,7 +113,10 @@ namespace Advencursor._Skill.Fire_Set
             base.Update(deltaTime, player);
 
 
-
+            if(duration < 14.5f)
+            {
+                ParticleManager.RemoveParticleEmitter(peBomb);
+            }
             if (duration <= 0)
             {
                 litSprite.Clear();
@@ -107,24 +126,37 @@ namespace Advencursor._Skill.Fire_Set
             if (duration > 0)
             {
                 duration -= TimeManager.TimeGlobal;
+                fireLine.Update(player);
+
+                Vector2 movementDelta = player.position - previousPlayerPosition;
+
+                previousPlayerPosition = player.position;
 
                 for (int i = 0; i < litSprite.Count; i++)
                 {
-                    litSprite[i].position = fireLine.points[i];
+                    fireLine.points[i] += movementDelta;
+                    litSprite[i].position = fireLine.GetPointList()[i];
+                }
+
+                if (!player.CanNormalAttack())
+                {
+                    fireLine.SetRotation(MathHelper.ToRadians(45));
+                }
+                else
+                {
+                    fireLine.SetRotation(MathHelper.ToRadians(135));
                 }
                 if (!isBomb)
                 {
                     Explode();
                     isBomb = true;
                 }
-                
+
             }
         }
 
         public override void Draw()
         {
-            if(fireLine != null)
-                fireLine.Draw(Globals.SpriteBatch);
         }
 
         private void LitFire(Sprite litSprite)
@@ -151,10 +183,16 @@ namespace Advencursor._Skill.Fire_Set
             {
                 particleData = new ParticleData()
                 {
-                    sizeStart = 64f,
-                    sizeEnd = 0f,
-                    colorStart = Color.OrangeRed,
-                    colorEnd = Color.Yellow,
+                    lifespan = 1.5f,
+                    colorEnd = Color.Red,
+                    colorStart = Color.Orange,
+                    opacityStart = 1,
+                    opacityEnd = 0,
+                    sizeEnd = 4f,
+                    sizeStart = 32f,
+                    speed = 75,
+                    angle = 270,
+                    rotation = 0f,
                     rangeMax = radius,
                 },
                 interval = 0.01f,
@@ -163,23 +201,22 @@ namespace Advencursor._Skill.Fire_Set
                 speedMax = 2000,
                 speedMin = 2000,
                 lifeSpanMax = 1f,
+                angle = 270f,
+                lifeSpanMin = 0.5f,
+                rotationMin = 0,
+                rotationMax = 0,
             };
-            pe = new(staticEmitter, ped);
-            ParticleManager.AddParticleEmitter(pe);
-            activeEmitters.Add(pe);
+            peBomb = new(staticEmitter, ped);
+            ParticleManager.AddParticleEmitter(peBomb);
+            activeEmitters.Add(peBomb);
             isBomb = true;
-            duration = 0.5f;
             Globals.Camera.Shake(0.5f, 15);
 
             for (int i = 0; i < Globals.EnemyManager.Count; i++)
             {
-                if (collisionCooldown[i] <= 0 && countdownTick <= 0)
+                if (collisionCooldown[i] <= 0)
                 {
-                    if (circleCollision.Intersects(Globals.EnemyManager[i].collision))
-                    {
-                        Globals.EnemyManager[i].TakeDamage(multiplier, player, true, false);
-                        collisionCooldown[i] = 3f;
-                    }
+                    Globals.EnemyManager[i].TakeDamage(multiplier, player, true, false);
                 }
             }
         }

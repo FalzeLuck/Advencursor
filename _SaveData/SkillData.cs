@@ -181,7 +181,7 @@ namespace Advencursor._SaveData
             FireDomain = skillNameForDamageMultipliers["Fire Domain"];
             FireBall = skillNameForDamageMultipliers["Katon goukakyuu no jutsu"];
             FireBomb = skillNameForDamageMultipliers["E-X-P-L-O-S-I-O-N!"];
-            FireEmperor = skillNameForDamageMultipliers.["Flame Emperor"];
+            FireEmperor = skillNameForDamageMultipliers["Flame Emperor"];
         }
     }
 }

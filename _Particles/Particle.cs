@@ -40,7 +40,7 @@ namespace Advencursor._Particles
             if(data.speed != 0)
             {
                 this.data.angle = MathHelper.ToRadians(this.data.angle);
-                direction = new Vector2((float)Math.Sin(this.data.angle), (float)Math.Cos(this.data.angle));
+                direction = new Vector2((float)Math.Cos(this.data.angle), (float)Math.Sin(this.data.angle));
                 range = Math.Abs(data.rangeMax);
             }
             else

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Advencursor._Models;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 public class RotatableLine
 {
     public List<Vector2> points; // List of points for the line
+    public List<Vector2> rotatedPoints;
     private Vector2 origin;       // Origin point for rotation
     private float rotationAngle;  // Rotation angle in radians
     private Texture2D pointTexture;  // Texture for rendering a point
@@ -14,17 +16,19 @@ public class RotatableLine
     public RotatableLine(GraphicsDevice graphicsDevice, int lineHeight, Vector2 startPosition, float pointSpacing)
     {
         points = new List<Vector2>();
+        rotatedPoints = new List<Vector2>();
         origin = startPosition;
         rotationAngle = 0f;
 
         // Create a basic 1x1 texture for drawing points
         pointTexture = new Texture2D(graphicsDevice, 1, 1);
-        pointTexture.SetData(new[] { Color.White });
+        pointTexture.SetData(new[] { Color.Red });
 
         // Initialize the vertical line points
         for (int i = 0; i < lineHeight; i++)
         {
             points.Add(new Vector2(startPosition.X, startPosition.Y + i * pointSpacing));
+            rotatedPoints.Add(new Vector2(startPosition.X, startPosition.Y + i * pointSpacing));
         }
     }
 
@@ -34,16 +38,11 @@ public class RotatableLine
         rotationAngle = angle;
     }
 
-    // Method to draw the line
-    public void Draw(SpriteBatch spriteBatch)
+    public void Update(Player player)
     {
-        foreach (var point in points)
+        for (int i = 0;i < points.Count; i++)
         {
-            // Rotate each point around the origin
-            Vector2 rotatedPoint = RotatePoint(point, origin, rotationAngle);
-
-            // Draw each point as a small rectangle
-            spriteBatch.Draw(pointTexture, new Rectangle((int)rotatedPoint.X, (int)rotatedPoint.Y, pointSize, pointSize), Color.White);
+            rotatedPoints[i] = RotatePoint(points[i], player.position, rotationAngle);
         }
     }
 
@@ -63,6 +62,6 @@ public class RotatableLine
 
     public List<Vector2> GetPointList()
     {
-        return points;
+        return rotatedPoints;
     }
 }

@@ -20,7 +20,7 @@ namespace Advencursor._Particles
         public float sizeStart = 32f;
         public float sizeEnd = 4f;
         public float speed = -100f;
-        public float angle = 0f;
+        public float angle = 270f;
         public float rotation = 0f;
         public float rangeMax = 3000f;
 
