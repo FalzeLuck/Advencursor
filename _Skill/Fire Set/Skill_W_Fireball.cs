@@ -56,8 +56,8 @@ namespace Advencursor._Skill.Fire_Set
                 {
                     sizeStart = 48f,
                     sizeEnd = 32f,
-                    colorStart = Color.Red,
-                    colorEnd = Color.Yellow,
+                    colorStart = Color.Orange,
+                    colorEnd = Color.Red,
                 },
                 interval = 0.01f,
                 emitCount = 10,
@@ -103,7 +103,7 @@ namespace Advencursor._Skill.Fire_Set
 
                 for (int i = 0; i < ballAmount; i++)
                 {
-                    circleCollision[i] = new Circle(litSprite[i].position,30);
+                    circleCollision[i] = new Circle(litSprite[i].position,75);
                 }
 
                 for (int i = 0; i < Globals.EnemyManager.Count; i++)

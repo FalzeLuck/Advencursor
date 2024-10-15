@@ -31,7 +31,9 @@ namespace Advencursor._Scene.Stage
         private int elite1_killed = 0;
         private float elite1_reset_time = 0;
         private float elite2_reset_time = 0;
-        Boss2 boss_obj;
+        Boss3 boss_obj;
+        Boss2 mini_boss1;
+        Boss1 mini_boss2;
 
         public Stage3(ContentManager contentManager, SceneManager sceneManager)
         {
@@ -70,7 +72,7 @@ namespace Advencursor._Scene.Stage
             commonEnemy = new List<Common1>();
             eliteEnemy = new List<Elite1>();
             eliteEnemy2 = new List<Elite2>();
-            boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
+            boss_obj = new Boss3(Globals.Content.Load<Texture2D>("Enemies/Boss3"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 6, 12)
             {
                 movementAI = new FollowMovementAI()
             };
@@ -379,16 +381,16 @@ namespace Advencursor._Scene.Stage
                 enemy_max = 0;
             }
 
-            //Boss2
+            //Boss3
             if (boss_spawn_time > 120f && !boss_spawned)
             {
                 startWarning = false;
                 elite_spawn_time = 0f;
-                boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss2"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
+                boss_obj = new Boss3(Globals.Content.Load<Texture2D>("Enemies/Boss3"), new Vector2(Globals.Bounds.X / 2, -200), 600000, 5000, 6, 12)
                 {
                     movementAI = new FollowMovementAI()
                     {
-                        target = player
+                        target = player,
                     }
                 };
 

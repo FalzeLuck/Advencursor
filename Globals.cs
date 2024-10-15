@@ -37,7 +37,7 @@ namespace Advencursor
         public static void Update(GameTime gameTime)
         {
             TimeManager.Update(gameTime);
-            Camera.Update();
+            Camera.Update(Globals.Bounds.X,Globals.Bounds.Y);
         }
 
         public static float RandomFloat(float min, float max)

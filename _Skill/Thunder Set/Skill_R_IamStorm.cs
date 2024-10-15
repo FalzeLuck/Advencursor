@@ -130,7 +130,7 @@ namespace Advencursor._Skill.Thunder_Set
             countHit = 0;
             player.Immunity(skillTime);
             player.Stop();
-            
+            Globals.Camera.SmoothZoom(1.5f, 5);
             isUsing = true;
         }
 
@@ -179,6 +179,7 @@ namespace Advencursor._Skill.Thunder_Set
                         enemy.TakeDamage( 2, player,true,false);
                     }
                     Globals.Camera.Shake(0.2f,5f);
+                    Globals.Camera.SmoothZoom(1f, 100);
                     countHit++;
                 }
                 else if (skillTime <= 2f && countHit < maxHit)

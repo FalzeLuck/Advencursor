@@ -261,7 +261,7 @@ namespace Advencursor._Combat
             if (amount < 0) throw new ArgumentOutOfRangeException("Heal can't be negative");
 
             CurrentHP += amount;
-            OnTakeDamage?.Invoke(amount.ToString("F0"), Color.Green, numberScale);
+            OnTakeDamage?.Invoke(amount.ToString("F0"), Color.LightGreen, numberScale);
 
             if (CurrentHP > MaxHP) { CurrentHP = MaxHP; }
         }

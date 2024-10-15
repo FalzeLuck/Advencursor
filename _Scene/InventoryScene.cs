@@ -464,6 +464,9 @@ namespace Advencursor._Scene
             }else if (gameData.stage == 2)
             {
                 sceneManager.AddScene(new Stage2(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+            }else if(gameData.stage == 3)
+            {
+                sceneManager.AddScene(new Stage3(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
             }
         }
 

@@ -28,7 +28,8 @@ namespace Advencursor._Skill.Fire_Set
         private StaticEmitter staticEmitter;
         private List<Vector2> litPoint;
         private List<ParticleEmitter> activeEmitters = new List<ParticleEmitter>();
-
+        private Texture2D floorTexture;
+        private Vector2 litPosition;
         private ParticleEmitterData ped;
         private ParticleEmitter pe;
 
@@ -41,6 +42,7 @@ namespace Advencursor._Skill.Fire_Set
             healInterval = skillData.GetMultiplierNumber(name, "Heal Interval");
             healPercentage = skillData.GetMultiplierNumber(name, "Heal Percentage");
             circleCollision = new(Vector2.Zero, 0);
+            floorTexture = Globals.Content.Load<Texture2D>("Item/SetFire/Q_Effect");
             rarity = 1;
             setSkill = "Fire";
             description = "Create a circle of fiery fire around you. Turns an area into a firestorm. Enemies that enter are bound by flames. Causes more damage to be received. When the duration ends, the bound fire is released.";
@@ -51,6 +53,7 @@ namespace Advencursor._Skill.Fire_Set
             base.Use(player);
             litPoint = Globals.CreateCircleOutline(player.position, radius, 150);
             circleCollision = new Circle(player.position, radius);
+            litPosition = player.position;
             skillDuration = duration;
 
             ped = new()
@@ -116,7 +119,14 @@ namespace Advencursor._Skill.Fire_Set
 
         public override void Draw()
         {
+            if(skillDuration > 0)
+            {
+                Vector2 origin = new Vector2(floorTexture.Width/2, floorTexture.Height/2);
+                float scaleX = (radius * 2) / floorTexture.Width;
+                float scaleY = (radius * 2) / floorTexture.Height;
 
+                Globals.SpriteBatch.Draw(floorTexture,litPosition,null,Color.White,0,origin,new Vector2(scaleX,scaleY),SpriteEffects.None,0f);
+            }
         }
 
         private void LitFire(Vector2 litPosition)

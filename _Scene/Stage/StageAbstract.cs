@@ -162,7 +162,7 @@ namespace Advencursor._Scene.Stage
 
                 if (InputManager.MouseRightClicked && player.CanNormalAttack())
                 {
-                    animationManager.SetOffset("Slash", new Vector2(player.collision.Width / 2, 0));
+                    animationManager.SetOffset("Slash", new Vector2((player.collision.Width / 2) + 25, 0));
                     player.ChangeAnimation("Attack", true);
                     animationManager.Flip("Slash", true);
                     animationManager.Play("Slash");
@@ -170,17 +170,13 @@ namespace Advencursor._Scene.Stage
                 }
                 if (InputManager.MouseLeftClicked && player.CanNormalAttack())
                 {
-                    animationManager.SetOffset("Slash", new Vector2(-player.collision.Width / 2, 0));
+                    animationManager.SetOffset("Slash", new Vector2((-player.collision.Width / 2) - 25, 0));
                     player.ChangeAnimation("Attack", false);
                     animationManager.Flip("Slash", false);
                     animationManager.Play("Slash");
                     player.DoNormalAttack();
                 }
-
             }
-
-
-
         }
 
         protected virtual void SceneManage()

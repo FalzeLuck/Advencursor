@@ -1,4 +1,5 @@
 ﻿using Advencursor._Animation;
+using Advencursor._Managers;
 using Advencursor._Models;
 using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
@@ -24,6 +25,7 @@ namespace Advencursor._Skill.Food_Set
         private float attackMultiplier;
         private float addCritRate;
         private float addCritDam;
+
 
         private Animation aura;
         private Animation auraDamage;

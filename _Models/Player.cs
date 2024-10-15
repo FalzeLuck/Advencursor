@@ -315,19 +315,12 @@ namespace Advencursor._Models
                 {
                     animations[finalIndicator].Update();
                     collision = animations[finalIndicator].GetCollision(position);
-                    int decreaseamount = 80;
+                    int decreaseamount = 125;
                     int newWidth = collision.Width - decreaseamount;
                     int newHeight = collision.Height - decreaseamount;
                     int newX = collision.X + decreaseamount / 2;
                     int newY = collision.Y + decreaseamount / 2;
-                    if (animations[finalIndicator].IsFlip)
-                    {
-                        collision = new(newX, newY + newHeight/2, newWidth / 4, newHeight/2);
-                    }
-                    else
-                    {
-                        collision = new(newX + 3 * newWidth / 4, newY + newHeight / 2, newWidth / 4, newHeight/2);
-                    }
+                    collision = new Rectangle(newX,newY,newWidth,newHeight);
                 }
             }
             else if (isStun)

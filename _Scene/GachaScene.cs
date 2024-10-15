@@ -88,14 +88,14 @@ namespace Advencursor._Scene
             Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)
+            /*if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)
                 && Keyboard.GetState().IsKeyDown(Keys.Q)
                 && Keyboard.GetState().IsKeyDown(Keys.W)
                 && Keyboard.GetState().IsKeyDown(Keys.E)
                 && Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 gameData.gems = 999999;
-            }
+            }*/
 
             if (gachaWaitTime > 0)
             {
