@@ -402,6 +402,7 @@ namespace Advencursor._Scene.Stage
             {
                 boss_spawn_time = 115f;
                 timer.TimeSet(115f);
+                Globals.Camera.SmoothZoom(0.5f, 10);
             }
             if (boss_spawn_time > 115f && !boss_spawned)
             {
