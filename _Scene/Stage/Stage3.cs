@@ -114,6 +114,11 @@ namespace Advencursor._Scene.Stage
                 ParticleManager.Update();
 
                 SceneManage();
+
+                if (Keyboard.GetState().IsKeyDown(Keys.O))
+                {
+                    boss_obj.Status.TakeDamage(boss_obj.Status.MaxHP * 1/100,player);
+                }
             }
 
         }
@@ -137,6 +142,7 @@ namespace Advencursor._Scene.Stage
                 special.Draw();
             }
             Globals.EndDrawGrayScale();
+            if (boss_obj.phaseIndicator == 5) Globals.BeginDrawGrayScale();
             foreach (var enemy in commonEnemy)
             {
                 enemy.Draw();
