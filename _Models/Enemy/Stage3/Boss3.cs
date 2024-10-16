@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Advencursor._Particles;
 using Advencursor._Particles.Emitter;
 using Advencursor._Models.Enemy.Stage3;
+using System.IO;
 
 namespace Advencursor._Models.Enemy.Stage2
 {
@@ -33,7 +34,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private bool isStart;
         private Circle buffCollision;
         private float buffRadius = 600;
-        private enum phase
+        public enum phase
         {
             Opening,
             SkillSurprise,
@@ -42,7 +43,7 @@ namespace Advencursor._Models.Enemy.Stage2
             Tomato,
             UnderControl,
         }
-        private int phaseIndicator;
+        public int phaseIndicator;
 
         private List<Knife> knives;
         private List<Vector2> knifeDestination;
@@ -59,9 +60,35 @@ namespace Advencursor._Models.Enemy.Stage2
         private int blastSectionIndicator;
         private Vector2 blastPosition;
         private Rectangle blastCollision;
+        private float blastCollideCooldown;
         private float blastWaitTime;
         private float blastSetTime = 1;
         Texture2D rayTexture;
+
+        //Skill Rest
+        private float reduceDamage = 20;
+        private float healPercent = 5;
+        private float healTimer;
+        private float restTime;
+
+        //Tomato
+        private float tomatoTimer = 0;
+        public bool isTomatoFinish => tomatoTimer <= 0;
+
+        //Under Control
+        private float openingTimer = 5f;
+        private float grayScaleAmount;
+        private Dictionary<int,Vector2> positionUnderControl;
+        private List<int> positionIndexList;
+        private int positionIndex;
+        private RandomLoop<int> positionRandomLoop;
+        private bool isOpeningKnife;
+        private bool isAttackingKnife;
+        private RandomPointGenerator randomPointGenerator;
+        private Rectangle knifeStartArea1;
+        private Rectangle knifeStartArea2;
+        private Rectangle knifeEndArea1;
+        private Rectangle knifeEndArea2;
 
         public Boss3(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
@@ -84,6 +111,19 @@ namespace Advencursor._Models.Enemy.Stage2
             blastAnim = new Animation(blastTexture, 1, 8, 8, false);
             knives = new List<Knife>();
             knifeDestination = new List<Vector2>();
+            positionIndexList = new List<int>()
+            {
+                1,2,3,4
+            };
+            positionUnderControl = new Dictionary<int, Vector2>()
+            {
+                {1,new Vector2(Globals.Bounds.X / 4, Globals.Bounds.Y / 4)},
+                {2,new Vector2(Globals.Bounds.X / 4 * 3, Globals.Bounds.Y / 4)},
+                {3,new Vector2(Globals.Bounds.X / 4, Globals.Bounds.Y / 4 * 3)},
+                {4,new Vector2(Globals.Bounds.X / 4 * 3, Globals.Bounds.Y / 4 * 3)},
+            };
+            positionRandomLoop = new RandomLoop<int>(positionIndexList);
+            randomPointGenerator = new RandomPointGenerator();
         }
 
         public override void Update(GameTime gameTime)
@@ -99,104 +139,268 @@ namespace Advencursor._Models.Enemy.Stage2
             }
             if (isStart)
             {
-
-                if (phaseIndicator == (int)phase.Opening)
+                if(Status.CurrentHP <= 30 * Status.MaxHP && phaseIndicator != (int)phase.UnderControl)
                 {
-                    if (knives[0].position.Y < screenCenter.Y)
-                    {
-                        UpdateKnifeRotation();
-                        float knifeSpeed = 300f;
-                        var dir = screenCenter - knives[0].position;
-                        dir.Normalize();
-                        knifeDestination[0] = new Vector2(screenCenter.X, screenCenter.Y - 200);
-                        knives[0].position += dir * knifeSpeed * TimeManager.TimeGlobal;
-                    }
-                    else
-                    {
-                        phaseIndicator = (int)phase.SkillSurprise;
-                        ResetSkillSurprise();
-                    }
+                    phaseIndicator = (int)phase.UnderControl;
+                    tomatoTimer = 0;
+                    collision = new Rectangle();
+                    knives.Clear();
+                    knifeDestination.Clear();
+                    indicator = "WarpIn";
+                    animations[indicator].Reset();
+                    grayScaleAmount = 0;
+                    Globals.SetGreyScale(grayScaleAmount);
+                    isOpeningKnife = false;
                 }
 
-                if (phaseIndicator == (int)phase.SkillSurprise)
+
+                if (phaseIndicator != (int)phase.UnderControl)
                 {
-                    bombTimer -= TimeManager.TimeGlobal;
-                    buffRadius = 1800;
-                    buffCollision = new Circle(screenCenter, buffRadius);
-                    if (bombTimer <= 4f && !isSmoke)
+                    if (!(phaseIndicator == (int)phase.Opening) && !(phaseIndicator == (int)phase.SkillSurprise))
                     {
-                        SetBlackSmoke(screenCenter, damageRadius);
-                        damageCollision = new Circle(screenCenter, damageRadius);
-                        ParticleManager.AddParticleEmitter(pe);
-                        isSmoke = true;
-                        indicator = "WarpIn";
-                        Globals.Camera.Shake(0.5f, 10);
-                        if (damageCollision.Intersects(player.collision))
+                        if (animations.ContainsKey(indicator))
                         {
-                            player.Status.TakeDamage(2500, this);
+                            collision = animations[indicator].GetCollision(position);
+                            collision = ChangeRectangleSize(collision, 320, 30, true);
                         }
                     }
-                    if (bombTimer < 3f)
+
+                    if (phaseIndicator == (int)phase.Opening)
                     {
-                        ParticleManager.RemoveParticleEmitter(pe);
+                        if (knives[0].position.Y < screenCenter.Y)
+                        {
+                            UpdateKnifeRotation(10);
+                            position = new Vector2(0, -800);
+                            float knifeSpeed = 300f;
+                            var dir = screenCenter - knives[0].position;
+                            dir.Normalize();
+                            knifeDestination[0] = new Vector2(screenCenter.X, screenCenter.Y - 200);
+                            knives[0].position += dir * knifeSpeed * TimeManager.TimeGlobal;
+                        }
+                        else
+                        {
+                            phaseIndicator = (int)phase.SkillSurprise;
+                            ResetSkillSurprise();
+                        }
+                    }
+
+                    if (phaseIndicator == (int)phase.SkillSurprise)
+                    {
+                        bombTimer -= TimeManager.TimeGlobal;
+                        buffRadius = 1800;
+                        buffCollision = new Circle(screenCenter, buffRadius);
+                        UpdateKnifeRotation(10);
+                        UpdateKnifePosition(3000);
+                        knifeDestination[0] = screenCenter;
+                        if (bombTimer <= 4f && !isSmoke)
+                        {
+                            SetBlackSmoke(screenCenter, damageRadius);
+                            damageCollision = new Circle(screenCenter, damageRadius);
+                            ParticleManager.AddParticleEmitter(pe);
+                            isSmoke = true;
+                            indicator = "WarpIn";
+                            position = screenCenter;
+                            Globals.Camera.Shake(0.5f, 10);
+                            if (damageCollision.Intersects(player.collision))
+                            {
+                                player.Status.TakeDamage(2500, this);
+                            }
+                        }
+                        if (bombTimer < 3f)
+                        {
+                            ParticleManager.RemoveParticleEmitter(pe);
+                            UpdateContainAnimation();
+                        }
+
+                        if (animations["WarpIn"].IsComplete)
+                        {
+                            indicator = "Idle";
+                            if (animations.ContainsKey(indicator))
+                            {
+                                collision = animations[indicator].GetCollision(position);
+                            }
+                        }
+
+                        if (bombTimer <= 0)
+                        {
+                            phaseIndicator = (int)phase.SkillVaporBlast;
+                            ResetSkillSurprise();
+                            blastWaitTime = blastSetTime;
+                        }
+                    }
+
+                    if (phaseIndicator == (int)phase.SkillVaporBlast)
+                    {
                         UpdateContainAnimation();
-                    }
-
-                    if (animations["WarpIn"].IsComplete)
-                    {
+                        UpdateKnifePosition(2000);
                         indicator = "Idle";
+                        Vector2 pos = new Vector2(screenCenter.X, screenCenter.Y / 2);
+                        float walkSpeed = 1000;
+                        if (position.Y > pos.Y)
+                        {
+                            var dir = pos - position;
+                            dir.Normalize();
+                            position += dir * walkSpeed * TimeManager.TimeGlobal;
+                            blastSectionIndicator = 1;
+                            blastCollision = new Rectangle(0, 0, 1, 1);
+                            blastCollideCooldown = 0;
+                        }
+                        else
+                        {
+                            if (blastSectionIndicator == 1)
+                            {
+                                blastPosition = new Vector2(Globals.Bounds.X / 6, 0);
+                                blastCollision = new Rectangle((int)blastPosition.X - 640 / 2, (int)blastPosition.Y, 640, 1080);
+                                knifeDestination[0] = new Vector2(blastPosition.X, blastPosition.Y);
+                            }
+                            else if (blastSectionIndicator == 2)
+                            {
+                                blastPosition = new Vector2(screenCenter.X, 0);
+                                blastCollision = new Rectangle((int)blastPosition.X - 640 / 2, (int)blastPosition.Y, 640, 1080);
+                                knifeDestination[0] = new Vector2(blastPosition.X, blastPosition.Y);
+                            }
+                            else if (blastSectionIndicator == 3)
+                            {
+                                blastPosition = new Vector2(5 * Globals.Bounds.X / 6, 0);
+                                blastCollision = new Rectangle((int)blastPosition.X - 640 / 2, (int)blastPosition.Y, 640, 1080);
+                                knifeDestination[0] = new Vector2(blastPosition.X, blastPosition.Y);
+                            }
+                            blastWaitTime -= TimeManager.TimeGlobal;
+                            if (blastWaitTime <= 0)
+                            {
+                                UpdateKnifeRotation(20, new Vector2(Globals.Bounds.X, 2));
+                                blastCollideCooldown -= TimeManager.TimeGlobal;
+                                blastAnim.Update();
+                                indicator = "Attack";
+                                if (player.collision.Intersects(blastCollision) && blastCollideCooldown <= 0 && blastWaitTime > -0.5f)
+                                {
+                                    player.Status.TakeDamage(2000, this);
+                                    blastCollideCooldown = 0.5f;
+                                }
+                            }
+                            else
+                            {
+                                UpdateKnifeRotation(15);
+                            }
+                            if (blastWaitTime <= -1)
+                            {
+                                if (blastSectionIndicator == 3)
+                                {
+                                    phaseIndicator = (int)phase.SkillRest;
+                                    restTime = 5f;
+                                }
+                                blastWaitTime = blastSetTime;
+                                blastSectionIndicator++;
+                                animations["Attack"].Reset();
+                            }
+                            if (animations["Attack"].IsComplete)
+                            {
+                                indicator = "Idle";
+                            }
+
+                        }
                     }
 
-                    if (bombTimer <= 0)
+                    if (phaseIndicator == (int)phase.SkillRest)
                     {
-                        ResetSkillSurprise();
-                        phaseIndicator = (int)phase.SkillVaporBlast;
-                        blastWaitTime = blastSetTime;
+                        indicator = "Sit";
+                        UpdateContainAnimation();
+
+                        restTime -= TimeManager.TimeGlobal;
+                        healTimer -= TimeManager.TimeGlobal;
+                        if (healTimer <= 0)
+                        {
+                            Status.Heal(((healPercent / 100) * Status.MaxHP) / 5);
+
+                            healTimer = 1f;
+                        }
+                        if (restTime < 0)
+                        {
+                            tomatoTimer = 12;
+                            phaseIndicator = (int)phase.Tomato;
+                        }
+                    }
+
+                    if (phaseIndicator == (int)phase.Tomato)
+                    {
+                        Vector2 dir = new Vector2(0, -1);
+                        if (position.Y > -1000)
+                            position += dir * 1000 * TimeManager.TimeGlobal;
+                        tomatoTimer -= TimeManager.TimeGlobal;
+                        if (isTomatoFinish)
+                        {
+                            phaseIndicator = (int)phase.SkillSurprise;
+                            ResetSkillSurprise();
+                        }
                     }
                 }
-
-                if (phaseIndicator == (int)phase.SkillVaporBlast)
+                else if (phaseIndicator == (int)phase.UnderControl)
                 {
                     UpdateContainAnimation();
-                    indicator = "Idle";
-                    Vector2 pos = new Vector2(screenCenter.X, screenCenter.Y / 2);
-                    float walkSpeed = 1000;
-                    if (position.Y > pos.Y)
+                    if (openingTimer > 0)
                     {
-                        var dir = pos - position;
-                        dir.Normalize();
-                        position += dir * walkSpeed * TimeManager.TimeGlobal;
-                        blastSectionIndicator = 1;
-                        blastCollision = new Rectangle(0, 0, 1, 1);
+                        openingTimer -= TimeManager.TimeGlobal;
+                        if(grayScaleAmount < 1)
+                        {
+                            grayScaleAmount += 0.01f;
+                            Globals.SetGreyScale(grayScaleAmount);
+                        }
+                        else Globals.SetGreyScale(1);
+                        if (animations["WarpIn"].IsComplete) indicator = "Idle";
+                        
+                        if(openingTimer <= 4 && !isOpeningKnife)
+                        {
+                            indicator = "WarpOut";
+                            isOpeningKnife = true;
+                            AddKnife(15);
+                            for(int i = 0; i < knifeDestination.Count; i++)
+                            {
+                                int x = Globals.random.Next(-300, 1920 + 300);
+                                int y = Globals.random.Next(-300, 1080 + 300);
+                                knifeDestination[i] = new Vector2(x,y);
+                            }
+                        }
+
+                        if(openingTimer <= 3)
+                        {
+                            UpdateKnifePosition(1000);
+                            UpdateKnifeRotation(10);
+                        }
+
+                        if (animations["WarpOut"].IsComplete)
+                        {
+                            positionIndex = positionRandomLoop.GetNext();
+                            openingTimer = 0;
+                            animations["WarpIn"].Reset();
+                            indicator = "WarpIn";
+                            isAttackingKnife = false;
+                        }
                     }
                     else
                     {
-                        if (blastSectionIndicator == 1)
+                        if (!isAttackingKnife)
                         {
-                            blastPosition = new Vector2(Globals.Bounds.X / 6, 0);
-                            blastCollision = new Rectangle((int)blastPosition.X, (int)blastPosition.Y, 640, 1080);
-                        }
-                        else if (blastSectionIndicator == 2)
-                        {
-                            blastPosition = new Vector2(screenCenter.X, 0);
-                            blastCollision = new Rectangle((int)blastPosition.X, (int)blastPosition.Y, 640, 1080);
-                        }
-                        else if (blastSectionIndicator == 3)
-                        {
-                            blastPosition = new Vector2(5 * Globals.Bounds.X / 6, 0);
-                            blastCollision = new Rectangle((int)blastPosition.X, (int)blastPosition.Y, 640, 1080);
-                        }
-                        blastWaitTime -= TimeManager.TimeGlobal;
-                        if(blastWaitTime <= 0)
-                        {
-                            blastAnim.Update();
-                        }if (blastWaitTime <= -1)
-                        {
-                            blastWaitTime = blastSetTime;
-                            blastSectionIndicator++;
+                            switch (positionIndex)
+                            {
+                                case 1:
+                                    position = positionUnderControl[positionIndex];
+                                    knifeStartArea1 = new Rectangle(0-((int)screenCenter.X),((int)screenCenter.Y),((int)screenCenter.X),((int)screenCenter.Y));
+                                    break;
+                                case 2:
+                                    position = positionUnderControl[positionIndex];
+                                    break;
+                                case 3:
+                                    position = positionUnderControl[positionIndex];
+                                    break;
+                                case 4:
+                                    position = positionUnderControl[positionIndex];
+                                    break;
+                            }
                         }
                     }
                 }
+
+
             }
         }
 
@@ -232,9 +436,12 @@ namespace Advencursor._Models.Enemy.Stage2
                     }
                     else
                     {
-                        blastAnim.offset = new Vector2(0, blastAnim.GetCollision(blastPosition).Height/2);
+                        blastAnim.offset = new Vector2(0, blastAnim.GetCollision(blastPosition).Height / 2);
                         blastAnim.Draw(blastPosition);
                     }
+                }else if(phaseIndicator == (int)phase.UnderControl)
+                {
+
                 }
             }
             base.Draw();
@@ -242,6 +449,8 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 knife.Draw();
             }
+
+            DrawCollisionCheck();
         }
 
         private void UpdateContainAnimation()
@@ -252,12 +461,59 @@ namespace Advencursor._Models.Enemy.Stage2
             }
         }
 
-        private void UpdateKnifeRotation()
+        private void UpdateKnifeRotation(float rotationSpeed)
         {
             for (int i = 0; i < knives.Count; i++)
             {
-                float angle = (float)Math.Atan2(knifeDestination[i].Y - knives[i].position.Y, knifeDestination[i].X - knives[i].position.X);
-                knives[i].rotation = angle;
+                float targetAngle = (float)Math.Atan2(knives[i].position.Y - knifeDestination[i].Y, knives[i].position.X - knifeDestination[i].X);
+
+                float angleDifference = MathHelper.WrapAngle(targetAngle - knives[i].rotation);
+
+                if (Math.Abs(angleDifference) < 0.01f)
+                {
+                    knives[i].rotation = targetAngle;
+                }
+                else
+                {
+                    knives[i].rotation += MathHelper.Clamp(angleDifference, -rotationSpeed * TimeManager.TimeGlobal, rotationSpeed * TimeManager.TimeGlobal);
+                }
+            }
+        }
+
+        private void UpdateKnifeRotation(float rotationSpeed, Vector2 pointDirection)
+        {
+            for (int i = 0; i < knives.Count; i++)
+            {
+                float targetAngle = (float)Math.Atan2(knives[i].position.Y - pointDirection.Y, knives[i].position.X - pointDirection.X);
+
+                float angleDifference = MathHelper.WrapAngle(targetAngle - knives[i].rotation);
+
+                if (Math.Abs(angleDifference) < 0.01f)
+                {
+                    knives[i].rotation = targetAngle;
+                }
+                else
+                {
+                    knives[i].rotation += MathHelper.Clamp(angleDifference, -rotationSpeed * TimeManager.TimeGlobal, rotationSpeed * TimeManager.TimeGlobal);
+                }
+            }
+        }
+
+        private void UpdateKnifePosition(float speed)
+        {
+            for (int i = 0; i < knives.Count; ++i)
+            {
+                var dir = knifeDestination[i] - knives[i].position;
+                float distance = dir.Length();
+                if (distance < speed * TimeManager.TimeGlobal)
+                {
+                    knives[i].position = knifeDestination[i];
+                }
+                else
+                {
+                    dir.Normalize();
+                    knives[i].position += dir * speed * TimeManager.TimeGlobal;
+                }
             }
         }
         public void Start()
@@ -316,7 +572,9 @@ namespace Advencursor._Models.Enemy.Stage2
 
         private void ResetSkillSurprise()
         {
+            animations["WarpIn"].Reset();
             bombTimer = 5f;
+            isSmoke = false;
         }
         private Rectangle RotateRayCollision(Rectangle rayCollision, float angle, Vector2 pivot)
         {
@@ -396,6 +654,17 @@ namespace Advencursor._Models.Enemy.Stage2
 
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
             Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White * 0.6f, 0f, shadowOrigin, shadowScale, spriteEffects, 0f);
+        }
+
+        public void DrawCollisionCheck()
+        {
+            Vector2 topLeft1 = new Vector2(collision.Left, collision.Top);
+            Vector2 topRight1 = new Vector2(collision.Right, collision.Top);
+            Vector2 bottomLeft1 = new Vector2(collision.Left, collision.Bottom);
+            Vector2 bottomRight1 = new Vector2(collision.Right, collision.Bottom);
+
+            Globals.DrawLine(topLeft1, topRight1, Color.Red, 1);
+            Globals.DrawLine(bottomLeft1, bottomRight1, Color.Red, 1);
         }
     }
 }

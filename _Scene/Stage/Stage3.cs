@@ -33,7 +33,13 @@ namespace Advencursor._Scene.Stage
         private float elite2_reset_time = 0;
         Boss3 boss_obj;
         Boss2 mini_boss1;
-        Boss1 mini_boss2;
+        Boss1 tomatoBoss;
+        private bool tomatoSpawn = false;
+        private List<Special1> specialEnemy;
+        private List<PoisonPool> poisonPool;
+        protected float special_spawn_time;
+        protected int special_count = 0;
+        protected int special_max = 3;
 
         public Stage3(ContentManager contentManager, SceneManager sceneManager)
         {
@@ -72,6 +78,8 @@ namespace Advencursor._Scene.Stage
             commonEnemy = new List<Common1>();
             eliteEnemy = new List<Elite1>();
             eliteEnemy2 = new List<Elite2>();
+            specialEnemy = new List<Special1>();
+            poisonPool = new List<PoisonPool>();
             boss_obj = new Boss3(Globals.Content.Load<Texture2D>("Enemies/Boss3"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 6, 12)
             {
                 movementAI = new FollowMovementAI()
@@ -88,13 +96,17 @@ namespace Advencursor._Scene.Stage
                 {
                     enemy.Update(gameTime);
                 }
+                if (!boss_obj.isTomatoFinish && tomatoBoss != null)
+                {
+                    UpdateTomato(gameTime);
+                }
                 UiManage(gameTime);
                 CollisionManage(gameTime);
 
                 UpdatePlayer();
                 UpdateEnemies(gameTime);
                 UpdateElites(gameTime);
-
+                UpdatePoisonPool(gameTime);
                 timer.Update();
                 player.Update(gameTime);
                 animationManager.Update(gameTime);
@@ -108,25 +120,37 @@ namespace Advencursor._Scene.Stage
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (boss_obj.phaseIndicator == 5) Globals.BeginDrawGrayScale();
             spriteBatch.Draw(background, Vector2.Zero, Color.White);
             if (startWarning)
             {
                 DrawWarning();
             }
             timer.Draw();
+            Globals.BeginDrawGrayScale();
+            foreach (var pool in poisonPool)
+            {
+                pool.Draw();
+            }
+            foreach (var special in specialEnemy)
+            {
+                special.Draw();
+            }
+            Globals.EndDrawGrayScale();
             foreach (var enemy in commonEnemy)
             {
                 enemy.Draw();
             }
+            uiManager.Draw(spriteBatch);
             if (boss_spawned)
             {
+                if (tomatoBoss != null) tomatoBoss.Draw();
                 boss_obj.Draw();
             }
             foreach (var elite in eliteEnemy)
             {
                 elite.Draw();
             }
-            uiManager.Draw(spriteBatch);
             player.Draw();
 
             animationManager.Draw();
@@ -137,6 +161,7 @@ namespace Advencursor._Scene.Stage
             {
                 DrawPause();
             }
+            if (boss_obj.phaseIndicator == 5) Globals.EndDrawGrayScale();
         }
 
         private void UpdateEnemies(GameTime gameTime)
@@ -180,6 +205,7 @@ namespace Advencursor._Scene.Stage
             elite_spawn_time += TimeManager.TimeGlobal;
             elite1_reset_time -= TimeManager.TimeGlobal;
             elite2_reset_time -= TimeManager.TimeGlobal;
+            special_spawn_time += TimeManager.TimeGlobal;
 
             //Common1
             if (enemy_spawn_time >= 0.1f)
@@ -369,6 +395,7 @@ namespace Advencursor._Scene.Stage
             if (Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
             {
                 boss_spawn_time = 115f;
+                timer.TimeSet(115f);
             }
             if (boss_spawn_time > 115f && !boss_spawned)
             {
@@ -418,8 +445,131 @@ namespace Advencursor._Scene.Stage
                 boss_obj.position = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             }
 
+            //Boss Tomato
+            if (!tomatoSpawn && !boss_obj.isTomatoFinish)
+            {
+                tomatoBoss = new Boss1(Globals.Content.Load<Texture2D>("Enemies/Boss1"), new(100000, 500), health: Int32.MaxValue, attack: 3000, row: 3, column: 8)
+                {
+                    movementAI = new FollowMovementAI
+                    {
+                        target = player,
+                    },
+                };
+                if (player.position.X > Globals.Bounds.X / 2)
+                {
+                    tomatoBoss.position = new Vector2(150, tomatoBoss.position.Y);
+                }
+                if (player.position.X <= Globals.Bounds.X / 2)
+                {
+                    tomatoBoss.position = new Vector2(1920 - 150, tomatoBoss.position.Y);
+                }
+                tomatoBoss.isGray = true;
+                Globals.EnemyManager.Add(tomatoBoss);
+                tomatoSpawn = true;
+                special_count = 0;
+            }
+            else if(boss_obj.isTomatoFinish)
+            {
+                if (tomatoBoss != null)
+                {
+                    tomatoBoss.Die();
+                    Globals.EnemyManager.Remove(tomatoBoss);
+                    tomatoBoss.collision = new Rectangle();
+                    tomatoBoss = null;
+                    tomatoSpawn = false;
+                }
+            }
 
+            if (!boss_obj.isTomatoFinish && special_spawn_time > 3f)
+            {
+                if (special_count < special_max)
+                {
+                    Special1 enemy = new Special1(
+                       Globals.Content.Load<Texture2D>("Enemies/Special1"),
+                       new(tomatoBoss.position.X, tomatoBoss.position.Y + random.Next(-300, 300)),
+                       health: 600,
+                       attack: 1,
+                       row: 1,
+                       column: 8
+                       )
+                    {
+                        movementAI = new FollowMovementAI
+                        {
+                            target = player,
+                        }
+                    };
+                    specialEnemy.Add(enemy);
+                    Globals.EnemyManager.Add(enemy);
+                    special_count++;
+                    special_spawn_time = 0f;
+                }
+            }
+            foreach (var special in specialEnemy)
+            {
+                if (special.isBombed)
+                {
+                    poisonPool.Add(new PoisonPool(
+                        Globals.Content.Load<Texture2D>("GroundEffect/PoisonPool"),
+                        special.position,
+                        1,
+                        6
+                        ));
 
+                }
+                if (!special.Status.IsAlive())
+                {
+                    special_count--;
+                    Globals.EnemyManager.Remove(special);
+                    specialEnemy.Remove(special);
+                    break;
+                }
+            }
+
+        }
+        private void UpdateTomato(GameTime gameTime)
+        {
+            tomatoBoss.Update(gameTime);
+            if (boss_spawned)
+            {
+                if (player.collision.Intersects(tomatoBoss.checkRadius) && !tomatoBoss.dashed)
+                {
+                    tomatoBoss.Charge(player);
+                }
+
+                if (tomatoBoss.charge)
+                {
+                    if (tomatoBoss.charge_duration >= 3f)
+                    {
+                        tomatoBoss.Dash();
+                        tomatoBoss.charge = false;
+                        tomatoBoss.isAttacking = false;
+                    }
+                }
+                if (!tomatoBoss.dashing && !tomatoBoss.charge && !tomatoBoss.stunned && tomatoBoss.Status.IsAlive())
+                {
+                    tomatoBoss.movementAI.Start();
+                    tomatoBoss.indicator = "Idle";
+                }
+            }
+        }
+        private void UpdatePoisonPool(GameTime gameTime)
+        {
+            foreach (var pool in poisonPool)
+            {
+                pool.Update(gameTime);
+                if (pool.collision.Intersects(player.collision) && pool.canBurn)
+                {
+                    pool.Burn();
+                    Common1 poolTemp = new Common1(new(Globals.graphicsDevice, 1, 1), Vector2.Zero, 1, 1, 1, 1);
+                    player.Status.TakeDamage((player.Status.MaxHP * 3) / 100, poolTemp);
+                }
+
+                if (pool.poolDuration > 5f)
+                {
+                    poisonPool.Remove(pool);
+                    break;
+                }
+            }
         }
         private void UiManage(GameTime gameTime)
         {

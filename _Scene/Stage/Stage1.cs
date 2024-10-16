@@ -229,7 +229,6 @@ namespace Advencursor._Scene.Stage
             boss_obj.Update(gameTime);
             if (boss_spawned)
             {
-
                 if (player.collision.Intersects(boss_obj.checkRadius) && !boss_obj.dashed)
                 {
                     boss_obj.Charge(player);
@@ -250,9 +249,6 @@ namespace Advencursor._Scene.Stage
                     boss_obj.indicator = "Idle";
                 }
             }
-
-
-
         }
 
         private void EnemyManage()

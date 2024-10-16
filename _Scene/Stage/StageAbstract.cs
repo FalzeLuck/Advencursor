@@ -39,7 +39,8 @@ namespace Advencursor._Scene.Stage
 
         //Pause Variable
         protected bool isPause;
-
+        Texture2D dimTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
+        Texture2D pauseBackground = Globals.Content.Load<Texture2D>("UI/PauseBackground");
 
 
         protected Timer timer;
@@ -48,6 +49,7 @@ namespace Advencursor._Scene.Stage
         protected bool startWarning = false;
         private bool warningTrigger;
         private float warningOpacity;
+        Texture2D warningTexture;
 
         protected readonly Random random = new Random();
 
@@ -73,6 +75,7 @@ namespace Advencursor._Scene.Stage
         public virtual void Load()
         {
             Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
+            warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Red);
 
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
@@ -204,9 +207,10 @@ namespace Advencursor._Scene.Stage
         protected void CheckPause(GameTime gameTime)
         {
             pauseUiManager.Update(gameTime);
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             if (Keyboard.GetState().IsKeyDown(Keys.Escape) || !Globals.Game.IsActive)
             {
-                Mouse.SetPosition(Globals.Bounds.X/2, Globals.Bounds.Y/2);
                 isPause = true;
                 TimeManager.ChangeGameSpeed(0f);
 
@@ -260,8 +264,7 @@ namespace Advencursor._Scene.Stage
 
         protected void DrawPause()
         {
-            Texture2D dimTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
-            Texture2D pauseBackground = Globals.Content.Load<Texture2D>("UI/PauseBackground");
+            
             Vector2 pauseBgOrigin = new Vector2(pauseBackground.Width / 2, pauseBackground.Height / 2);
 
             Globals.SpriteBatch.Draw(dimTexture, Vector2.Zero, Color.White * 0.8f);
@@ -273,7 +276,7 @@ namespace Advencursor._Scene.Stage
 
         protected void DrawWarning()
         {
-            Texture2D warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Red);
+            
             if (warningOpacity <= 0.3f)
             {
                 warningTrigger = true;
@@ -291,7 +294,7 @@ namespace Advencursor._Scene.Stage
                 warningOpacity += 1 * TimeManager.TimeGlobal;
             }
 
-            Globals.SpriteBatch.Draw(warningTexture,Vector2.Zero,Color.Red * warningOpacity);
+            Globals.SpriteBatch.Draw(warningTexture, Vector2.Zero, Color.Red * warningOpacity);
         }
 
         protected void GotoSummary(bool win)

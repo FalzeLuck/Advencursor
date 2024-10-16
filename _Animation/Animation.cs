@@ -223,6 +223,7 @@ namespace Advencursor._Animation
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
                 Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scale, flip, 1);
             }
+
         }
 
         public Rectangle GetCollision(Vector2 position)
@@ -254,6 +255,7 @@ namespace Advencursor._Animation
         {
             currentFrame = (Column * Startrow) - Column;
             IsComplete = false;
+            IsPause = false;
         }
 
         public void PauseFrame(int frame)

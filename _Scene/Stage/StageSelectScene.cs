@@ -76,7 +76,7 @@ namespace Advencursor._Scene.Stage
             UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);
             UIButton stage1Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 , Globals.Bounds.Y / 2), OnStage1ButtonClick);
             UIButton stage2Button = new(Globals.Content.Load<Texture2D>("Button/Stage2Button"), new Vector2(Globals.Bounds.X / 2 + 500, Globals.Bounds.Y / 2), OnStage2ButtonClick);
-            UIButton stage3Button = new(Globals.Content.Load<Texture2D>("Button/Stage1Button"), new Vector2(Globals.Bounds.X / 2 + 1000, Globals.Bounds.Y / 2), OnStage3ButtonClick); ;
+            UIButton stage3Button = new(Globals.Content.Load<Texture2D>("Button/Stage3Button"), new Vector2(Globals.Bounds.X / 2 + 1000, Globals.Bounds.Y / 2), OnStage3ButtonClick); ;
             uiManager.AddElement("exitButton", exitButton);
             uiManager.AddElement("gachaButton", gachaButton);
             uiManager.AddElement("stage1Button", stage1Button);

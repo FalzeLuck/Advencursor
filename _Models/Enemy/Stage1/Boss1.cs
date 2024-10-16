@@ -34,6 +34,9 @@ namespace Advencursor._Models.Enemy.Stage1
         public float charge_duration;
         public float stand_time;
 
+        private Effect grayscale;
+        public bool isGray;
+
         public Boss1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -54,7 +57,8 @@ namespace Advencursor._Models.Enemy.Stage1
             stunned = false;
 
             shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow2");
-
+            isGray = false;
+            grayscale = Globals.Content.Load<Effect>("greyScale");
         }
 
         public override void Update(GameTime gameTime)
@@ -225,7 +229,19 @@ namespace Advencursor._Models.Enemy.Stage1
                 Globals.SpriteBatch.Draw(warningTexture, position, null, Color.White * warningOpacity, warningRotationAngle, origin, 1f, SpriteEffects.None, 0f);
             }
             DrawShadow();
-            base.Draw();
+            if (!isGray)
+            {
+                base.Draw();
+            }
+            else
+            {
+                Globals.BeginDrawGrayScale();
+                if (animations.ContainsKey(indicator))
+                {
+                    animations[indicator].Draw(position);
+                }
+                Globals.EndDrawGrayScale();
+            }
 
         }
 

@@ -170,7 +170,7 @@ namespace Advencursor._Skill.Fire_Set
                     {
                         if (circleCollision.Intersects(Globals.EnemyManager[i].collision))
                         {
-                            if (!(Globals.EnemyManager[i] is Boss1) || !(Globals.EnemyManager[i] is Boss2))
+                            if (!(Globals.EnemyManager[i] is Boss1) && !(Globals.EnemyManager[i] is Boss2) && !(Globals.EnemyManager[i] is Boss3))
                             {
                                 var dir = Globals.EnemyManager[i].position - player.position;
                                 dir.Normalize();

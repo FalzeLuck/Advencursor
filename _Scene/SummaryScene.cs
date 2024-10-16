@@ -72,6 +72,9 @@ namespace Advencursor._Scene
                 case 2:
                     bg = Globals.Content.Load<Texture2D>("Background/BG_Stage2");
                     break;
+                case 3:
+                    bg = Globals.Content.Load<Texture2D>("Background/BG_Stage2");
+                    break;
             }
         }
 

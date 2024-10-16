@@ -276,12 +276,26 @@ namespace Advencursor._Models
 
                             if (boss1.dashing)
                             {
-                                TakeDamage(5000, enemy);
+                                if (gameData.stage == 1)
+                                {
+                                    TakeDamage(5000, enemy);
+                                }
+                                else
+                                {
+                                    TakeDamage(4000,enemy);
+                                }
                                 Immunity(1f);
                             }
                             else
                             {
-                                TakeDamage(3000, enemy);
+                                if (gameData.stage == 1)
+                                {
+                                    TakeDamage(3000, enemy);
+                                }
+                                else
+                                {
+                                    TakeDamage(2500, enemy);
+                                }
                             }
                             enemy.CollisionCooldownReset(takeDamageCooldown);
                         }

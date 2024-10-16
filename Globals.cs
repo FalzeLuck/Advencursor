@@ -171,5 +171,18 @@ namespace Advencursor
         {
             grayScaleEffect.Parameters["grayscaleAmount"].SetValue(amount);
         }
+
+        //If Begin Pleas End too if not it will Error
+        public static void BeginDrawGrayScale()
+        {
+            SpriteBatch.End();
+            SpriteBatch.Begin(effect: grayScaleEffect, transformMatrix: Camera.transform);
+        }
+
+        public static void EndDrawGrayScale()
+        {
+            SpriteBatch.End();
+            SpriteBatch.Begin(transformMatrix: Globals.Camera.transform);
+        }
     }
 }

@@ -65,6 +65,7 @@ namespace Advencursor
             Globals.Viewport = GraphicsDevice.Viewport;
             Globals.Camera = camera;
             Globals.grayScaleEffect = Content.Load<Effect>("greyScale");
+            Globals.SetGreyScale(1.0f);
             Globals.fullScreenRectangle = new Rectangle(0, 0, Globals.Bounds.X, Globals.Bounds.Y);
 
             base.Initialize();
@@ -81,7 +82,7 @@ namespace Advencursor
             skillData.LoadData();
             AllSkills.skillData = skillData;
             AllSkills.Reset();
-            _sceneManager.AddScene(new StageSelectScene(Content, _sceneManager));
+            _sceneManager.AddScene(new Stage3(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
@@ -99,7 +100,7 @@ namespace Advencursor
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.White);
 
-            _spriteBatch.Begin(effect:Globals.grayScaleEffect, transformMatrix: Globals.Camera.transform);
+            _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);
             _sceneManager.Draw(_spriteBatch);
             _spriteBatch.End();
 

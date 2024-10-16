@@ -272,6 +272,18 @@
 /processorParam:TextureFormat=Color
 /build:Button/Stage2Button.png
 
+#begin Button/Stage3Button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Button/Stage3Button.png
+
 #begin Cursor.PNG
 /importer:TextureImporter
 /processor:TextureProcessor

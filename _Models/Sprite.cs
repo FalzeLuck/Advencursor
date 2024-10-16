@@ -94,5 +94,25 @@ namespace Advencursor._Models
                 return new Rectangle(newX, newY, newWidth, newHeight);
             }
         }
+
+        protected Rectangle ChangeRectangleSize(Rectangle rectangle, int xAmount,int yAmount, bool decrease = false)
+        {
+            if (decrease)
+            {
+                int newX = rectangle.X + xAmount / 2;
+                int newY = rectangle.Y + yAmount / 2;
+                int newWidth = rectangle.Width - xAmount;
+                int newHeight = rectangle.Height - yAmount;
+                return new(newX, newY, newWidth, newHeight);
+            }
+            else
+            {
+                int newX = rectangle.X - xAmount / 2;
+                int newY = rectangle.Y - yAmount / 2;
+                int newWidth = rectangle.Width + xAmount;
+                int newHeight = rectangle.Height + yAmount;
+                return new Rectangle(newX, newY, newWidth, newHeight);
+            }
+        }
     }
 }
