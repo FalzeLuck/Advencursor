@@ -32,6 +32,7 @@ namespace Advencursor._Skill.Fire_Set
         private Vector2 litPosition;
         private ParticleEmitterData ped;
         private ParticleEmitter pe;
+        private float oldAmp;
 
         private Circle circleCollision;
         public Skill_Q_FireDomain(string name, SkillData skillData) : base(name, skillData)
@@ -55,7 +56,7 @@ namespace Advencursor._Skill.Fire_Set
             circleCollision = new Circle(player.position, radius);
             litPosition = player.position;
             skillDuration = duration;
-
+            
             ped = new()
             {
                 particleData = new ParticleData()
@@ -108,9 +109,10 @@ namespace Advencursor._Skill.Fire_Set
                 }
                 foreach (var enemy in Globals.EnemyManager)
                 {
+                    oldAmp = enemy.ampMultiplier;
                     if (circleCollision.Intersects(enemy.collision))
                     {
-                        enemy.ampMultiplier = 1 + multiplier;
+                        enemy.ampMultiplier = oldAmp + multiplier;
                     }
                 }
             }

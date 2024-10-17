@@ -157,12 +157,14 @@ namespace Advencursor._Scene.Stage
             {
                 elite.Draw();
             }
+            Globals.EndDrawGrayScale();
+            
             player.Draw();
 
             animationManager.Draw();
             ParticleManager.Draw();
             damageNumberManager.Draw();
-
+            if (boss_obj.phaseIndicator == 5) Globals.BeginDrawGrayScale();
             if (isPause)
             {
                 DrawPause();
@@ -402,7 +404,7 @@ namespace Advencursor._Scene.Stage
             {
                 boss_spawn_time = 115f;
                 timer.TimeSet(115f);
-                Globals.Camera.SmoothZoom(0.5f, 10);
+                Globals.Camera.SmoothZoom(0.75f,10);
             }
             if (boss_spawn_time > 115f && !boss_spawned)
             {

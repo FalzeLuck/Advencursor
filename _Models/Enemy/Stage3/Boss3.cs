@@ -86,6 +86,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private bool isOpeningKnife;
         private bool isPrepareKnife;
         private bool isAttackKnife;
+        private bool isStartKnifeMove;
         private int knifeMethod;
         private float knifeAttackingTimer;
         private RandomPointGenerator randomPointGenerator;
@@ -124,21 +125,21 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 {1,new Vector2(Globals.Bounds.X / 4, Globals.Bounds.Y / 4)},
                 {2,new Vector2(Globals.Bounds.X / 4 * 3, Globals.Bounds.Y / 4)},
-                {3,new Vector2(Globals.Bounds.X / 4, Globals.Bounds.Y / 4 * 3)},
-                {4,new Vector2(Globals.Bounds.X / 4 * 3, Globals.Bounds.Y / 4 * 3)},
+                {3,new Vector2(Globals.Bounds.X / 4 * 3, Globals.Bounds.Y / 4 * 3)},
+                {4,new Vector2(Globals.Bounds.X / 4, Globals.Bounds.Y / 4 * 3)},
             };
             positionRandomLoop = new RandomLoop<int>(positionIndexList);
             randomPointGenerator = new RandomPointGenerator();
             knifeAreas = new Dictionary<int, Rectangle>() //Start Topleft Rotate Clockwise
             {
-                {1, new Rectangle(0,0- ((int)screenCenter.Y), ((int)screenCenter.X), ((int)screenCenter.Y))},
-                {2, new Rectangle(((int)screenCenter.X),0- ((int)screenCenter.Y), ((int)screenCenter.X), ((int)screenCenter.Y))},
-                {3, new Rectangle(Globals.Bounds.X,0, ((int)screenCenter.X), ((int)screenCenter.Y))},
-                {4, new Rectangle(Globals.Bounds.X,(int)screenCenter.Y, ((int)screenCenter.X), ((int)screenCenter.Y))},
-                {5, new Rectangle(((int)screenCenter.X),Globals.Bounds.Y, ((int)screenCenter.X), ((int)screenCenter.Y))},
-                {6, new Rectangle(0,Globals.Bounds.Y, ((int)screenCenter.X), ((int)screenCenter.Y))},
-                {7, new Rectangle(0-((int)screenCenter.X),((int)screenCenter.Y),((int)screenCenter.X),((int)screenCenter.Y))},
-                {8, new Rectangle(0-((int)screenCenter.X),0, ((int)screenCenter.X), ((int)screenCenter.Y))},
+                {1, new Rectangle(0,-Globals.Bounds.Y, (int)screenCenter.X, Globals.Bounds.Y - 200)},
+                {2, new Rectangle((int)screenCenter.X,-Globals.Bounds.Y, (int)screenCenter.X, Globals.Bounds.Y - 200)},
+                {3, new Rectangle(Globals.Bounds.X*2,0, Globals.Bounds.X - 200, (int)screenCenter.Y)},
+                {4, new Rectangle(Globals.Bounds.X*2,(int)screenCenter.Y, Globals.Bounds.X - 200, (int)screenCenter.Y)},
+                {5, new Rectangle((int)screenCenter.X,Globals.Bounds.Y*2, (int)screenCenter.X, Globals.Bounds.Y - 200)},
+                {6, new Rectangle(0,Globals.Bounds.Y * 2, (int)screenCenter.X, Globals.Bounds.Y - 200)},
+                {7, new Rectangle(-Globals.Bounds.X,((int)screenCenter.Y),Globals.Bounds.X - 200, (int)screenCenter.Y)},
+                {8, new Rectangle(-Globals.Bounds.X,0, Globals.Bounds.X - 200, (int)screenCenter.Y)},
             };
         }
 
@@ -151,7 +152,11 @@ namespace Advencursor._Models.Enemy.Stage2
 
             foreach (Knife knife in knives)
             {
-                knife.Update(gameTime);
+                knife.Update(gameTime,player);
+            }
+            if (indicator == "Die")
+            {
+                animations["Die"].Update();
             }
             if (isStart)
             {
@@ -176,11 +181,7 @@ namespace Advencursor._Models.Enemy.Stage2
                 {
                     if (!(phaseIndicator == (int)phase.Opening) && !(phaseIndicator == (int)phase.SkillSurprise))
                     {
-                        if (animations.ContainsKey(indicator))
-                        {
-                            collision = animations[indicator].GetCollision(position);
-                            collision = ChangeRectangleSize(collision, 320, 30, true);
-                        }
+                        UpdateCollision();
                     }
 
                     if (phaseIndicator == (int)phase.Opening)
@@ -360,7 +361,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         UpdateContainAnimation();
                         if (grayScaleAmount < 1)
                         {
-                            grayScaleAmount += 0.1f;
+                            grayScaleAmount += 0.05f;
                             Globals.SetGreyScale(grayScaleAmount);
                         }
                         else Globals.SetGreyScale(1);
@@ -412,7 +413,13 @@ namespace Advencursor._Models.Enemy.Stage2
                     {
                         if (!isPrepareKnife)
                         {
+                            foreach (var knife in knives)
+                            {
+                                knife.haveDamage = true;
+                            }
+                            indicator = "WarpIn";
                             isAttackKnife = false;
+                            isStartKnifeMove = false;
                             foreach (var knife in knives)
                             {
                                 knife.position = new Vector2(screenCenter.X, -300);
@@ -421,10 +428,10 @@ namespace Advencursor._Models.Enemy.Stage2
                             {
                                 case 1:
                                     position = positionUnderControl[positionIndex];
-                                    knifeStartArea1 = knifeAreas[7];
-                                    knifeStartArea2 = knifeAreas[2];
-                                    knifeEndArea1 = knifeAreas[4];
-                                    knifeEndArea2 = knifeAreas[5];
+                                    knifeStartArea1 = knifeAreas[2];
+                                    knifeStartArea2 = knifeAreas[7];
+                                    knifeEndArea1 = knifeAreas[5];
+                                    knifeEndArea2 = knifeAreas[4];
                                     knifeMethod = 1;
                                     isPrepareKnife = true;
                                     break;
@@ -449,8 +456,8 @@ namespace Advencursor._Models.Enemy.Stage2
                                 case 4:
                                     position = positionUnderControl[positionIndex];
                                     knifeStartArea1 = knifeAreas[1];
-                                    knifeStartArea2 = knifeAreas[6];
-                                    knifeEndArea1 = knifeAreas[7];
+                                    knifeStartArea2 = knifeAreas[7];
+                                    knifeEndArea1 = knifeAreas[6];
                                     knifeEndArea2 = knifeAreas[4];
                                     knifeMethod = 2;
                                     isPrepareKnife = true;
@@ -478,50 +485,61 @@ namespace Advencursor._Models.Enemy.Stage2
                                         knifeDestination[i] = temp4[i - knives.Count / 2];
                                     }
                                 }
-                                isAttackKnife = true;
                                 indicator = "WarpIn";
                                 animations["WarpOut"].Reset();
+                                if (knifeMethod == 1)
+                                {
+                                    knifeAttackingTimer = 2f;
+                                }else if(knifeMethod == 2)
+                                {
+                                    knifeAttackingTimer = 5f;
+                                }
+                                isAttackKnife = true;
                             }
                             else
                             {
-
                                 UpdateContainAnimation();
-
                                 if (animations["WarpIn"].IsComplete)
                                 {
                                     indicator = "Attack";
+                                    UpdateCollision();
                                 }
 
                                 if (animations["Attack"].IsComplete)
                                 {
-                                    knifeAttackingTimer -= TimeManager.TimeGlobal;
+                                    isStartKnifeMove = true;
                                     indicator = "Idle";
-                                    knifeAttackingTimer = 7f;
                                 }
-
-                                if (knifeMethod == 1)
+                                if (isStartKnifeMove)
                                 {
-                                    if (knifeAttackingTimer > 0)
+                                    knifeAttackingTimer -= TimeManager.TimeGlobal;
+                                    if (knifeMethod == 1)
                                     {
-                                        UpdateKnifePosition(4000);
-                                        UpdateKnifeRotation(10);
+                                        UpdateKnifePosition(5000);
+                                        UpdateKnifeRotation(100);
+                                        
                                     }
-                                }
-                                else if (knifeMethod == 2)
-                                {
-                                    UpdateKnifeRotation(10);
-                                    if (knifeAttackingTimer > 7 - 3.5f)
+                                    else if (knifeMethod == 2)
                                     {
-                                        for (int i = 0; i < knives.Count/2; i++)
+                                        UpdateKnifeRotation(100);
+                                        if (knifeAttackingTimer > 5 - 3.5f)
                                         {
-                                            UpdateKnifePosition(4000,i);
+                                            for (int i = 0; i < knives.Count / 2; i++)
+                                            {
+                                                UpdateKnifePosition(5000, i);
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < knives.Count / 2; i++)
+                                        if (knifeAttackingTimer > 5 - 3.1f && knifeAttackingTimer < 5 - 3f)
                                         {
-                                            UpdateKnifePosition(4000, i + knives.Count / 2);
+                                            animations["Attack"].Reset();
+                                            indicator = "Attack";
+                                        }
+                                        if(knifeAttackingTimer < 5-3.5f)
+                                        {
+                                            for (int i = 0; i < knives.Count / 2; i++)
+                                            {
+                                                UpdateKnifePosition(5000, i + knives.Count / 2);
+                                            }
                                         }
                                     }
                                 }
@@ -533,6 +551,8 @@ namespace Advencursor._Models.Enemy.Stage2
 
                                 if (animations["WarpOut"].IsComplete)
                                 {
+                                    collision = new Rectangle();
+                                    position = new Vector2(-600);
                                     isPrepareKnife = false;
                                     foreach(var anim in animations.Values)
                                     {
@@ -587,7 +607,35 @@ namespace Advencursor._Models.Enemy.Stage2
                 }
                 else if (phaseIndicator == (int)phase.UnderControl)
                 {
+                    if (isAttackKnife)
+                    {
+                        if (!animations["Attack"].IsComplete)
+                        {
+                            if (warningOpacity <= 0.3f)
+                            {
+                                warningTrigger = true;
+                            }
+                            else if (warningOpacity >= 0.8f)
+                            {
+                                warningTrigger = false;
+                            }
+                            if (!warningTrigger)
+                            {
+                                warningOpacity -= 1 * TimeManager.TimeGlobal;
+                            }
+                            else
+                            {
+                                warningOpacity += 1 * TimeManager.TimeGlobal;
+                            }
+                            warningTexture = new Texture2D(Globals.graphicsDevice, (int)screenCenter.X, Globals.Bounds.Y);
+                            warningTexture = Globals.CreateRectangleTexture((int)screenCenter.X, Globals.Bounds.Y, Color.Red);
+                            Globals.SpriteBatch.Draw(warningTexture, new Vector2(knifeStartArea1.X,0), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
+                            warningTexture = new Texture2D(Globals.graphicsDevice, Globals.Bounds.X, (int)screenCenter.Y);
+                            warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, (int)screenCenter.Y, Color.Red);
+                            Globals.SpriteBatch.Draw(warningTexture, new Vector2(0, screenCenter.Y), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                        }
+                    }
                 }
             }
             base.Draw();
@@ -607,6 +655,11 @@ namespace Advencursor._Models.Enemy.Stage2
             }
         }
 
+        private void UpdateCollision()
+        {
+            collision = animations[indicator].GetCollision(position);
+            collision = ChangeRectangleSize(collision, 320, 30, true);
+        }
         private void UpdateKnifeRotation(float rotationSpeed)
         {
             for (int i = 0; i < knives.Count; i++)

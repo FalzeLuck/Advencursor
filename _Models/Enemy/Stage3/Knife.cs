@@ -8,11 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Advencursor._AI;
+using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Advencursor._Models.Enemy.Stage3
 {
     public class Knife : _Enemy
     {
+        public bool haveDamage = false;
+        private float scale;
         public Knife(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -20,17 +24,27 @@ namespace Advencursor._Models.Enemy.Stage3
                 { "Float", new(texture, row, column, 8, false) },
             };
             indicator = "Float";
-
+            scale = 1.2f;
             movementAI = new FollowMovementAI();
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime,Sprite player)
         {
             foreach (var animation in animations.Values)
             {
                 animation.Update();
                 animation.rotation = rotation;
-                animation.scale = 1.2f;
+                animation.scale = scale;
+            }
+            collisionCooldown -= TimeManager.TimeGlobal;
+            if (haveDamage)
+            {
+                UpdateCollision();
+                if(collision.Intersects(player.collision) && collisionCooldown <= 0)
+                {
+                    player.Status.TakeDamage(500, this);
+                    collisionCooldown = 1;
+                }
             }
 
         }
@@ -42,6 +56,21 @@ namespace Advencursor._Models.Enemy.Stage3
         public override void Draw()
         {
             base.Draw();
+        }
+
+        private void UpdateCollision()
+        {
+            if (rotation % 3 < 0.1) //Horizontal
+            {
+                collision = animations["Float"].GetCollision(position);
+                collision = ChangeRectangleSize(collision,70,130,true);
+            }
+
+            if (rotation % 1.5 < 0.1) //Vertical
+            {
+                collision = animations["Float"].GetCollision(position);
+                collision = ChangeRectangleSize(collision, 180, 0, true);
+            }
         }
     }
 }
