@@ -94,14 +94,14 @@ namespace Advencursor._Scene
             textFontThai = Globals.Content.Load<SpriteFont>("Font/TextFontThai");
 
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
-            player.LoadPlayer(4, 1);
+            player.LoadPlayer(2, 4);
 
 
 
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(800, Globals.Bounds.Y - 100), OnEquipButtonClick);
             UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(170, Globals.Bounds.Y - 105), OnStatusButtonHover, true);
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 300, Globals.Bounds.Y - 115), OnPlayButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(Globals.Bounds.X - 100, 65), OnExitButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Item/BackButton"), new Vector2(Globals.Bounds.X - 50, 80), OnExitButtonClick);
             uiManager.AddElement("equipButton", equipButton);
             uiManager.AddElement("statButton", statButton);
             uiManager.AddElement("exitButton", exitButton);
@@ -221,7 +221,7 @@ namespace Advencursor._Scene
             Globals.SpriteBatch.Draw(backgroundInventory, Vector2.Zero, Color.White);
             Globals.SpriteBatch.Draw(midgroundInventory, Vector2.Zero, Color.White);
             Color fontColor = new Color(85, 17, 95);
-            Globals.SpriteBatch.DrawString(textFont, $"Stage {gameData.stage}", new(73, 43), fontColor, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+            Globals.SpriteBatch.DrawString(textFont, $"Stage {gameData.stage}", new(125, 43), fontColor, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             Globals.SpriteBatch.DrawString(textFont, $"Inventory", new(1300, 155), fontColor, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             uiManager.Draw(spriteBatch);
 

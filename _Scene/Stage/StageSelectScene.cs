@@ -92,7 +92,7 @@ namespace Advencursor._Scene.Stage
             posStage2des = uiManager.GetElementPosition("stage2Button");
             posStage3 = uiManager.GetElementPosition("stage3Button");
             posStage3des = uiManager.GetElementPosition("stage3Button");
-            background = Globals.Content.Load<Texture2D>("Background/Stage1_2");
+            background = Globals.Content.Load<Texture2D>("Background/StageSelect");
 
         }
 

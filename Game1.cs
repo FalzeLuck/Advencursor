@@ -54,7 +54,7 @@ namespace Advencursor
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             Window.IsBorderless = false;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
@@ -82,7 +82,7 @@ namespace Advencursor
             skillData.LoadData();
             AllSkills.skillData = skillData;
             AllSkills.Reset();
-            _sceneManager.AddScene(new Stage3(Content, _sceneManager));
+            _sceneManager.AddScene(new Stage1(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

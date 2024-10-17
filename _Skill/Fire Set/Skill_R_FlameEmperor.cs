@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Advencursor._Models.Enemy.Stage1;
 using Advencursor._Models.Enemy.Stage2;
+using Advencursor._Models.Enemy.Stage3;
 
 namespace Advencursor._Skill.Fire_Set
 {
@@ -39,6 +40,7 @@ namespace Advencursor._Skill.Fire_Set
 
         private Vector2 previousPlayerPosition;
         private Player player;
+        int flipFactor = 1;
         public Skill_R_FlameEmperor(string name, SkillData skillData) : base(name, skillData)
         {
             multiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
@@ -60,7 +62,6 @@ namespace Advencursor._Skill.Fire_Set
             {
                 particleData = new ParticleData()
                 {
-                    lifespan = 0.5f,
                     colorEnd = Color.Red,
                     colorStart = Color.Orange,
                     opacityStart = 1,
@@ -86,7 +87,7 @@ namespace Advencursor._Skill.Fire_Set
 
 
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
-            fireLine = new RotatableLine(Globals.graphicsDevice, 25, player.position, 20);
+            fireLine = new RotatableLine(Globals.graphicsDevice, 25, player.position, 15);
             fireLine.SetRotation(MathHelper.ToRadians(135));
             litPoint = fireLine.GetPointList();
 
@@ -95,11 +96,7 @@ namespace Advencursor._Skill.Fire_Set
             {
                 litSprite.Add(new Sprite(nullTexture, player.position));
                 litSprite[i].position = litPoint[i];
-            }
-
-            foreach (Sprite sprite in litSprite)
-            {
-                LitFire(sprite);
+                LitFire(litSprite[i]);
             }
 
             previousPlayerPosition = player.position;
@@ -137,15 +134,30 @@ namespace Advencursor._Skill.Fire_Set
                     fireLine.points[i] += movementDelta;
                     litSprite[i].position = fireLine.GetPointList()[i];
                 }
-
-                if (!player.CanNormalAttack())
+                if (player.isFlip)
                 {
-                    fireLine.SetRotation(MathHelper.ToRadians(45));
+                    flipFactor = -1;
                 }
                 else
                 {
-                    fireLine.SetRotation(MathHelper.ToRadians(135));
+                    flipFactor = 1;
                 }
+
+                if (player.CanNormalAttack())
+                {
+                    fireLine.SetRotation(MathHelper.ToRadians(135 * flipFactor));
+                }
+                else if (!player.CanNormalAttack())
+                {
+                    if (Math.Abs(fireLine.rotationAngle - MathHelper.ToRadians(45 * flipFactor)) < 0.1)
+                    {
+                        fireLine.SetRotation(MathHelper.ToRadians(135 * flipFactor));
+                    }
+                    float rotate = SmoothAdjust(MathHelper.ToDegrees(fireLine.rotationAngle), 45 * flipFactor, 0.1f);
+                    fireLine.SetRotation(MathHelper.ToRadians(rotate));
+                    
+                }
+                
                 if (!isBomb)
                 {
                     Explode();
@@ -175,6 +187,12 @@ namespace Advencursor._Skill.Fire_Set
             }
         }
 
+        public float SmoothAdjust(float currentValue, float targetValue, float smoothFactor)
+        {
+            smoothFactor = Math.Clamp(smoothFactor, 0f, 1f);
+
+            return MathHelper.Lerp(currentValue, targetValue, smoothFactor);
+        }
         private void Explode()
         {
             circleCollision = new Circle(previousPlayerPosition, radius);

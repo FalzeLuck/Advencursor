@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Advencursor._Models.Enemy.Stage1;
 using Advencursor._Models.Enemy.Stage2;
+using Advencursor._Animation;
 
 namespace Advencursor._Skill.Fire_Set
 {
@@ -28,6 +29,9 @@ namespace Advencursor._Skill.Fire_Set
         private StaticEmitter staticEmitter;
         private List<Vector2> litPoint;
         private List<Sprite> litSprite;
+        private Animation timer;
+        private Texture2D bombTexture;
+        private Animation bomb;
         private List<ParticleEmitter> activeEmitters = new List<ParticleEmitter>();
         private List<float> collisionCooldown = new List<float>();
         private bool isBomb;
@@ -45,6 +49,10 @@ namespace Advencursor._Skill.Fire_Set
             radius = skillData.GetMultiplierNumber(name, "Radius");
             litPoint = new List<Vector2>();
             litSprite = new List<Sprite>();
+            bombTexture = Globals.Content.Load<Texture2D>("Item/SetFire/E_Effect2");
+            timer = new Animation(Globals.Content.Load<Texture2D>("Item/SetFire/E_Effect1"), 1, 5, 0, false);
+            float scale = (radius * 2) / Math.Min(bombTexture.Width, bombTexture.Height);
+            bomb = new Animation(bombTexture, 1, 8, 16, false, scale);
             rarity = 3;
             setSkill = "Fire";
             description = "Accumulates fire energy for 5 seconds and then violently explodes, dealing damage around you. Enemies in range are knocked back and inflicted with the Burning effect.";
@@ -56,6 +64,9 @@ namespace Advencursor._Skill.Fire_Set
             isBomb = false;
             countdownTick = 5;
             countdownTimer = 0;
+            timer.offset = new Vector2(-100, 0);
+            timer.Reset();
+            bomb.Reset();
             ped = new()
             {
                 particleData = new ParticleData()
@@ -70,8 +81,8 @@ namespace Advencursor._Skill.Fire_Set
                 angleVariance = 90f,
                 speedMax = 100,
                 speedMin = 10,
-                lifeSpanMax = 1,
-                lifeSpanMin = 0.5f,
+                lifeSpanMax = 1f,
+                lifeSpanMin = 0.75f,
             };
 
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
@@ -97,6 +108,7 @@ namespace Advencursor._Skill.Fire_Set
 
             if (duration <= 0)
             {
+                isBomb = false;
                 litSprite.Clear();
                 RemoveFire();
                 activeEmitters.Clear();
@@ -118,6 +130,7 @@ namespace Advencursor._Skill.Fire_Set
 
                 if (countdownTimer <= 0 && countdownTick > 0)
                 {
+                    timer.currentFrame++;
                     countdownTimer = countdownInterval;
                     LitFire(litSprite[countdownTick - 1]);
                     countdownTick -= 1;
@@ -141,7 +154,7 @@ namespace Advencursor._Skill.Fire_Set
                         angleVariance = 180f,
                         speedMax = 2000,
                         speedMin = 2000,
-                        lifeSpanMax = 1f,
+                        lifeSpanMax = 0.5f,
                     };
                     pe = new(staticEmitter, ped);
                     ParticleManager.AddParticleEmitter(pe);
@@ -150,7 +163,10 @@ namespace Advencursor._Skill.Fire_Set
                     duration = 0.5f;
                     Globals.Camera.Shake(0.5f, 15);
                 }
-
+                if (isBomb)
+                {
+                    bomb.Update();
+                }
 
                 for (int i = 0; i < Globals.EnemyManager.Count; i++)
                 {
@@ -182,7 +198,15 @@ namespace Advencursor._Skill.Fire_Set
             }
         }
 
+        public override void Draw()
+        {
+            timer.Draw(previousPlayerPosition);
 
+            if (isBomb)
+            {
+                bomb.Draw(previousPlayerPosition);
+            }
+        }
         private void LitFire(Sprite litSprite)
         {
             spriteEmitter = new SpriteEmitter(() => litSprite.position);

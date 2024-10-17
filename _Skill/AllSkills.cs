@@ -69,9 +69,9 @@ namespace Advencursor._Skill
             {"Emergency Food",Globals.Content.Load<Texture2D>("Item/SetFood/E_Texture")},
             {"Nah I'd win",Globals.Content.Load<Texture2D>("Item/SetFood/R_Texture")},
             {"Fire Domain",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture")},
-            {"Katon goukakyuu no jutsu",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture") },
-            {"E-X-P-L-O-S-I-O-N!",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture") },
-            {"Flame Emperor",Globals.Content.Load<Texture2D>("Item/SetFire/Q_Texture") },
+            {"Katon goukakyuu no jutsu",Globals.Content.Load<Texture2D>("Item/SetFire/W_Texture") },
+            {"E-X-P-L-O-S-I-O-N!",Globals.Content.Load<Texture2D>("Item/SetFire/E_Texture") },
+            {"Flame Emperor",Globals.Content.Load<Texture2D>("Item/SetFire/R_Texture") },
         };
 
 

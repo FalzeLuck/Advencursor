@@ -9,7 +9,7 @@ public class RotatableLine
     public List<Vector2> points; // List of points for the line
     public List<Vector2> rotatedPoints;
     private Vector2 origin;       // Origin point for rotation
-    private float rotationAngle;  // Rotation angle in radians
+    public float rotationAngle;  // Rotation angle in radians
     private Texture2D pointTexture;  // Texture for rendering a point
     private int pointSize = 5;    // Size of the point to be drawn
 

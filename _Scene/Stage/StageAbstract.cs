@@ -80,7 +80,7 @@ namespace Advencursor._Scene.Stage
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
             player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 1, 1);
-            player.LoadPlayer(2, 1);
+            player.LoadPlayer(2, 4);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
             inventory.LoadInventory(tempTexture);
             gameData.LoadData();
@@ -89,7 +89,7 @@ namespace Advencursor._Scene.Stage
 
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 1, fps: 8, false, 1.5f);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 16, false, 1.5f);
             animationManager.AddAnimation("Slash", slashAnimation);
 
             //Load UI
@@ -127,11 +127,9 @@ namespace Advencursor._Scene.Stage
         {
             if (!player.isStun && !player.isStop)
             {
-
                 if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 {
                     player.UseSkill(Keys.Q);
-                    player.ChangeAnimation("Idle");
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
@@ -145,12 +143,11 @@ namespace Advencursor._Scene.Stage
                 {
                     player.UseSkill(Keys.R);
                 }
-                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                if (animationManager.animations["Slash"].IsComplete)
                 {
-                    player.StartParry();
+                    animationManager.Stop("Slash");
                 }
-
-                if (player.CanNormalAttack() || animationManager.animations["Slash"].IsComplete)
+                if (player.CanNormalAttack() )
                 {
                     foreach (var enemy in Globals.EnemyManager)
                     {
@@ -160,7 +157,6 @@ namespace Advencursor._Scene.Stage
                         }
                     }
                     player.ChangeAnimation("Idle");
-                    animationManager.Stop("Slash");
                 }
 
                 if (InputManager.MouseRightClicked && player.CanNormalAttack())

@@ -31,6 +31,8 @@ namespace Advencursor._Scene.Stage
         private int elite1_killed = 0;
         private float elite1_reset_time = 0;
         private float elite2_reset_time = 0;
+        private int elite_count2 = 0;
+        private int elite_max2 = 2;
         Boss3 boss_obj;
         Boss2 mini_boss1;
         Boss1 tomatoBoss;
@@ -154,6 +156,10 @@ namespace Advencursor._Scene.Stage
                 boss_obj.Draw();
             }
             foreach (var elite in eliteEnemy)
+            {
+                elite.Draw();
+            }
+            foreach(var elite in eliteEnemy2)
             {
                 elite.Draw();
             }
@@ -338,9 +344,9 @@ namespace Advencursor._Scene.Stage
             //Elite2
             if (elite_spawn_time > 15f && !startWarning && elite2_reset_time <= 0 && !boss_spawned)
             {
-                if (elite_count < elite_max)
+                if (elite_count2 < elite_max2)
                 {
-                    for (int i = 0; i < 2 && i < elite_max; i++)
+                    for (int i = 0; i < 2 ; i++)
                     {
                         int spawnDirection = Globals.random.Next(1, 5);
                         Vector2 spawnpoint = Vector2.Zero;
@@ -378,7 +384,7 @@ namespace Advencursor._Scene.Stage
                         });
                         eliteEnemy2.Add(enemy);
                         Globals.EnemyManager.Add(enemy);
-                        elite_count++;
+                        elite_count2++;
                         elite2_reset_time = 7.5f;
                     }
 
@@ -391,7 +397,7 @@ namespace Advencursor._Scene.Stage
                     enemy.Die();
                     if (enemy.animations["Die"].IsComplete)
                     {
-                        elite_count--;
+                        elite_count2--;
                         elite_killed++;
                         Globals.EnemyManager.Remove(enemy);
                         eliteEnemy.Remove(enemy);
@@ -404,7 +410,6 @@ namespace Advencursor._Scene.Stage
             {
                 boss_spawn_time = 115f;
                 timer.TimeSet(115f);
-                Globals.Camera.SmoothZoom(0.75f,10);
             }
             if (boss_spawn_time > 115f && !boss_spawned)
             {
@@ -448,7 +453,7 @@ namespace Advencursor._Scene.Stage
                 boss_obj.Start();
             }
 
-            if (!boss_obj.Status.IsAlive() && boss_spawned)
+            if (!boss_obj.Status.IsAlive() && boss_spawned && boss_obj.phaseIndicator != (int)Boss3.phase.Die)
             {
                 boss_obj.Die();
                 boss_obj.position = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);

@@ -181,6 +181,18 @@
 /processorParam:TextureFormat=Color
 /build:Background/Stage1_6.png
 
+#begin Background/StageSelect.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Background/StageSelect.PNG
+
 #begin basicFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -509,30 +521,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Font/TextFontThai.spritefont
 
-#begin Gacha/Roll1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Gacha/Roll1.png
-
-#begin Gacha/Roll5.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Gacha/Roll5.png
-
 #begin greyScale.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -659,6 +647,42 @@
 /processorParam:TextureFormat=Color
 /build:Item/ScrollBarThumb.png
 
+#begin Item/SetFire/E_Effect1.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetFire/E_Effect1.PNG
+
+#begin Item/SetFire/E_Effect2.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetFire/E_Effect2.PNG
+
+#begin Item/SetFire/E_Texture.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetFire/E_Texture.PNG
+
 #begin Item/SetFire/Q_Effect.PNG
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -682,6 +706,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Item/SetFire/Q_Texture.PNG
+
+#begin Item/SetFire/R_Texture.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetFire/R_Texture.PNG
+
+#begin Item/SetFire/W_Texture.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/SetFire/W_Texture.PNG
 
 #begin Item/SetFood/E_Effect1.PNG
 /importer:TextureImporter
@@ -1061,6 +1109,18 @@
 /processorParam:TextureFormat=Color
 /build:UI/Gacha/ButtonExit.PNG
 
+#begin UI/Gacha/ButtonFire.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gacha/ButtonFire.PNG
+
 #begin UI/Gacha/ButtonThunder.PNG
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1072,6 +1132,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/Gacha/ButtonThunder.PNG
+
+#begin UI/Gacha/GachaDim.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gacha/GachaDim.PNG
+
+#begin UI/Gacha/GachaItemBG.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gacha/GachaItemBG.PNG
 
 #begin UI/Gacha/Gem.PNG
 /importer:TextureImporter

@@ -42,6 +42,7 @@ namespace Advencursor._Models.Enemy.Stage2
             SkillRest,
             Tomato,
             UnderControl,
+            Die,
         }
         public int phaseIndicator;
 
@@ -96,6 +97,8 @@ namespace Advencursor._Models.Enemy.Stage2
         private Rectangle knifeEndArea2;
         private Dictionary<int, Rectangle> knifeAreas;
 
+        //Die
+        private float dieTimer;
         public Boss3(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -103,7 +106,7 @@ namespace Advencursor._Models.Enemy.Stage2
                 { "Idle", new(texture, row, column,4,1,8, true) },
                 { "Sit", new(texture, row, column,4,2,8, true) },
                 { "Attack", new(texture, row, column,4,3,8, false) },
-                { "Die", new(texture, row, column,8,3,8, true) },
+                { "Die", new(texture, row, column,8,4,8, false) },
                 { "WarpIn", new(texture, row, column,5,8, false) },
                 { "WarpOut", new(texture, row, column,6,8, false) },
 
@@ -154,30 +157,9 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 knife.Update(gameTime,player);
             }
-            if (indicator == "Die")
-            {
-                animations["Die"].Update();
-            }
             if (isStart)
             {
-                if (Status.CurrentHP <= 0.3 * Status.MaxHP && phaseIndicator != (int)phase.UnderControl)
-                {
-                    position = screenCenter;
-                    phaseIndicator = (int)phase.UnderControl;
-                    tomatoTimer = 0;
-                    collision = new Rectangle();
-                    knives.Clear();
-                    knifeDestination.Clear();
-                    indicator = "WarpIn";
-                    animations[indicator].Reset();
-                    grayScaleAmount = 0;
-                    Globals.SetGreyScale(grayScaleAmount);
-                    isOpeningKnife = false;
-                    openingTimer = 7;
-                }
-
-
-                if (phaseIndicator != (int)phase.UnderControl)
+                if (phaseIndicator != (int)phase.UnderControl && phaseIndicator != (int)phase.Die)
                 {
                     if (!(phaseIndicator == (int)phase.Opening) && !(phaseIndicator == (int)phase.SkillSurprise))
                     {
@@ -359,12 +341,12 @@ namespace Advencursor._Models.Enemy.Stage2
                     {
                         openingTimer -= TimeManager.TimeGlobal;
                         UpdateContainAnimation();
-                        if (grayScaleAmount < 1)
+                        if (grayScaleAmount < 0.5f)
                         {
                             grayScaleAmount += 0.05f;
                             Globals.SetGreyScale(grayScaleAmount);
                         }
-                        else Globals.SetGreyScale(1);
+                        else Globals.SetGreyScale(0.5f);
                         if (animations["WarpIn"].IsComplete && openingTimer > 5) indicator = "Idle";
 
                         if (openingTimer <= 5 && !isOpeningKnife)
@@ -411,6 +393,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     }
                     else
                     {
+                        baseAmp = 0.4f;
                         if (!isPrepareKnife)
                         {
                             foreach (var knife in knives)
@@ -490,7 +473,8 @@ namespace Advencursor._Models.Enemy.Stage2
                                 if (knifeMethod == 1)
                                 {
                                     knifeAttackingTimer = 2f;
-                                }else if(knifeMethod == 2)
+                                }
+                                else if (knifeMethod == 2)
                                 {
                                     knifeAttackingTimer = 5f;
                                 }
@@ -517,7 +501,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                     {
                                         UpdateKnifePosition(5000);
                                         UpdateKnifeRotation(100);
-                                        
+
                                     }
                                     else if (knifeMethod == 2)
                                     {
@@ -534,7 +518,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                             animations["Attack"].Reset();
                                             indicator = "Attack";
                                         }
-                                        if(knifeAttackingTimer < 5-3.5f)
+                                        if (knifeAttackingTimer < 5 - 3.5f)
                                         {
                                             for (int i = 0; i < knives.Count / 2; i++)
                                             {
@@ -554,7 +538,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                     collision = new Rectangle();
                                     position = new Vector2(-600);
                                     isPrepareKnife = false;
-                                    foreach(var anim in animations.Values)
+                                    foreach (var anim in animations.Values)
                                     {
                                         anim.Reset();
                                     }
@@ -564,8 +548,32 @@ namespace Advencursor._Models.Enemy.Stage2
                         }
                     }
                 }
+                else if (phaseIndicator == (int)phase.Die)
+                {
+                    Trace.WriteLine("Running");
+                    UpdateContainAnimation();
+                    dieTimer -= TimeManager.TimeGlobal;
+                    if( dieTimer <= 4)
+                    {
+                        indicator = "Die";
+                    }
+                }
 
-
+                if (Status.CurrentHP <= 0.3 * Status.MaxHP && phaseIndicator != (int)phase.UnderControl && phaseIndicator != (int)phase.Die)
+                {
+                    position = screenCenter;
+                    phaseIndicator = (int)phase.UnderControl;
+                    tomatoTimer = 0;
+                    collision = new Rectangle();
+                    knives.Clear();
+                    knifeDestination.Clear();
+                    indicator = "WarpIn";
+                    animations[indicator].Reset();
+                    grayScaleAmount = 0;
+                    Globals.SetGreyScale(grayScaleAmount);
+                    isOpeningKnife = false;
+                    openingTimer = 7;
+                }
             }
         }
 
@@ -615,7 +623,7 @@ namespace Advencursor._Models.Enemy.Stage2
                             {
                                 warningTrigger = true;
                             }
-                            else if (warningOpacity >= 0.8f)
+                            else if (warningOpacity >= 0.5f)
                             {
                                 warningTrigger = false;
                             }
@@ -627,6 +635,7 @@ namespace Advencursor._Models.Enemy.Stage2
                             {
                                 warningOpacity += 1 * TimeManager.TimeGlobal;
                             }
+                            Globals.EndDrawGrayScale();
                             warningTexture = new Texture2D(Globals.graphicsDevice, (int)screenCenter.X, Globals.Bounds.Y);
                             warningTexture = Globals.CreateRectangleTexture((int)screenCenter.X, Globals.Bounds.Y, Color.Red);
                             Globals.SpriteBatch.Draw(warningTexture, new Vector2(knifeStartArea1.X,0), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
@@ -634,6 +643,7 @@ namespace Advencursor._Models.Enemy.Stage2
                             warningTexture = new Texture2D(Globals.graphicsDevice, Globals.Bounds.X, (int)screenCenter.Y);
                             warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, (int)screenCenter.Y, Color.Red);
                             Globals.SpriteBatch.Draw(warningTexture, new Vector2(0, screenCenter.Y), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                            Globals.BeginDrawGrayScale();
                         }
                     }
                 }
@@ -678,7 +688,6 @@ namespace Advencursor._Models.Enemy.Stage2
                 }
             }
         }
-
         private void UpdateKnifeRotation(float rotationSpeed, Vector2 pointDirection)
         {
             for (int i = 0; i < knives.Count; i++)
@@ -697,7 +706,6 @@ namespace Advencursor._Models.Enemy.Stage2
                 }
             }
         }
-
         private void UpdateKnifePosition(float speed)
         {
             for (int i = 0; i < knives.Count; ++i)
@@ -742,7 +750,6 @@ namespace Advencursor._Models.Enemy.Stage2
             phaseIndicator = (int)phase.Opening;
             AddKnife(1);
         }
-
         private void AddKnife(int amount)
         {
             Texture2D KnifeTexture = Globals.Content.Load<Texture2D>("Enemies/Boss3Knife");
@@ -754,7 +761,6 @@ namespace Advencursor._Models.Enemy.Stage2
                 knives[knives.Count - 1].rotation = MathHelper.ToRadians(90f);
             }
         }
-
         private void SetBlackSmoke(Vector2 position, float radius)
         {
             staticEmitter = new StaticEmitter(position);
@@ -790,76 +796,6 @@ namespace Advencursor._Models.Enemy.Stage2
             bombTimer = 5f;
             isSmoke = false;
         }
-        private Rectangle RotateRayCollision(Rectangle rayCollision, float angle, Vector2 pivot)
-        {
-            Vector2 topLeft = new Vector2(rayCollision.Left, rayCollision.Top);
-            Vector2 topRight = new Vector2(rayCollision.Right, rayCollision.Top);
-            Vector2 bottomLeft = new Vector2(rayCollision.Left, rayCollision.Bottom);
-            Vector2 bottomRight = new Vector2(rayCollision.Right, rayCollision.Bottom);
-
-
-            float changeAngle = MathHelper.ToRadians(angle);
-
-            topLeft = Globals.RotatePoint(topLeft, pivot, changeAngle);
-            topRight = Globals.RotatePoint(topRight, pivot, changeAngle);
-            bottomLeft = Globals.RotatePoint(bottomLeft, pivot, changeAngle);
-            bottomRight = Globals.RotatePoint(bottomRight, pivot, changeAngle);
-
-            return Globals.CreateBoundingRectangle(topLeft, topRight, bottomLeft, bottomRight);
-        }
-
-        private OrientedRectangle RectangleToOrientedRectangle(Rectangle rectangle)
-        {
-            Vector2 topLeft = new Vector2(rectangle.Left, rectangle.Top);
-            Vector2 topRight = new Vector2(rectangle.Right, rectangle.Top);
-            Vector2 bottomLeft = new Vector2(rectangle.Left, rectangle.Bottom);
-            Vector2 bottomRight = new Vector2(rectangle.Right, rectangle.Bottom);
-
-            return new OrientedRectangle(topLeft, topRight, bottomLeft, bottomRight);
-        }
-
-        private bool SATCollision(OrientedRectangle rect1, OrientedRectangle rect2)
-        {
-            var edges1 = rect1.GetEdges();
-            var edges2 = rect2.GetEdges();
-            var axes = edges1.Concat(edges2).Select(edge => new Vector2(-edge.Y, edge.X));
-
-
-            foreach (var axis in axes)
-            {
-
-                var projection1 = ProjectRectangle(rect1, axis);
-                var projection2 = ProjectRectangle(rect2, axis);
-
-
-                if (!ProjectionsOverlap(projection1, projection2))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public (float min, float max) ProjectRectangle(OrientedRectangle rect, Vector2 axis)
-        {
-            float min = Vector2.Dot(rect.Corners[0], axis);
-            float max = min;
-
-            foreach (var corner in rect.Corners)
-            {
-                float projection = Vector2.Dot(corner, axis);
-                min = Math.Min(min, projection);
-                max = Math.Max(max, projection);
-            }
-
-            return (min, max);
-        }
-
-        public bool ProjectionsOverlap((float min, float max) proj1, (float min, float max) proj2)
-        {
-            return proj1.max >= proj2.min && proj2.max >= proj1.min;
-        }
 
         private void DrawShadow()
         {
@@ -879,6 +815,23 @@ namespace Advencursor._Models.Enemy.Stage2
 
             Globals.DrawLine(topLeft1, topRight1, Color.Red, 1);
             Globals.DrawLine(bottomLeft1, bottomRight1, Color.Red, 1);
+        }
+
+        public override void Die()
+        {
+            foreach (var anim in animations.Values)
+            {
+                anim.Reset();
+            }
+            isAttackKnife = false;
+            tomatoTimer = 0;
+            collision = new Rectangle();
+            knives.Clear();
+            knifeDestination.Clear();
+            indicator = "WarpIn";
+            animations[indicator].Reset();
+            dieTimer = 5f;
+            phaseIndicator = (int)phase.Die;
         }
     }
 }

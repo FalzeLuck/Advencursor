@@ -27,9 +27,10 @@ namespace Advencursor._Particles.Emitter
         {
             ParticleData d = data.particleData;
             d.lifespan = Globals.RandomFloat(data.lifeSpanMin, data.lifeSpanMax);
-            d.speed = Globals.RandomFloat(data.speedMin, data.speedMax);
-            float r = (float)(Globals.random.NextDouble() * 2) - 1;
-            d.angle += data.angleVariance * r;
+            d.speed = Globals.RandomFloat(data.speedMin, data.speedMax); 
+            float maxVariance = 0.1f;
+            float r = (float)(Globals.random.NextDouble() * 2.0 - 1.0);
+            d.angle += data.angleVariance * r * maxVariance;
 
             d.rotation = Globals.RandomFloat(data.rotationMin,data.rotationMax);
 

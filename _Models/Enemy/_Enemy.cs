@@ -21,7 +21,8 @@ namespace Advencursor._Models.Enemy
         protected Texture2D shadowTexture;
 
         public bool isAmp = false;
-        public float ampMultiplier = 1f;
+        public float ampMultiplier = 0f;
+        public float baseAmp = 1f;
         public float burnDuration = 0f;
         public bool isBurn => burnDuration > 0;
 
@@ -102,7 +103,7 @@ namespace Advencursor._Models.Enemy
         }
         public virtual void TakeDamage(float fixedDamage, Sprite fromwho)
         {
-            Status.TakeDamageNoCrit(fixedDamage * ampMultiplier, fromwho,Color.White);
+            Status.TakeDamageNoCrit(fixedDamage * (baseAmp + ampMultiplier), fromwho,Color.White);
             BurnDamage(fromwho);
         }
 
@@ -110,11 +111,11 @@ namespace Advencursor._Models.Enemy
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(multiplier * player.Status.Attack * ampMultiplier, player,NoCrit);
+                Status.TakeDamageNoImmune(multiplier * player.Status.Attack * (baseAmp + ampMultiplier), player,NoCrit);
             }
             else
             {
-                Status.TakeDamage(multiplier * player.Status.Attack * ampMultiplier, player);
+                Status.TakeDamage(multiplier * player.Status.Attack * (baseAmp + ampMultiplier), player);
             }
             BurnDamage(player);
         }
@@ -123,16 +124,16 @@ namespace Advencursor._Models.Enemy
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(fixedDamage * ampMultiplier, player , NoCrit);
+                Status.TakeDamageNoImmune(fixedDamage * (baseAmp + ampMultiplier), player , NoCrit);
             }
             else
             {
                 if (NoCrit)
                 {
-                    Status.TakeDamageNoCrit(fixedDamage * ampMultiplier, player,Color.White);
+                    Status.TakeDamageNoCrit(fixedDamage * (baseAmp + ampMultiplier), player,Color.White);
                 }
                 else
-                    Status.TakeDamage(fixedDamage * ampMultiplier, player);
+                    Status.TakeDamage(fixedDamage * (baseAmp + ampMultiplier), player);
             }
             BurnDamage(player);
         }

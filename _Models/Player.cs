@@ -63,10 +63,10 @@ namespace Advencursor._Models
         {
             animations = new Dictionary<string, Animation>
             {
-                { "Normal_Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
-                { "Normal_Attack", new(texture, row, column,2,  TimeManager.framerate, true) },
-                { "Thunder_Idle", new(texture, row, column,1,  TimeManager.framerate, true) },
-                { "Thunder_Attack", new(texture, row, column,2,  TimeManager.framerate, true) }
+                { "Normal_Idle", new(texture, row, column,1,  8, true) },
+                { "Normal_Attack", new(texture, row, column,4, 2,  16, false) },
+                { "Thunder_Idle", new(texture, row, column,1,  8, true) },
+                { "Thunder_Attack", new(texture, row, column,4,2,  16, false) }
             };
             
             Skills = new Dictionary<Keys, Skill>();
@@ -311,7 +311,11 @@ namespace Advencursor._Models
 
         public bool CanNormalAttack()
         {
-            if (normalAttackCooldown <= 0) { return true; }
+            if (normalAttackCooldown <= 0) 
+            {
+                foreach (var anim in animations.Values) anim.Reset();
+                return true;
+            }
             else { return false; }
         }
 
@@ -402,7 +406,7 @@ namespace Advencursor._Models
                 skill.Draw();
             }
 
-            DrawCollision();
+            //DrawCollision();
         }
 
         public void DrawCollision()

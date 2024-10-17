@@ -19,6 +19,7 @@ namespace Advencursor._Particles
         public float opacity;
         public bool IsFinished = false;
         public float scale;
+        public float angle;
         protected Vector2 origin;
         protected Vector2 direction;
         protected float rotation;
@@ -39,8 +40,8 @@ namespace Advencursor._Particles
 
             if(data.speed != 0)
             {
-                this.data.angle = MathHelper.ToRadians(this.data.angle);
-                direction = new Vector2((float)Math.Cos(this.data.angle), (float)Math.Sin(this.data.angle));
+                angle = MathHelper.ToRadians(this.data.angle);
+                direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
                 range = Math.Abs(data.rangeMax);
             }
             else

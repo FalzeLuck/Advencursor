@@ -1,6 +1,8 @@
 ﻿using Advencursor._AI;
+using Advencursor._Animation;
 using Advencursor._Managers;
 using Advencursor._Models;
+using Advencursor._Models.Enemy;
 using Advencursor._Particles;
 using Advencursor._Particles.Emitter;
 using Advencursor._SaveData;
@@ -29,10 +31,12 @@ namespace Advencursor._Skill.Fire_Set
         private List<Vector2> litPoint;
         private List<ParticleEmitter> activeEmitters = new List<ParticleEmitter>();
         private Texture2D floorTexture;
+        private Animation floorAnim;
         private Vector2 litPosition;
         private ParticleEmitterData ped;
         private ParticleEmitter pe;
         private float oldAmp;
+        private float newAmp;
 
         private Circle circleCollision;
         public Skill_Q_FireDomain(string name, SkillData skillData) : base(name, skillData)
@@ -44,6 +48,8 @@ namespace Advencursor._Skill.Fire_Set
             healPercentage = skillData.GetMultiplierNumber(name, "Heal Percentage");
             circleCollision = new(Vector2.Zero, 0);
             floorTexture = Globals.Content.Load<Texture2D>("Item/SetFire/Q_Effect");
+            float scale = (radius * 2) / Math.Min(floorTexture.Width, floorTexture.Height);
+            floorAnim = new Animation(floorTexture, 1, 8, 8, true,scale);
             rarity = 1;
             setSkill = "Fire";
             description = "Create a circle of fiery fire around you. Turns an area into a firestorm. Enemies that enter are bound by flames. Causes more damage to be received. When the duration ends, the bound fire is released.";
@@ -52,7 +58,7 @@ namespace Advencursor._Skill.Fire_Set
         public override void Use(Player player)
         {
             base.Use(player);
-            litPoint = Globals.CreateCircleOutline(player.position, radius, 150);
+            litPoint = Globals.CreateCircleOutline(player.position, radius, 16);
             circleCollision = new Circle(player.position, radius);
             litPosition = player.position;
             skillDuration = duration;
@@ -61,24 +67,33 @@ namespace Advencursor._Skill.Fire_Set
             {
                 particleData = new ParticleData()
                 {
-                    sizeStart = 12f,
-                    sizeEnd = 3f,
-                    colorStart = Color.Red,
-                    colorEnd = Color.Yellow,
-                    opacityStart = 0.5f,
+                    lifespan = 1f,
+                    colorEnd = Color.Red,
+                    colorStart = Color.Orange,
+                    opacityStart = 1,
+                    opacityEnd = 0,
+                    sizeEnd = 4f,
+                    sizeStart = 32f,
+                    speed = 75,
+                    angle = 270,
+                    rotation = 0f,
+                    rangeMax = 300f,
                 },
-                interval = 0.01f,
-                emitCount = 5,
-                angleVariance = 180f,
-                speedMax = 100,
-                speedMin = 10,
-                lifeSpanMax = 1,
+                angleVariance = 10,
                 lifeSpanMin = 0.5f,
+                lifeSpanMax = 1.0f,
+                speedMin = 100f,
+                speedMax = 150f,
+                rotationMin = 0,
+                rotationMax = 0,
+                interval = 0.05f,
+                emitCount = 10
             };
             for (int i = 0; i < litPoint.Count; i++)
             {
                 LitFire(litPoint[i]);
             }
+            
         }
 
         public override void Update(float deltaTime, Player player)
@@ -94,7 +109,7 @@ namespace Advencursor._Skill.Fire_Set
                 }
                 foreach (var enemy in Globals.EnemyManager)
                 {
-                    enemy.ampMultiplier = 1;
+                    enemy.ampMultiplier = 0;
                 }
                 activeEmitters.Clear();
             }
@@ -102,6 +117,7 @@ namespace Advencursor._Skill.Fire_Set
             if (skillDuration > 0)
             {
                 healTick -= TimeManager.TimeGlobal;
+                floorAnim.Update();
                 if (circleCollision.Intersects(player.collision) && healTick <= 0)
                 {
                     player.Status.Heal((healPercentage / 100) * player.Status.MaxHP);
@@ -109,10 +125,9 @@ namespace Advencursor._Skill.Fire_Set
                 }
                 foreach (var enemy in Globals.EnemyManager)
                 {
-                    oldAmp = enemy.ampMultiplier;
                     if (circleCollision.Intersects(enemy.collision))
                     {
-                        enemy.ampMultiplier = oldAmp + multiplier;
+                        enemy.ampMultiplier = multiplier;
                     }
                 }
             }
@@ -123,11 +138,7 @@ namespace Advencursor._Skill.Fire_Set
         {
             if(skillDuration > 0)
             {
-                Vector2 origin = new Vector2(floorTexture.Width/2, floorTexture.Height/2);
-                float scaleX = (radius * 2) / floorTexture.Width;
-                float scaleY = (radius * 2) / floorTexture.Height;
-
-                Globals.SpriteBatch.Draw(floorTexture,litPosition,null,Color.White,0,origin,new Vector2(scaleX,scaleY),SpriteEffects.None,0f);
+                floorAnim.Draw(litPosition);
             }
         }
 
