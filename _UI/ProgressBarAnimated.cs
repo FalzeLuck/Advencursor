@@ -49,7 +49,7 @@ namespace Advencursor._UI
             part.Width = x;
             animationPart.X = x;
             animationPart.Width = (int)(Math.Abs(currentValue - targetValue) / maxValue*foreground.Width);
-            animationPosition.X = position.X + x;
+            animationPosition.X = foregroundPosition.X + x;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

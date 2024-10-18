@@ -221,8 +221,24 @@ namespace Advencursor._Scene.Stage
             elite2_reset_time -= TimeManager.TimeGlobal;
             special_spawn_time += TimeManager.TimeGlobal;
 
+            if (boss_obj.isOpening1 || boss_obj.isOpening2)
+            {
+                foreach (var elite in eliteEnemy)
+                {
+                    elite.Status.Kill();
+                }
+                foreach (var elite2 in eliteEnemy2)
+                {
+                    elite2.Status.Kill();
+                }
+                foreach (var enemy in commonEnemy)
+                {
+                    enemy.Status.Kill();
+                }
+            }
+
             //Common1
-            if (enemy_spawn_time >= 0.1f)
+            if (enemy_spawn_time >= 0.1f && !boss_obj.isOpening1 && !boss_obj.isOpening2)
             {
                 if (enemy_count < enemy_max)
                 {
@@ -440,7 +456,7 @@ namespace Advencursor._Scene.Stage
                 commonEnemy.Clear();
                 Globals.EnemyManager.RemoveAll(common => common is Common1);
                 enemy_count = 0;
-                enemy_max = 0;
+                enemy_max = 30;
                 Globals.EnemyManager.Add(boss_obj);
                 damageNumberManager.SubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
 
@@ -631,6 +647,7 @@ namespace Advencursor._Scene.Stage
                 damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
                 soundManager.StopAllSounds();
                 boss_spawned = false;
+                boss_killed = true;
                 boss_obj.position = new(9999, 9999);
                 uiManager.RemoveElement("bossBar");
                 enemy_max = 0;

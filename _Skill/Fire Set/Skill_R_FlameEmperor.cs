@@ -53,10 +53,10 @@ namespace Advencursor._Skill.Fire_Set
         private Player player;
         public Skill_R_FlameEmperor(string name, SkillData skillData) : base(name, skillData)
         {
-            bombMultiplier = 1f;
-            slashHpPercentAdd = 0.5f;
-            slashMultiplier = 1.5f;
-            radius = 600;
+            bombMultiplier = skillData.GetMultiplierNumber(name, "Bomb Multiplier"); 
+            slashHpPercentAdd = skillData.GetMultiplierNumber(name, "Hp Buff Attack");
+            slashMultiplier = skillData.GetMultiplierNumber(name, "Slash Multiplier");
+            radius = skillData.GetMultiplierNumber(name, "Radius");
             litPoint = new List<Vector2>();
             litSprite = new List<Sprite>();
             rarity = 4;
@@ -200,7 +200,7 @@ namespace Advencursor._Skill.Fire_Set
                 if (delayTimer <= 0)
                 {
                     slashTexture.Draw(previousPlayerPosition);
-                    DrawSlahCollision();
+                    //DrawSlahCollision();
                 }
             }
         }

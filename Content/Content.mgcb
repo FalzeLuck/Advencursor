@@ -731,30 +731,6 @@
 /processorParam:TextureFormat=Color
 /build:Item/SetFire/R_Effect1.PNG
 
-#begin Item/SetFire/R_Effect1.PNG
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Item/SetFire/R_Effect1.PNG
-
-#begin Item/SetFire/R_Effect2.PNG
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Item/SetFire/R_Effect2.PNG
-
 #begin Item/SetFire/R_Effect2.PNG
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1132,6 +1108,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/Gacha/BannerBuff.PNG
+
+#begin UI/Gacha/BannerFire.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gacha/BannerFire.PNG
 
 #begin UI/Gacha/BannerThunder.PNG
 /importer:TextureImporter

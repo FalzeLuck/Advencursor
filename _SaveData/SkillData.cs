@@ -19,21 +19,33 @@ namespace Advencursor._SaveData
         public Dictionary<string, Dictionary<string,float>> skillNameForDamageMultipliers {  get; set; } = new Dictionary<string, Dictionary<string,float>>();
 
         //Thunder Set Dictionary
+        [JsonIgnore]
         public Dictionary<string, float> ThunderCore { get; set; }
+        [JsonIgnore]
         public Dictionary<string,float> ThunderShuriken {  get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> ThunderSpeed { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> IamStorm { get; set; }
 
         //Food Set Dictionary
+        [JsonIgnore]
         public Dictionary<string, float> FoodTrap { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> PoisonTrap { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> EmergencyFood { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> Invincibility { get; set; }
 
         //Fire Set Dictionary
+        [JsonIgnore]
         public Dictionary<string, float> FireDomain { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> FireBall { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> FireBomb { get; set; }
+        [JsonIgnore]
         public Dictionary<string, float> FireEmperor { get; set; }
 
         public const string path = "skillData.json";
@@ -122,7 +134,10 @@ namespace Advencursor._SaveData
             };
             FireEmperor = new Dictionary<string, float>()
             {
-                {"Damage Multiplier", 2.5f },
+                {"Bomb Multiplier", 7.5f },
+                {"Hp Buff Attack",0.5f },
+                {"Slash Multiplier",1.5f },
+                {"Radius",600f },
                 {"Cooldown",60f }
             };
 
@@ -161,14 +176,14 @@ namespace Advencursor._SaveData
                 string deserializedData = File.ReadAllText(path);
                 SkillData data = JsonSerializer.Deserialize<SkillData>(deserializedData);
                 this.skillNameForDamageMultipliers = data.skillNameForDamageMultipliers;
-                UpdateDictionariesFromSkillMultipliers();
+                //UpdateDictionariesFromSkillMultipliers();
             }
             else
             {
                 SaveData();
             }
         }
-        private void UpdateDictionariesFromSkillMultipliers()
+        /*private void UpdateDictionariesFromSkillMultipliers()
         {
             ThunderCore = skillNameForDamageMultipliers["Thunder Core"];
             ThunderShuriken = skillNameForDamageMultipliers["Thunder Shuriken"];
@@ -182,6 +197,6 @@ namespace Advencursor._SaveData
             FireBall = skillNameForDamageMultipliers["Katon goukakyuu no jutsu"];
             FireBomb = skillNameForDamageMultipliers["E-X-P-L-O-S-I-O-N!"];
             FireEmperor = skillNameForDamageMultipliers["Flame Emperor"];
-        }
+        }*/
     }
 }

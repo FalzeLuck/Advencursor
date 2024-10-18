@@ -86,7 +86,10 @@ namespace Advencursor._UI
                 progressBarDictionary[barName].UpdateValue(value);
             }
         }
-
+        public void SetOpacity(string name,float opacity)
+        {
+            uiElements[name].opacity = opacity;
+        }
         public void SetAllOpacity(float opacity)
         {
             foreach (var element in uiElements.Values)

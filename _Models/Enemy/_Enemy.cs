@@ -97,7 +97,7 @@ namespace Advencursor._Models.Enemy
             {
                 if (player is Player)
                 {
-                    Status.TakeDamageNoCrit(player.Status.Attack, player, Color.Orange,"Burn:");
+                    Status.TakeDamageNoCrit(player.Status.Attack, player, Color.Orange,"Burning ");
                     burnDuration = 0;
                 }
             }

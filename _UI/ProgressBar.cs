@@ -12,6 +12,7 @@ namespace Advencursor._UI
     {
         protected readonly Texture2D background;
         protected readonly Texture2D foreground;
+        protected Vector2 foregroundPosition;
         protected readonly float maxValue;
         protected float currentValue;
         protected Rectangle part;
@@ -23,6 +24,15 @@ namespace Advencursor._UI
             this.maxValue = maxValue;
             currentValue = maxValue;
             part = new Rectangle(0,0,foreground.Width,foreground.Height);
+            if (foreground.Width < background.Width)
+            {
+                int temp = (background.Width - foreground.Width) / 2;
+                foregroundPosition = new Vector2(position.X + temp, position.Y);
+            }
+            else
+            {
+                foregroundPosition = position;
+            }
         }
 
         public virtual void UpdateValue(float value)
@@ -40,7 +50,7 @@ namespace Advencursor._UI
             if (isVisible)
             {
                 Globals.SpriteBatch.Draw(background, position, null, _color * opacity, rotation, origin, scale, SpriteEffects.None, 0.5f);
-                Globals.SpriteBatch.Draw(foreground, position, part, _color * opacity, rotation, origin, scale, SpriteEffects.None, 0.5f);
+                Globals.SpriteBatch.Draw(foreground, foregroundPosition, part, _color * opacity, rotation, origin, scale, SpriteEffects.None, 0.5f);
             }
         }
 

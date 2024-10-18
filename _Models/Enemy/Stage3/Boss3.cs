@@ -12,6 +12,7 @@ using Advencursor._Particles;
 using Advencursor._Particles.Emitter;
 using Advencursor._Models.Enemy.Stage3;
 using System.IO;
+using System.Diagnostics.Contracts;
 
 namespace Advencursor._Models.Enemy.Stage2
 {
@@ -50,6 +51,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private List<Vector2> knifeDestination;
 
         //Skill Surprise
+        public bool isOpening1 = false;
         private bool isSmoke;
         private Circle damageCollision;
         private float damageRadius = 600;
@@ -77,7 +79,8 @@ namespace Advencursor._Models.Enemy.Stage2
         public bool isTomatoFinish => tomatoTimer <= 0;
 
         //Under Control
-        private float openingTimer = 5f;
+        public float openingTimer = 5f;
+        public bool isOpening2 = false;
         private float grayScaleAmount;
         private Dictionary<int, Vector2> positionUnderControl;
         private List<int> positionIndexList;
@@ -169,6 +172,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                     if (phaseIndicator == (int)phase.Opening)
                     {
+                        isOpening1 = true;
                         if (knives[0].position.Y < screenCenter.Y)
                         {
                             UpdateKnifeRotation(10);
@@ -228,6 +232,7 @@ namespace Advencursor._Models.Enemy.Stage2
                             phaseIndicator = (int)phase.SkillVaporBlast;
                             ResetSkillSurprise();
                             blastWaitTime = blastSetTime;
+                            isOpening1 = false;
                         }
                     }
 
@@ -340,6 +345,7 @@ namespace Advencursor._Models.Enemy.Stage2
                 {
                     if (openingTimer >= 0)
                     {
+                        isOpening2 = true;
                         openingTimer -= TimeManager.TimeGlobal;
                         UpdateContainAnimation();
                         if (grayScaleAmount < 0.5f)
@@ -394,6 +400,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     }
                     else
                     {
+                        isOpening2 = false;
                         baseAmp = 0.4f;
                         if (!isPrepareKnife)
                         {

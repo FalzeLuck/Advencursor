@@ -95,14 +95,14 @@ namespace Advencursor._Scene.Stage
             //Load UI
             UIBackground uIBackground = new(Globals.Content.Load<Texture2D>("UI/SkillBackground"), new(Globals.Bounds.X / 2, 930));
             int startX = (int)uIBackground.position.X - (uIBackground.texture.Width / 2);
-            int space = uIBackground.texture.Width / 10;
-            int skillY = 950;
+            int space = uIBackground.texture.Width / 12;
+            int skillY = 980;
 
 
-            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 2), skillY), player.Skills[Keys.Q]);
-            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 4), skillY), player.Skills[Keys.W]);
-            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 6), skillY), player.Skills[Keys.E]);
-            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 8), skillY), player.Skills[Keys.R]);
+            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 3), skillY), player.Skills[Keys.Q]);
+            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 5), skillY), player.Skills[Keys.W]);
+            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 7), skillY), player.Skills[Keys.E]);
+            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 9), skillY), player.Skills[Keys.R]);
             UIPlayerCheckPanel uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
 
             Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
@@ -110,7 +110,7 @@ namespace Advencursor._Scene.Stage
             ProgressBarAnimated playerHpBar = new ProgressBarAnimated(bg, fg, player.Status.MaxHP, new(Globals.Bounds.X / 2, uIBackground.position.Y - 75));
 
 
-            uiManager.AddElement("uiBackground", uIBackground);
+            //uiManager.AddElement("uiBackground", uIBackground);
             uiManager.AddElement("playerBar", playerHpBar);
             uiManager.AddElement("skillUI_Q", skillUI_Q);
             uiManager.AddElement("skillUI_W", skillUI_W);
