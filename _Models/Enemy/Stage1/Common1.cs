@@ -211,7 +211,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             dash = false;
         }
 
-        public override void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
+        public override void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false, Color color = default)
         {
             if (player.isBuff && player.buffIndicator == "Thunder_")
             {

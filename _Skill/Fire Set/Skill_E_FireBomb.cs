@@ -53,6 +53,7 @@ namespace Advencursor._Skill.Fire_Set
             timer = new Animation(Globals.Content.Load<Texture2D>("Item/SetFire/E_Effect1"), 1, 5, 0, false);
             float scale = (radius * 2) / Math.Min(bombTexture.Width, bombTexture.Height);
             bomb = new Animation(bombTexture, 1, 8, 16, false, scale);
+            previousPlayerPosition = new Vector2(-300);
             rarity = 3;
             setSkill = "Fire";
             description = "Accumulates fire energy for 5 seconds and then violently explodes, dealing damage around you. Enemies in range are knocked back and inflicted with the Burning effect.";

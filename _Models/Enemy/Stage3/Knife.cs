@@ -49,10 +49,6 @@ namespace Advencursor._Models.Enemy.Stage3
 
         }
 
-        public override void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
-        {
-        }
-
         public override void Draw()
         {
             base.Draw();

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,7 +97,7 @@ namespace Advencursor._Models.Enemy
             {
                 if (player is Player)
                 {
-                    Status.TakeDamageNoCrit(player.Status.Attack, player, Color.OrangeRed);
+                    Status.TakeDamageNoCrit(player.Status.Attack, player, Color.Orange,"Burn:");
                     burnDuration = 0;
                 }
             }
@@ -107,24 +108,24 @@ namespace Advencursor._Models.Enemy
             BurnDamage(fromwho);
         }
 
-        public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
+        public virtual void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false,Color color = default)
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(multiplier * player.Status.Attack * (baseAmp + ampMultiplier), player,NoCrit);
+                Status.TakeDamageNoImmune(multiplier * player.Status.Attack * (baseAmp + ampMultiplier), player,NoCrit,color);
             }
             else
             {
-                Status.TakeDamage(multiplier * player.Status.Attack * (baseAmp + ampMultiplier), player);
+                Status.TakeDamage(multiplier * player.Status.Attack * (baseAmp + ampMultiplier), player,color);
             }
             BurnDamage(player);
         }
 
-        public virtual void TakeDamage(float multiplier, Player player, float fixedDamage, bool throughImmune = false, bool NoCrit = false)
+        public virtual void TakeDamage(Player player, float fixedDamage, bool throughImmune = false, bool NoCrit = false, Color color = default)
         {
             if (throughImmune)
             {
-                Status.TakeDamageNoImmune(fixedDamage * (baseAmp + ampMultiplier), player , NoCrit);
+                Status.TakeDamageNoImmune(fixedDamage * (baseAmp + ampMultiplier), player , NoCrit,color);
             }
             else
             {
@@ -133,7 +134,7 @@ namespace Advencursor._Models.Enemy
                     Status.TakeDamageNoCrit(fixedDamage * (baseAmp + ampMultiplier), player,Color.White);
                 }
                 else
-                    Status.TakeDamage(fixedDamage * (baseAmp + ampMultiplier), player);
+                    Status.TakeDamage(fixedDamage * (baseAmp + ampMultiplier), player, color);
             }
             BurnDamage(player);
         }

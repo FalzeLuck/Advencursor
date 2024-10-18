@@ -59,7 +59,7 @@ namespace Advencursor._Skill.Food_Set
                     {
                         if (Globals.EnemyManager[i].collision.Intersects(poisonFood.collision))
                         {
-                            Globals.EnemyManager[i].TakeDamage(1, player, (Globals.EnemyManager[i].Status.MaxHP / 100) + 500,true,true);
+                            Globals.EnemyManager[i].TakeDamage(player, (Globals.EnemyManager[i].Status.MaxHP / 100) + 500,true,true);
                             collisionCooldown[i] = 1f;
                         }
                     }

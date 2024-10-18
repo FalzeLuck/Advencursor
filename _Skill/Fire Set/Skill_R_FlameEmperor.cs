@@ -13,12 +13,16 @@ using Microsoft.Xna.Framework;
 using Advencursor._Models.Enemy.Stage1;
 using Advencursor._Models.Enemy.Stage2;
 using Advencursor._Models.Enemy.Stage3;
+using Advencursor._Animation;
+using System.Diagnostics;
 
 namespace Advencursor._Skill.Fire_Set
 {
     public class Skill_R_FlameEmperor : Skill
     {
-        private float multiplier;
+        private float slashMultiplier;
+        private float slashHpPercentAdd;
+        private float bombMultiplier;
         private float radius;
 
         private float countdownTimer;
@@ -27,10 +31,17 @@ namespace Advencursor._Skill.Fire_Set
         private StaticEmitter staticEmitter;
         private List<Vector2> litPoint;
         private List<Sprite> litSprite;
-        private RotatableLine fireLine;
         private List<ParticleEmitter> activeEmitters = new List<ParticleEmitter>();
         private List<float> collisionCooldown = new List<float>();
         private bool isBomb;
+
+        private Animation aura;
+        private Animation slashTexture;
+        private float delayTimer;
+        private float delay = 0.01f;
+        private bool startAttack;
+        Vector2 offset = new Vector2(75, 0);
+        private Rectangle slashCollision;
 
         private ParticleEmitterData ped;
         private ParticleEmitter pe;
@@ -40,16 +51,21 @@ namespace Advencursor._Skill.Fire_Set
 
         private Vector2 previousPlayerPosition;
         private Player player;
-        int flipFactor = 1;
         public Skill_R_FlameEmperor(string name, SkillData skillData) : base(name, skillData)
         {
-            multiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
+            bombMultiplier = 1f;
+            slashHpPercentAdd = 0.5f;
+            slashMultiplier = 1.5f;
             radius = 600;
             litPoint = new List<Vector2>();
             litSprite = new List<Sprite>();
             rarity = 4;
             setSkill = "Fire";
             description = "";
+            aura = new Animation(Globals.Content.Load<Texture2D>("Item/SetFire/R_Effect1"),1,8,8,true);
+            aura.SetOpacity(0.5f);
+            slashTexture = new Animation(Globals.Content.Load<Texture2D>("Item/SetFire/R_Effect2"), 1, 4, 16, false);
+            slashTexture.scale = 2f;
         }
 
         public override void Use(Player player)
@@ -86,17 +102,14 @@ namespace Advencursor._Skill.Fire_Set
 
 
 
-            Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
-            fireLine = new RotatableLine(Globals.graphicsDevice, 25, player.position, 15);
-            fireLine.SetRotation(MathHelper.ToRadians(135));
-            litPoint = fireLine.GetPointList();
-
-
-            for (int i = 0; i < litPoint.Count; i++)
+            slashTexture.IsFlip = player.isFlip;
+            if (slashTexture.IsFlip)
             {
-                litSprite.Add(new Sprite(nullTexture, player.position));
-                litSprite[i].position = litPoint[i];
-                LitFire(litSprite[i]);
+                slashTexture.offset = offset;
+            }
+            else
+            {
+                slashTexture.offset = -offset;
             }
 
             previousPlayerPosition = player.position;
@@ -108,7 +121,6 @@ namespace Advencursor._Skill.Fire_Set
         public override void Update(float deltaTime, Player player)
         {
             base.Update(deltaTime, player);
-
 
             if(duration < 14.5f)
             {
@@ -123,40 +135,53 @@ namespace Advencursor._Skill.Fire_Set
             if (duration > 0)
             {
                 duration -= TimeManager.TimeGlobal;
-                fireLine.Update(player);
-
-                Vector2 movementDelta = player.position - previousPlayerPosition;
-
+                aura.Update();
                 previousPlayerPosition = player.position;
-
-                for (int i = 0; i < litSprite.Count; i++)
+                
+                if (!player.CanNormalAttack())
                 {
-                    fireLine.points[i] += movementDelta;
-                    litSprite[i].position = fireLine.GetPointList()[i];
+                    startAttack = true;
                 }
-                if (player.isFlip)
+                if (slashTexture.IsComplete)
                 {
-                    flipFactor = -1;
+                    for (int i = 0; i < collisionCooldown.Count; i++) collisionCooldown[i] = 0;
+                    slashCollision = new Rectangle();
+                    slashTexture.Reset();
+                    delayTimer = delay;
+                    startAttack = false;
+                }
+
+                slashTexture.IsFlip = player.isFlip;
+                if (slashTexture.IsFlip)
+                {
+                    slashTexture.offset = offset;
                 }
                 else
                 {
-                    flipFactor = 1;
+                    slashTexture.offset = -offset;
                 }
 
-                if (player.CanNormalAttack())
+                if (startAttack)
                 {
-                    fireLine.SetRotation(MathHelper.ToRadians(135 * flipFactor));
+                    delayTimer -= TimeManager.TimeGlobal;
                 }
-                else if (!player.CanNormalAttack())
+
+                if(delayTimer <= 0)
                 {
-                    if (Math.Abs(fireLine.rotationAngle - MathHelper.ToRadians(45 * flipFactor)) < 0.1)
+                    slashTexture.Update();
+                    slashCollision = slashTexture.GetCollision(player.position);
+                    for (int i = 0; i < Globals.EnemyManager.Count; i++)
                     {
-                        fireLine.SetRotation(MathHelper.ToRadians(135 * flipFactor));
+                        if(Globals.EnemyManager[i].collision.Intersects(slashCollision) && collisionCooldown[i] <= 0)
+                        {
+                            Globals.EnemyManager[i].TakeDamage(player,(slashHpPercentAdd/100f + player.Status.Attack) * slashMultiplier,true,false,Color.Orange);
+                            Globals.EnemyManager[i].burnDuration = 3f;
+                            collisionCooldown[i] = 1;
+                        }
                     }
-                    float rotate = SmoothAdjust(MathHelper.ToDegrees(fireLine.rotationAngle), 45 * flipFactor, 0.1f);
-                    fireLine.SetRotation(MathHelper.ToRadians(rotate));
-                    
                 }
+
+                
                 
                 if (!isBomb)
                 {
@@ -169,6 +194,15 @@ namespace Advencursor._Skill.Fire_Set
 
         public override void Draw()
         {
+            if (duration > 0)
+            {
+                aura.Draw(new Vector2(previousPlayerPosition.X,previousPlayerPosition.Y - 75));
+                if (delayTimer <= 0)
+                {
+                    slashTexture.Draw(previousPlayerPosition);
+                    DrawSlahCollision();
+                }
+            }
         }
 
         private void LitFire(Sprite litSprite)
@@ -187,12 +221,6 @@ namespace Advencursor._Skill.Fire_Set
             }
         }
 
-        public float SmoothAdjust(float currentValue, float targetValue, float smoothFactor)
-        {
-            smoothFactor = Math.Clamp(smoothFactor, 0f, 1f);
-
-            return MathHelper.Lerp(currentValue, targetValue, smoothFactor);
-        }
         private void Explode()
         {
             circleCollision = new Circle(previousPlayerPosition, radius);
@@ -234,9 +262,16 @@ namespace Advencursor._Skill.Fire_Set
             {
                 if (collisionCooldown[i] <= 0)
                 {
-                    Globals.EnemyManager[i].TakeDamage(multiplier, player, true, false);
+                    Globals.EnemyManager[i].TakeDamage(bombMultiplier, player, true, false);
+                    collisionCooldown[i] = 1;
                 }
             }
+        }
+
+        public void DrawSlahCollision()
+        {
+            Globals.DrawLine(new Vector2(slashCollision.X, slashCollision.Y), new Vector2(slashCollision.X + slashCollision.Width, slashCollision.Y), Color.Purple, 4);
+            Globals.DrawLine(new Vector2(slashCollision.X, slashCollision.Y + slashCollision.Height), new Vector2(slashCollision.X + slashCollision.Width, slashCollision.Y + slashCollision.Height), Color.Purple, 4);
         }
     }
 }

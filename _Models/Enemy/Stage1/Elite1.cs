@@ -169,7 +169,7 @@ namespace Advencursor._Models.Enemy.Stage1
             }
         }
 
-        public override void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false)
+        public override void TakeDamage(float multiplier, Player player, bool throughImmune = false, bool NoCrit = false, Color color = default)
         {
             if (player.isBuff && player.buffIndicator == "Thunder_")
             {

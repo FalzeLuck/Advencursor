@@ -161,6 +161,7 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 if (phaseIndicator != (int)phase.UnderControl && phaseIndicator != (int)phase.Die)
                 {
+                    baseAmp = 1f;
                     if (!(phaseIndicator == (int)phase.Opening) && !(phaseIndicator == (int)phase.SkillSurprise))
                     {
                         UpdateCollision();
@@ -550,7 +551,6 @@ namespace Advencursor._Models.Enemy.Stage2
                 }
                 else if (phaseIndicator == (int)phase.Die)
                 {
-                    Trace.WriteLine("Running");
                     UpdateContainAnimation();
                     dieTimer -= TimeManager.TimeGlobal;
                     if( dieTimer <= 4)
