@@ -27,7 +27,7 @@ namespace Advencursor._Scene.Stage
         protected DamageNumberManager damageNumberManager;
 
         protected SpriteFont font;
-
+        protected SpriteFont textFont;
 
         protected Player player;
         protected Inventory inventory = new Inventory();

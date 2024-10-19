@@ -224,9 +224,9 @@ namespace Advencursor._Models
             {
                 if (enemy.Status.IsAlive())
                 {
-
                     if (enemy.collision.Intersects(collision) && enemy.collisionCooldown <= 0)
                     {
+                        Globals.Camera.Shake(0.1f, 1f);
                         if (enemy is Common1)
                         {
                             Common1 common1 = (Common1)enemy;

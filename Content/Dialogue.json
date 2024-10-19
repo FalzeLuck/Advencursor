@@ -1,0 +1,82 @@
+{
+    "scenes": [
+        {
+            "sceneID": "Intro",
+            "dialogues": [
+                {
+                    "speaker": "Narrator",
+                    "text": "You are game developer and now you are developing your game."
+                },
+                {
+                    "speaker": "Narrator",
+                    "text": "You fall asleep."
+                }
+            ]
+        },
+        {
+            "sceneID": "Start",
+            "dialogues": [
+                {
+                    "speaker": "???",
+                    "text": "Oh! You're awake?"
+                },
+                {
+                    "speaker": "???",
+                    "text": "Are you alright?"
+                },
+                {
+                    "speaker": "You",
+                    "text": "I ... I'm ok."
+                },
+                {
+                    "speaker": "You",
+                    "text": "( Why L.I.F.E. is here? Am I dreaming? )"
+                },
+                {
+                    "speaker": "You",
+                    "text": "Where am I?"
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "You don't know where you are? Hmmm...Nevermind!"
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "You are in FOODLANDER. The land with food and magic."
+                },
+                {
+                    "speaker": "You",
+                    "text": "( FOODLANDER!? That's my game! )"
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "Let me introduce myself. I am L.I.F.E. And you?"
+                },
+                {
+                    "speaker": "You",
+                    "text": "I am [Error can't retrieve data] ."
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "Ok. [Error can't retrieve data] I need your help."
+                },
+                {
+                    "speaker": "You",
+                    "text": "Help?"
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "There is no time. This world has been invaded by viruses."
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "The viruses name are \"Moustache\" and It was led by D.E.A.D."
+                },
+                {
+                    "speaker": "L.I.F.E.",
+                    "text": "The viruses made everyone in this world "
+                }
+            ]
+        }
+    ]
+}

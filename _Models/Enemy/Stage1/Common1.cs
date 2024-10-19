@@ -43,6 +43,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 { "Walk", new(texture, row, column,2,  8, false) },
                 { "Attack", new(texture,row,column,7,1,8,false) },
                 { "Die", new(texture,row,column,3,12,false) },
+                { "LoopAttack", new(texture,row,column,7,1,8,true) },
             };
             indicator = "Walk";
 
@@ -64,7 +65,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 collision = animations[indicator].GetCollision(position);
             }
             UpdateParryZone();
-            if (Status.IsAlive())
+            if (Status.IsAlive() && movementAI.target != null)
             {
                 //Update Radius
                 dashRadius = collision;
@@ -141,10 +142,9 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                     isDashing = false;
                     dashCooldown += TimeManager.TimeGlobal;
                     dashTimer = 0f;
-
-
                     Vector2 dir = movementAI.target.position - position;
                     dir.Normalize();
+
 
                     if (animations["Walk"].currentFrame == 10)
                     {
@@ -188,6 +188,10 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
                 }
 
+            }
+            else
+            {
+                indicator = "LoopAttack";
             }
 
 

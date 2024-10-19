@@ -121,6 +121,18 @@
 /processorParam:TextureFormat=Color
 /build:Background/Menu.png
 
+#begin Background/Stage0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Background/Stage0.png
+
 #begin Background/Stage1_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -319,6 +331,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Cursor.PNG
+
+#begin Dialogue.json
+/copy:Dialogue.json
 
 #begin Enemies/Boss1.PNG
 /importer:TextureImporter
@@ -1060,6 +1075,42 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Sound/Song/Stage Select Song.mp3
+
+#begin Story/D.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Story/D.PNG
+
+#begin Story/L_END.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Story/L_END.PNG
+
+#begin Story/L.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Story/L.PNG
 
 #begin TestUI.png
 /importer:TextureImporter

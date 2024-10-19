@@ -108,6 +108,7 @@ namespace Advencursor._Scene.Stage
                 DrawWarning();
             }
             timer.Draw();
+            spriteBatch.DrawString(font, "Press ESC to pause", new Vector2(10, 20), Color.Black, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
             foreach (var enemy in commonEnemy)
             {
                 enemy.Draw();

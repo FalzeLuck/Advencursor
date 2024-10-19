@@ -82,7 +82,7 @@ namespace Advencursor
             skillData.LoadData();
             AllSkills.skillData = skillData;
             AllSkills.Reset();
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+            _sceneManager.AddScene(new DialogueIntro(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

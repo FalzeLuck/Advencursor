@@ -61,7 +61,7 @@ namespace Advencursor._Skill.Fire_Set
             litSprite = new List<Sprite>();
             rarity = 4;
             setSkill = "Fire";
-            description = "";
+            description = "Fully awaken the power of the solar flame within your body, releasing waves of solar flames that deal damage around you and turning your weapon into a powerful flaming sword, making your attacks more powerful and applying the Burning effect on every hit.";
             aura = new Animation(Globals.Content.Load<Texture2D>("Item/SetFire/R_Effect1"),1,8,8,true);
             aura.SetOpacity(0.5f);
             slashTexture = new Animation(Globals.Content.Load<Texture2D>("Item/SetFire/R_Effect2"), 1, 4, 16, false);
