@@ -31,8 +31,6 @@ namespace Advencursor
         private Camera camera;
         private GameData gameData;
         private SkillData skillData;
-        float blendFactor = 0.0f; // Start in full color
-        float globalOpacity = 1.0f; // Full opacity
 
 
         public Game1()
@@ -54,7 +52,7 @@ namespace Advencursor
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = false;
             Window.IsBorderless = false;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();

@@ -102,9 +102,9 @@ namespace Advencursor._Models.Enemy
                 }
             }
         }
-        public virtual void TakeDamage(float fixedDamage, Sprite fromwho)
+        public virtual void TakeDamage(float fixedDamage, Sprite fromwho,Color color = default)
         {
-            Status.TakeDamageNoCrit(fixedDamage * (baseAmp + ampMultiplier), fromwho,Color.White);
+            Status.TakeDamageNoCrit(fixedDamage * (baseAmp + ampMultiplier), fromwho,color);
             BurnDamage(fromwho);
         }
 

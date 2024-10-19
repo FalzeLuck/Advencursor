@@ -661,7 +661,7 @@ namespace Advencursor._Models.Enemy.Stage2
                 knife.Draw();
             }
 
-            DrawCollisionCheck();
+            //DrawCollisionCheck();
         }
 
         private void UpdateContainAnimation()

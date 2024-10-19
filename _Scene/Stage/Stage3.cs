@@ -57,6 +57,7 @@ namespace Advencursor._Scene.Stage
                 new(0, 0)
                 );
 
+            Globals.SetGreyScale(1f);
             timer.StartStop();
             timer.Repeat = true;
             boss_spawn_time = 0f;
@@ -359,7 +360,8 @@ namespace Advencursor._Scene.Stage
                 }
             }
             //Elite2
-            if (elite_spawn_time > 15f && !startWarning && elite2_reset_time <= 0 && !boss_spawned)
+            if (elite_spawn_time > 15f && !startWarning && elite2_reset_time <= 0 && !boss_spawned 
+                || boss_obj.phaseIndicator == (int)Boss3.phase.UnderControl && !boss_obj.isOpening2)
             {
                 if (elite_count2 < elite_max2)
                 {
@@ -404,7 +406,6 @@ namespace Advencursor._Scene.Stage
                         elite_count2++;
                         elite2_reset_time = 7.5f;
                     }
-
                 }
             }
             foreach (var enemy in eliteEnemy2)
@@ -428,7 +429,7 @@ namespace Advencursor._Scene.Stage
                 boss_spawn_time = 115f;
                 timer.TimeSet(115f);
             }
-            if (boss_spawn_time > 115f && !boss_spawned)
+            if (boss_spawn_time > 116f && !boss_spawned)
             {
                 foreach (var enemy in Globals.EnemyManager)
                 {
@@ -457,7 +458,7 @@ namespace Advencursor._Scene.Stage
                 commonEnemy.Clear();
                 Globals.EnemyManager.RemoveAll(common => common is Common1);
                 enemy_count = 0;
-                enemy_max = 30;
+                enemy_max = 3;
                 Globals.EnemyManager.Add(boss_obj);
                 damageNumberManager.SubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
 

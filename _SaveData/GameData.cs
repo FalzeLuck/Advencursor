@@ -17,6 +17,9 @@ namespace Advencursor._SaveData
     public class GameData
     {
         public bool isFirstTime {  get; set; } = true;
+        public bool stage1Clear { get; set; } = false;
+        public bool stage2Clear { get; set; } = false;
+        public bool stage3Clear { get; set; } = false;
         public int stage { get; set; } = 0;
 
         //Setting
@@ -49,6 +52,9 @@ namespace Advencursor._SaveData
                 this.gems = data.gems;
                 this.pityCounter = data.pityCounter;
                 this.gachaSelectedSet = data.gachaSelectedSet;
+                this.stage1Clear = data.stage1Clear;
+                this.stage2Clear = data.stage2Clear;
+                this.stage3Clear = data.stage3Clear;
             }
             else
             {

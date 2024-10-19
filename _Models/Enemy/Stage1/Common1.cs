@@ -189,11 +189,11 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 }
 
             }
-            else
+
+            if (movementAI.target == null)
             {
                 indicator = "LoopAttack";
             }
-
 
         }
 

@@ -51,7 +51,7 @@ namespace Advencursor._Models.Enemy.Stage3
 
         public override void Draw()
         {
-            base.Draw();
+            animations["Float"].Draw(position);
         }
 
         private void UpdateCollision()

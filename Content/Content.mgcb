@@ -1100,6 +1100,18 @@
 /processorParam:TextureFormat=Color
 /build:Story/L_END.PNG
 
+#begin Story/L_Smile.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Story/L_Smile.PNG
+
 #begin Story/L.PNG
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1207,6 +1219,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/Gacha/ButtonExit.PNG
+
+#begin UI/Gacha/ButtonExit2.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Gacha/ButtonExit2.PNG
 
 #begin UI/Gacha/ButtonFire.PNG
 /importer:TextureImporter

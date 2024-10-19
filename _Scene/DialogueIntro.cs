@@ -1,4 +1,6 @@
 ﻿using Advencursor._Managers;
+using Advencursor._Scene.Stage;
+using Advencursor._Scene.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -81,13 +83,19 @@ namespace Advencursor._Scene
                     if (currentLine.speaker == "L.I.F.E." || currentLine.speaker == "???")
                     {
                         lifeOpacity = 0f;
+                        textureLife = Globals.Content.Load<Texture2D>("Story/L_Smile");
                     }
                     else
                     {
+                        textureLife = Globals.Content.Load<Texture2D>("Story/L");
                         lifeOpacity = 0.5f;
                     }
                 }
                 
+                if(dialogueIndex >= currentSceneDialogue.Count)
+                {
+                    EndScene();
+                }
             }
         }
 
@@ -134,6 +142,11 @@ namespace Advencursor._Scene
                 origin = new Vector2(origin.X/2, origin.Y/2);
                 Globals.SpriteBatch.DrawString(font, $"{currentLine.speaker}", position, color, 0, origin, scale, SpriteEffects.None, 0f);
             }
+        }
+
+        private void EndScene()
+        {
+            sceneManager.AddScene(new StageTutorial(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice, 5000));
         }
     }
 }

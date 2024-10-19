@@ -81,9 +81,9 @@ namespace Advencursor._Models.Enemy.Stage2
                     {
                         foreach (var enemy in Globals.EnemyManager)
                         {
-                            if (enemy.collision.Intersects(bombRadius))
+                            if (enemy.collision.Intersects(bombRadius) && !(enemy is Boss3))
                             {
-                                enemy.TakeDamage(5000, this);
+                                enemy.TakeDamage(2500, this, new(31, 81, 255));
                                 isDamage = true;
                             }
                         }
