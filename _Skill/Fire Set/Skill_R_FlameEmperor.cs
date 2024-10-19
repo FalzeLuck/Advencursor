@@ -262,7 +262,7 @@ namespace Advencursor._Skill.Fire_Set
             {
                 if (collisionCooldown[i] <= 0)
                 {
-                    Globals.EnemyManager[i].TakeDamage(bombMultiplier, player, true, false);
+                    Globals.EnemyManager[i].TakeDamage(bombMultiplier, player, true, false, Color.Orange);
                     collisionCooldown[i] = 1;
                 }
             }

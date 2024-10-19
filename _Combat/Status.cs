@@ -61,7 +61,7 @@ namespace Advencursor._Combat
                 tempScale = numberScale * 1.75f;
                 tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
                 tempString = $"{tempDamage.ToString("F0")}!";
-                tempColor = new Color(255, 16, 240);
+                tempColor = color;
             }
             else
             {
@@ -144,6 +144,7 @@ namespace Advencursor._Combat
         public void TakeDamageNoImmune(float damage, Sprite fromwho,bool nocrit, Color color = default)
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
+
             if (color == default) color = new Color(248, 228, 249, 1);
             float tempDamage;
             Color tempColor;
@@ -154,7 +155,7 @@ namespace Advencursor._Combat
                 tempScale = numberScale * 1.75f;
                 tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
                 tempString = $"{tempDamage.ToString("F0")}!";
-                tempColor = new Color(255, 16, 240);
+                tempColor = color;
             }
             else
             {

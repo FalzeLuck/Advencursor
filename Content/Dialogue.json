@@ -9,7 +9,7 @@
                 },
                 {
                     "speaker": "Narrator",
-                    "text": "You fall asleep."
+                    "text": "You fall asleep..."
                 }
             ]
         },
@@ -18,63 +18,59 @@
             "dialogues": [
                 {
                     "speaker": "???",
-                    "text": "Oh! You're awake?"
-                },
-                {
-                    "speaker": "???",
-                    "text": "Are you alright?"
+                    "text": "Mr. Dev, you're awake."
                 },
                 {
                     "speaker": "You",
-                    "text": "I ... I'm ok."
+                    "text": "Who...Who are you!? Where am I?"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Code name : [L.I.F.E.]"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "This may sound unbelievable, but now you're in the game and I'm your MC."
                 },
                 {
                     "speaker": "You",
-                    "text": "( Why L.I.F.E. is here? Am I dreaming? )"
+                    "text": "Oh... I remember you. So, This is real?"
                 },
                 {
                     "speaker": "You",
-                    "text": "Where am I?"
+                    "text": "OK, [L.I.F.E.] Can you tell me what happened? Why am I here?"
                 },
                 {
-                    "speaker": "L.I.F.E.",
-                    "text": "You don't know where you are? Hmmm...Nevermind!"
-                },
-                {
-                    "speaker": "L.I.F.E.",
-                    "text": "You are in FOODLANDER. The land with food and magic."
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Now your game is being attacked by a \"Moustache\" virus."
                 },
                 {
                     "speaker": "You",
-                    "text": "( FOODLANDER!? That's my game! )"
+                    "text": "\"Moustache\" virus!?"
                 },
                 {
-                    "speaker": "L.I.F.E.",
-                    "text": "Let me introduce myself. I am L.I.F.E. And you?"
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Yes.. It attack our main system and create a glitch."
                 },
                 {
-                    "speaker": "You",
-                    "text": "I am [Error can't retrieve data] ."
-                },
-                {
-                    "speaker": "L.I.F.E.",
-                    "text": "Ok. [Error can't retrieve data] I need your help."
+                    "speaker": "[L.I.F.E.]",
+                    "text": "That glitch pull you into this world."
                 },
                 {
                     "speaker": "You",
-                    "text": "Help?"
+                    "text": "Does this mean I have to get rid of all the viruses so I can get out?"
                 },
                 {
-                    "speaker": "L.I.F.E.",
-                    "text": "There is no time. This world has been invaded by viruses."
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Yes, When everything turn back to normal. I'll get you out Mr. Dev."
                 },
                 {
-                    "speaker": "L.I.F.E.",
-                    "text": "The viruses name are \"Moustache\" and It was led by D.E.A.D."
+                    "speaker": "You",
+                    "text": "Alright....alright. Even though you say that, how can I fight them?"
                 },
                 {
-                    "speaker": "L.I.F.E.",
-                    "text": "The viruses made everyone in this world "
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Don't worry. I will teach you."
                 }
             ]
         }

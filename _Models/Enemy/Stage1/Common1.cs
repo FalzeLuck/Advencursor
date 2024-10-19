@@ -222,7 +222,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                 Status.Paralysis(2f);
             }
 
-            base.TakeDamage(multiplier, player, throughImmune);
+            base.TakeDamage(multiplier, player, throughImmune,NoCrit,color);
         }
 
         public override void Draw()

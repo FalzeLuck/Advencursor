@@ -130,7 +130,7 @@ namespace Advencursor._Skill.Thunder_Set
                     {
                         if (collision.Any(collide => collide.Intersects(Globals.EnemyManager[i].collision)) && Globals.EnemyManager[i].Status.IsAlive())
                         {
-                            Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
+                            Globals.EnemyManager[i].TakeDamage(skillMultiplier, player,true,false, Color.Cyan);
                             collisionCooldown[i] = 0.1f;
                         }
                     }
@@ -145,7 +145,6 @@ namespace Advencursor._Skill.Thunder_Set
 
             if (!isUsing)
             {
-                
                 collision.Clear();
                 collisionCooldown.Clear();
             }

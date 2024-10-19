@@ -66,7 +66,7 @@ namespace Advencursor._Skill.Thunder_Set
             base.Use(player);
             foreach (var enemy in Globals.EnemyManager)
             {
-                enemy.TakeDamage(player,(enemy.Status.MaxHP*15)/100,true,true);
+                enemy.TakeDamage(player,(enemy.Status.MaxHP*15)/100,true,true,Color.Cyan);
                 enemy.Status.Paralysis(5f);
             }
 
@@ -176,7 +176,7 @@ namespace Advencursor._Skill.Thunder_Set
                     soundManager.PlaySoundCanStack("Slash");
                     foreach (var enemy in Globals.EnemyManager)
                     {
-                        enemy.TakeDamage( 2, player,true,false);
+                        enemy.TakeDamage( 2, player,true,false,Color.Cyan);
                     }
                     Globals.Camera.Shake(0.2f,5f);
                     Globals.Camera.SmoothZoom(1f, 100);

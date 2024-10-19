@@ -92,6 +92,7 @@ namespace Advencursor._Scene.Stage
         public override void Update(GameTime gameTime)
         {
             CheckPause(gameTime);
+            if(isPause) return;
             if (!isPause)
             {
                 EnemyManage();

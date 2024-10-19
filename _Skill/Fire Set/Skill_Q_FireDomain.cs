@@ -49,7 +49,7 @@ namespace Advencursor._Skill.Fire_Set
             circleCollision = new(Vector2.Zero, 0);
             floorTexture = Globals.Content.Load<Texture2D>("Item/SetFire/Q_Effect");
             float scale = (radius * 2) / Math.Min(floorTexture.Width, floorTexture.Height);
-            floorAnim = new Animation(floorTexture, 1, 8, 8, true,scale);
+            floorAnim = new Animation(floorTexture, 1, 12, 8, true,scale);
             rarity = 1;
             setSkill = "Fire";
             description = "Create a circle of fiery fire around you. Turns an area into a firestorm. Enemies that enter are bound by flames. Causes more damage to be received. When the duration ends, the bound fire is released.";

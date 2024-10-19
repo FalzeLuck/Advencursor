@@ -42,6 +42,7 @@ namespace Advencursor._Scene
         SpriteFont textFontThai;
 
         private bool drawOnHover;
+        private Texture2D playerStatBackground;
 
         private Vector2 gridStartPos = new((Globals.Bounds.X / 2) + 54, 255);
         private int itemSize = 170;
@@ -80,21 +81,24 @@ namespace Advencursor._Scene
         public void Load()
         {
             Texture2D tempTexture = Globals.Content.Load<Texture2D>("UI/SkillUI");
-            gameData.LoadData();
-            inventory.LoadInventory(tempTexture);
-
-            if (gameData.isFirstTime)
-            {
-                inventory.Items.Add(new(AllSkills.itemNameViaSkillName["Thunder Core"], AllSkills.allSkills["Thunder Core"], Keys.Q));
-                gameData.isFirstTime = false;
-                gameData.SaveData();
-            }
-
             textFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
             textFontThai = Globals.Content.Load<SpriteFont>("Font/TextFontThai");
 
             player = new(Globals.Content.Load<Texture2D>("playerTexture"), Vector2.Zero, 15000, 800, 0, 0);
             player.LoadPlayer(2, 4);
+            gameData.LoadData();
+            inventory.LoadInventory(tempTexture);
+
+            if (gameData.isFirstTime)
+            {
+                Item temp = new(AllSkills.itemNameViaSkillName["Thunder Core"], AllSkills.allSkills["Thunder Core"], Keys.Q);
+                inventory.Items.Add(temp);
+                player.EquipItem(temp);
+                gameData.isFirstTime = false;
+                gameData.SaveData();
+            }
+
+            playerStatBackground = Globals.Content.Load<Texture2D>("Item/PlayerBackground");
 
 
 
@@ -435,22 +439,15 @@ namespace Advencursor._Scene
             if (drawOnHover)
             {
                 Vector2 pos = new Vector2(200, gridStartPos.Y);
-
-                Texture2D playerStatBackground = Globals.Content.Load<Texture2D>("Item/PlayerBackground");
-                //Player Stat
-                string Header = "Player Status";
-                Vector2 HeaderSize = textFont.MeasureString(Header);
-                Vector2 HeaderOrigin = new(HeaderSize.X / 2, HeaderSize.Y / 2);
-                string HP = $"HP : {player.Status.MaxHP.ToString()}";
-                string Attack = $"Attack = {player.Status.Attack.ToString()}";
-                string CritRate = $"Critical Rate = {player.Status.CritRate.ToString("F2")}%";
-                string CritDam = $"Critical Damage = {player.Status.CritDam.ToString("F2")}%";
+                string HP = $"{player.Status.MaxHP.ToString()}";
+                string Attack = $"{player.Status.Attack.ToString()}";
+                string CritRate = $"{player.Status.CritRate.ToString("F2")}%";
+                string CritDam = $"{player.Status.CritDam.ToString("F2")}%";
                 Globals.SpriteBatch.Draw(playerStatBackground, pos, Color.White);
-                Globals.SpriteBatch.DrawString(textFont, Header, new Vector2(pos.X + playerStatBackground.Width / 2, pos.Y + HeaderSize.Y), Color.Black, 0, HeaderOrigin, 0.3f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, HP, new Vector2(pos.X + 10, pos.Y + 100), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 10, pos.Y + 150), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 10, pos.Y + 200), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
-                Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 10, pos.Y + 250), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, HP, new Vector2(pos.X + 500, pos.Y + 130), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 500, pos.Y + 130 + 90), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 500, pos.Y + 130 + 90*2), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+                Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 500, pos.Y + 130 + 90*3), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             }
         }
 

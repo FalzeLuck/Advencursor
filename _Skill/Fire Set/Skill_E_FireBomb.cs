@@ -175,7 +175,7 @@ namespace Advencursor._Skill.Fire_Set
                     {
                         if (circleCollision.Intersects(Globals.EnemyManager[i].collision))
                         {
-                            Globals.EnemyManager[i].TakeDamage(multiplier, player, true, false);
+                            Globals.EnemyManager[i].TakeDamage(multiplier, player, true, false, Color.Orange);
                             collisionCooldown[i] = 3f;
                         }
                     }

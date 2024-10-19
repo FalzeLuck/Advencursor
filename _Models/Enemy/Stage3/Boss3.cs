@@ -158,8 +158,9 @@ namespace Advencursor._Models.Enemy.Stage2
 
             foreach (Knife knife in knives)
             {
-                knife.Update(gameTime,player);
+                knife.Update(gameTime);
             }
+
             if (isStart)
             {
                 if (phaseIndicator != (int)phase.UnderControl && phaseIndicator != (int)phase.Die)
@@ -656,12 +657,14 @@ namespace Advencursor._Models.Enemy.Stage2
                 }
             }
             base.Draw();
+
+            DrawShadow();
             foreach (var knife in knives)
             {
                 knife.Draw();
             }
 
-            //DrawCollisionCheck();
+            
         }
 
         private void UpdateContainAnimation()
@@ -719,8 +722,13 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 var dir = knifeDestination[i] - knives[i].position;
                 float distance = dir.Length();
-                if (distance < speed * TimeManager.TimeGlobal)
+                if (distance == 0)
                 {
+                    knives[i].position = knifeDestination[i];
+                }
+                else if (distance < speed * TimeManager.TimeGlobal)
+                {
+                    dir.Normalize();
                     knives[i].position = knifeDestination[i];
                 }
                 else
@@ -734,8 +742,13 @@ namespace Advencursor._Models.Enemy.Stage2
         {
             var dir = knifeDestination[knifeIndex] - knives[knifeIndex].position;
             float distance = dir.Length();
-            if (distance < speed * TimeManager.TimeGlobal)
+            if (distance == 0)
             {
+                knives[knifeIndex].position = knifeDestination[knifeIndex];
+            }
+            else if (distance < speed * TimeManager.TimeGlobal)
+            {
+                dir.Normalize();
                 knives[knifeIndex].position = knifeDestination[knifeIndex];
             }
             else
@@ -762,7 +775,7 @@ namespace Advencursor._Models.Enemy.Stage2
             Texture2D KnifeTexture = Globals.Content.Load<Texture2D>("Enemies/Boss3Knife");
             for (int i = 0; i < amount; i++)
             {
-                knives.Add(new Knife(KnifeTexture, new Vector2(screenCenter.X, -300), 0, 150, 1, 4));
+                knives.Add(new Knife(KnifeTexture, new Vector2(screenCenter.X, -300), 0, 150, 1, 4,player));
                 knifeDestination.Add(knives[knives.Count - 1].position);
                 knifeDestination[knives.Count - 1] = knives[knives.Count - 1].position;
                 knives[knives.Count - 1].rotation = MathHelper.ToRadians(90f);
@@ -806,9 +819,8 @@ namespace Advencursor._Models.Enemy.Stage2
 
         private void DrawShadow()
         {
-            Vector2 shadowPosition = new Vector2(position.X, position.Y + 250);
+            Vector2 shadowPosition = new Vector2(position.X, position.Y + 380);
             float shadowScale = 1.5f;
-
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
             Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White * 0.6f, 0f, shadowOrigin, shadowScale, spriteEffects, 0f);
         }

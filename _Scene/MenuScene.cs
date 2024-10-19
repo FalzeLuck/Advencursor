@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using Advencursor._Scene.Stage;
 using Advencursor._UI;
+using Advencursor._SaveData;
 
 namespace Advencursor._Scene
 {
@@ -20,11 +21,13 @@ namespace Advencursor._Scene
         private UIManager uiManager;
 
         private Texture2D background;
+        private GameData gameData;
         public MenuScene(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
             this.sceneManager = sceneManager;
             uiManager = new UIManager();
+            gameData = new GameData();
         }
 
         public void Load()
@@ -33,7 +36,7 @@ namespace Advencursor._Scene
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
             uiManager.AddElement("playButton",playButton);
             uiManager.AddElement("exitButton",exitButton);
-
+            gameData.LoadData();
             background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
 
@@ -52,7 +55,10 @@ namespace Advencursor._Scene
 
         private void OnPlayButtonClick()
         {
-            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
+            if(gameData.isFirstTime)
+                sceneManager.AddScene(new DialogueIntro(contentManager, sceneManager));
+            else
+                sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
 
         private void OnExitButtonClick()

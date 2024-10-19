@@ -79,7 +79,7 @@ namespace Advencursor._Scene.Stage
 
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
-            player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 1, 1);
+            player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 2, 4);
             player.LoadPlayer(2, 4);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
             inventory.LoadInventory(tempTexture);
@@ -89,7 +89,7 @@ namespace Advencursor._Scene.Stage
 
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 16, false, 1.5f);
+            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 30, false, 1.5f);
             animationManager.AddAnimation("Slash", slashAnimation);
 
             //Load UI
@@ -147,7 +147,7 @@ namespace Advencursor._Scene.Stage
                 {
                     animationManager.Stop("Slash");
                 }
-                if (player.CanNormalAttack() )
+                if (player.CanNormalAttack())
                 {
                     foreach (var enemy in Globals.EnemyManager)
                     {

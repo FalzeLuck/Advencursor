@@ -272,6 +272,18 @@
 /processorParam:TextureFormat=Color
 /build:Button/GachaButton.png
 
+#begin Button/gachaMenuButton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Button/gachaMenuButton.png
+
 #begin Button/playButton.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -283,6 +295,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Button/playButton.png
+
+#begin Button/settingButton.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Button/settingButton.png
 
 #begin Button/Stage1Button.png
 /importer:TextureImporter

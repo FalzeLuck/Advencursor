@@ -126,7 +126,7 @@ namespace Advencursor._Skill.Thunder_Set
                     {
                         if (Globals.EnemyManager[i].collision.Intersects(animations[j].GetCollision(position[j])) && Globals.EnemyManager[i].Status.IsAlive())
                         {
-                            Globals.EnemyManager[i].TakeDamage(skillMultiplier, player);
+                            Globals.EnemyManager[i].TakeDamage(skillMultiplier, player,true,false, Color.Cyan);
                             Globals.EnemyManager[i].Status.Paralysis(1.5f);
 
                             if (Globals.EnemyManager[i] is Common1)

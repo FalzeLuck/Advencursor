@@ -17,7 +17,8 @@ namespace Advencursor._Models.Enemy.Stage3
     {
         public bool haveDamage = false;
         private float scale;
-        public Knife(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
+        private Sprite player;
+        public Knife(Texture2D texture, Vector2 position, int health, int attack, int row, int column,Sprite player) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
             {
@@ -26,9 +27,10 @@ namespace Advencursor._Models.Enemy.Stage3
             indicator = "Float";
             scale = 1.2f;
             movementAI = new FollowMovementAI();
+            this.player = player;
         }
 
-        public void Update(GameTime gameTime,Sprite player)
+        public override void Update(GameTime gameTime)
         {
             foreach (var animation in animations.Values)
             {
