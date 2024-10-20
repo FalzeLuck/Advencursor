@@ -36,6 +36,8 @@ namespace Advencursor._Models.Enemy._CommonEnemy
         private Vector2 shadowLockEndPos;
         Vector2 shadowPosition;
 
+        //Sound
+        private bool isDie = false;
         public Common1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -53,6 +55,8 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             isShadowStop = false;
             shadowPosition = new Vector2(position.X, position.Y + 75 / 2);
 
+
+           
         }
 
         public override void Update(GameTime gameTime)
@@ -149,6 +153,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
                     if (animations["Walk"].currentFrame == 10)
                     {
+                        
                         animations["Walk"].PauseFrame(4);
                         isShadowStop = true;
                         shadowLockStartPos = new Vector2(position.X, position.Y + 75 / 2);
@@ -177,6 +182,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
                                 jumpXDirection = 0;
                                 jumpYDirection = 0;
                                 animations["Walk"].Play();
+                                Globals.soundManager.PlaySoundCanStack("Common1Moving");
                             }
                         }
                         position += new Vector2(jumpXDirection, jumpYDirection);
@@ -296,6 +302,16 @@ namespace Advencursor._Models.Enemy._CommonEnemy
 
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
             Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White, rotation, shadowOrigin, shadowScale, spriteEffects, 0f);
+        }
+
+        public override void Die()
+        {
+            base.Die();
+            if (!isDie)
+            {
+                Globals.soundManager.PlaySoundCanStack("Common1Die");
+                isDie = true;
+            }
         }
     }
 }

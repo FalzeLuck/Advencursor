@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,10 @@ namespace Advencursor._Models.Enemy.Stage1
         Texture2D warningTexture;
         private bool warningTrigger;
         private float warningOpacity;
+
+        //Sound
+        private bool isDie = false;
+        private bool isSlamSound = false;
         public Elite1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -86,7 +91,8 @@ namespace Advencursor._Models.Enemy.Stage1
                     }
                     else
                     {
-                        if(animations["Idle"].IsPause) animations["Idle"].Reset();
+                        Globals.soundManager.PlaySound("Elite1Moving");
+                        if (animations["Idle"].IsPause) animations["Idle"].Reset();
                         animations["Idle"].IsPause = false;
                         velocity = new(150);
                         if (Status.isParalysis)
@@ -109,16 +115,22 @@ namespace Advencursor._Models.Enemy.Stage1
 
                     if (slamChargeTime > 2.5f)
                     {
+                        if (!isSlamSound)
+                        {
+                            Globals.soundManager.PlaySound("Elite1Slam");
+                            isSlamSound = true;
+                        }
                         animations["Attack"].scale = 1.5f;
                         indicator = "Attack";
                         isAttacking = true;
                     }
 
-                    if (slamChargeTime > 3f)
+                    if (slamChargeTime > 2.8f)
                     {
                         slamIndicator = "slamFinish";
                         isAttacking = false;
                         isSlamming = true;
+                        isSlamSound = false;
                     }
 
                     if (slamChargeTime > 3.5f)
@@ -204,6 +216,16 @@ namespace Advencursor._Models.Enemy.Stage1
 
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
             Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White, rotation, shadowOrigin, shadowScale, spriteEffects, 0f);
+        }
+
+        public override void Die()
+        {
+            base.Die();
+            if (!isDie)
+            {
+                Globals.soundManager.PlaySoundCanStack("Common1Die");
+                isDie = true;
+            }
         }
     }
 }

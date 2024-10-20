@@ -13,26 +13,29 @@ namespace Advencursor._Managers
     {
         private Dictionary<string, SoundEffect> soundEffects;
         private Dictionary<string, SoundEffectInstance> soundInstances;
+        private Dictionary<string, float> soundBaseVolumes;
         private List<SoundEffectInstance> activeSoundInstances = new List<SoundEffectInstance>();
 
         private Song currentSong;
         private string currentSongName;
 
-        private float soundEffectVolume = 1f;
+        private float globalSoundEffectVolume = 1f;
         public SoundManager()
         {
             soundEffects = new Dictionary<string, SoundEffect>();
             soundInstances = new Dictionary<string, SoundEffectInstance>();
+            soundBaseVolumes = new Dictionary<string, float>();
         }
 
-        public void LoadSound(string soundName, SoundEffect soundEffect)
+        public void LoadSound(string soundName, SoundEffect soundEffect, float baseVolume = 1f)
         {
             if (!soundEffects.ContainsKey(soundName))
             {
                 soundEffects.Add(soundName, soundEffect);
                 var instance = soundEffect.CreateInstance();
-                instance.Volume = soundEffectVolume;
+                instance.Volume = baseVolume * globalSoundEffectVolume;
                 soundInstances.Add(soundName, instance);
+                soundBaseVolumes.Add(soundName, MathHelper.Clamp(baseVolume, 0f, 1f));
             }
         }
 
@@ -42,7 +45,7 @@ namespace Advencursor._Managers
             {
                 var instance = soundInstances[soundName];
                 instance.IsLooped = loop;
-                instance.Volume = soundEffectVolume;
+                instance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
                 instance.Play();
             }
         }
@@ -54,10 +57,11 @@ namespace Advencursor._Managers
                 var soundEffect = soundEffects[soundName];
                 var instance = soundEffect.CreateInstance();
                 instance.IsLooped = loop;
-                instance.Volume = soundEffectVolume;
+                instance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
                 instance.Play();
                 activeSoundInstances.Add(instance);
             }
+
             activeSoundInstances.RemoveAll(instance => instance.State == SoundState.Stopped);
         }
 
@@ -69,6 +73,13 @@ namespace Advencursor._Managers
             }
         }
 
+        public void PauseAllSound()
+        {
+            foreach (var sound in soundInstances.Values)
+            {
+                sound.Pause();
+            }
+        }
         public void ResumeSound(string soundName)
         {
             if (soundInstances.ContainsKey(soundName))
@@ -76,6 +87,14 @@ namespace Advencursor._Managers
                 soundInstances[soundName].Resume();
             }
         }
+        public void ResumeAllSound()
+        {
+            foreach (var sound in soundInstances.Values)
+            {
+                sound.Resume();
+            }
+        }
+
 
         public void StopSound(string soundName)
         {
@@ -89,18 +108,19 @@ namespace Advencursor._Managers
         {
             if (soundInstances.ContainsKey(soundName))
             {
-                soundInstances[soundName].Volume = MathHelper.Clamp(volume, 0f, 1f);
+                soundBaseVolumes[soundName] = MathHelper.Clamp(volume, 0f, 1f);
+                soundInstances[soundName].Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
             }
         }
 
         public void StopAllSounds()
         {
-            foreach (var instance in soundInstances.Values)
+            foreach (var sound in soundInstances.Values)
             {
-                instance.Stop();
+                sound.Stop();
             }
         }
-        
+
         public void PlaySong(string songName, Song song, bool loop = true)
         {
             if (currentSong != null && MediaPlayer.State == MediaState.Playing && currentSongName == songName)
@@ -133,17 +153,17 @@ namespace Advencursor._Managers
         }
         public void SetGlobalSoundEffectVolume(float volume)
         {
-            soundEffectVolume = MathHelper.Clamp(volume, 0f, 1f);
+            globalSoundEffectVolume = MathHelper.Clamp(volume, 0f, 1f);
 
-            
-            foreach (var instance in soundInstances.Values)
+            foreach (var soundName in soundInstances.Keys)
             {
-                instance.Volume = MathHelper.Clamp(instance.Volume * soundEffectVolume, 0f, 1f);
+                var instance = soundInstances[soundName];
+                instance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
             }
 
             foreach (var instance in activeSoundInstances)
             {
-                instance.Volume = MathHelper.Clamp(instance.Volume * soundEffectVolume, 0f, 1f);
+                instance.Volume = MathHelper.Clamp(instance.Volume, 0f, 1f) * globalSoundEffectVolume;
             }
         }
     }

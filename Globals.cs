@@ -3,6 +3,7 @@ using Advencursor._Managers;
 using Advencursor._Models.Enemy;
 using Advencursor._SaveData;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -184,6 +185,28 @@ namespace Advencursor
         {
             SpriteBatch.End();
             SpriteBatch.Begin(transformMatrix: Globals.Camera.transform);
+        }
+
+        public static void LoadSounds()
+        {
+            SoundEffect Common1Moving = Content.Load<SoundEffect>("Sound/Effect/Common1/Moving");
+            SoundEffect Common1Hit = Content.Load<SoundEffect>("Sound/Effect/Common1/Hit");
+            SoundEffect Common1Die = Content.Load<SoundEffect>("Sound/Effect/Common1/Die");
+            SoundEffect Elite1Moving = Content.Load<SoundEffect>("Sound/Effect/Elite1/Moving");
+            SoundEffect Elite1Slam = Content.Load<SoundEffect>("Sound/Effect/Elite1/Slam");
+            SoundEffect slashSound = Content.Load<SoundEffect>("Sound/Effect/Slash");
+            SoundEffect buttonHover = Content.Load<SoundEffect>("Sound/Effect/ButtonHover");
+            SoundEffect buttonClick = Content.Load<SoundEffect>("Sound/Effect/ButtonClick");
+            SoundEffect EquipItem = Content.Load<SoundEffect>("Sound/Effect/EquipItem");
+            soundManager.LoadSound("Common1Moving", Common1Moving);
+            soundManager.LoadSound("Common1Hit", Common1Hit);
+            soundManager.LoadSound("Common1Die", Common1Die);
+            soundManager.LoadSound("Elite1Moving", Elite1Moving);
+            soundManager.LoadSound("Elite1Slam", Elite1Slam);
+            soundManager.LoadSound("Slash", slashSound);
+            soundManager.LoadSound("Hover", buttonHover);
+            soundManager.LoadSound("Click", buttonClick);
+            soundManager.LoadSound("EquipItem", EquipItem);
         }
     }
 }

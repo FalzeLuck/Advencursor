@@ -115,6 +115,7 @@ namespace Advencursor._Skill.Thunder_Set
             ParticleManager.AddParticleEmitter(pe);
             ParticleManager.AddParticleEmitter(pe1);
             TimeManager.ChangeGameSpeed(0.01f);
+            
 
             //Star
             currentPoint = 0;
@@ -141,7 +142,7 @@ namespace Advencursor._Skill.Thunder_Set
             if (isUsing)
             {
                 skillTime -= TimeManager.TotalSeconds;
-                
+                Globals.soundManager.PauseAllSound();
                 Vector2 dir = targetPoint - player.position;
                 float distance = dir.Length();
 
@@ -199,6 +200,7 @@ namespace Advencursor._Skill.Thunder_Set
                     player.Immunity(0.5f);
                     player.position = new Vector2(Globals.Viewport.Width / 2, Globals.Viewport.Height / 2);
                     Mouse.SetPosition((int)(player.position.X), (int)(player.position.Y));
+                    Globals.soundManager.ResumeAllSound();
                 }
             }
 

@@ -179,6 +179,22 @@ namespace Advencursor._Scene.Stage
                 }
             }
         }
+        protected void CollisionManage(GameTime gameTime)
+        {
+            foreach (var enemy in Globals.EnemyManager)
+            {
+                if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
+                {
+                    if (enemy is Common1)
+                    {
+                        Globals.soundManager.PlaySound("Common1Hit");
+                    }
+                    enemy.TakeDamage(1, player);
+                    enemy.Status.immunity = true;
+                }
+            }
+            damageNumberManager.Update();
+        }
 
         protected virtual void SceneManage()
         {

@@ -42,6 +42,7 @@ namespace Advencursor._Scene
         SpriteFont textFontThai;
 
         private bool drawOnHover;
+        private bool hoverSoundPlayed = false;
         private Texture2D playerStatBackground;
 
         private Vector2 gridStartPos = new((Globals.Bounds.X / 2) + 54, 255);
@@ -427,11 +428,14 @@ namespace Advencursor._Scene
         private void OnEquipButtonClick()
         {
             player.EquipItem(inventory.Items[selectedItemIndex]);
+            Globals.soundManager.StopSound("Click");
+            Globals.soundManager.PlaySound("EquipItem");
         }
 
         private void OnStatusButtonHover()
         {
             drawOnHover = true;
+            
         }
 
         private void DrawOnHover()
@@ -448,6 +452,7 @@ namespace Advencursor._Scene
                 Globals.SpriteBatch.DrawString(textFont, Attack, new Vector2(pos.X + 500, pos.Y + 130 + 90), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
                 Globals.SpriteBatch.DrawString(textFont, CritRate, new Vector2(pos.X + 500, pos.Y + 130 + 90*2), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
                 Globals.SpriteBatch.DrawString(textFont, CritDam, new Vector2(pos.X + 500, pos.Y + 130 + 90*3), Color.Black, 0, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+
             }
         }
 

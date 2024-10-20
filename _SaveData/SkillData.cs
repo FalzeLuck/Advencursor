@@ -59,7 +59,7 @@ namespace Advencursor._SaveData
             ThunderCore = new Dictionary<string, float>()
             {
                 {"Duration", 8f },
-                {"Cooldown", 18f }
+                {"Cooldown", 15f }
             };
             ThunderShuriken = new Dictionary<string, float>()
             {
@@ -68,52 +68,52 @@ namespace Advencursor._SaveData
                 {"Radius",200f },
                 {"Duration", 8f },
                 {"Speed", 5f},
-                {"Cooldown", 20f }
+                {"Cooldown", 17f }
             };
             ThunderSpeed = new Dictionary<string, float>()
             {
                 {"Damage Multiplier", 0.5f },
                 {"Duration", 8f },
                 {"Speed Multiplier", 2f},
-                {"Cooldown", 15f }
+                {"Cooldown", 13f }
             };
             IamStorm = new Dictionary<string, float>()
             {
-                {"Damage Multiplier", 1f },
+                {"Damage Multiplier", 1.75f },
                 {"Max Hit",9f },
-                {"Cooldown", 60f }
+                {"Cooldown", 48f }
             };
             FoodTrap = new Dictionary<string, float>()
             {
-                {"Duration", 5f },
+                {"Duration", 7f },
                 {"Cooldown", 12f }
             };
             PoisonTrap = new Dictionary<string, float>()
             {
-                {"Duration", 5f },
-                {"Cooldown", 15f }
+                {"Duration", 4f },
+                {"Cooldown", 12f }
             };
             EmergencyFood = new Dictionary<string, float>()
             {
-                {"Heal Percentage", 5f },
+                {"Heal Percentage", 10f },
                 {"Attack Multiplier", 1.7f },
-                {"Duration", 8f },
-                {"Cooldown", 14f }
+                {"Duration", 7f },
+                {"Cooldown", 16f }
             };
             Invincibility = new Dictionary<string, float>()
             {
                 {"Duration",15f },
-                {"Heal Percentage", 50f },
-                {"Attack Add", 800f },
+                {"Heal Percentage", 30f },
+                {"Attack Add", 250f },
                 {"Crit Rate Add",20f },
-                {"Crit Dam Add",200f },
-                {"Cooldown", 60f }
+                {"Crit Dam Add",100f },
+                {"Cooldown", 50f }
             };
             FireDomain = new Dictionary<string, float>()
             {
                 {"Damage Amplifier", 0.25f },
-                {"Duration", 7f },
-                {"Heal Percentage", 1f },
+                {"Duration", 9f },
+                {"Heal Percentage", 1.3f },
                 {"Heal Interval", 1f },
                 {"Radius", 600f },
                 {"Cooldown", 20f }
@@ -123,14 +123,14 @@ namespace Advencursor._SaveData
                 {"Damage Multiplier", 1.5f },
                 {"Ball Amount",8f },
                 {"Speed", 1000f},
-                {"Cooldown", 15f }
+                {"Cooldown", 12f }
             };
             FireBomb = new Dictionary<string, float>()
             {
                 {"Damage Multiplier", 2.5f },
                 {"Radius", 600f },
                 {"Countdown Interval", 1 },
-                {"Cooldown", 20f }
+                {"Cooldown", 15f }
             };
             FireEmperor = new Dictionary<string, float>()
             {
@@ -138,7 +138,7 @@ namespace Advencursor._SaveData
                 {"Hp Buff Attack",0.5f },
                 {"Slash Multiplier",1.5f },
                 {"Radius",600f },
-                {"Cooldown",60f }
+                {"Cooldown",45f }
             };
 
             skillNameForDamageMultipliers.Add("Thunder Core", ThunderCore);

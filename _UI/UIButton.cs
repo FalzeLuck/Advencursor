@@ -22,20 +22,13 @@ namespace Advencursor._Models
         {
             _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
             this.onClick = onClick;
-            SoundEffect buttonHover = Globals.Content.Load<SoundEffect>("Sound/Effect/ButtonHover");
-            SoundEffect buttonClick = Globals.Content.Load<SoundEffect>("Sound/Effect/ButtonClick");
-            Globals.soundManager.LoadSound("Hover", buttonHover);
-            Globals.soundManager.LoadSound("Click", buttonClick);
         }
 
         public UIButton(Texture2D texture, Vector2 position, Action onHover,bool hover) : base(texture, position)
         {
             _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
             this.onHover = onHover;
-            SoundEffect buttonHover = Globals.Content.Load<SoundEffect>("Sound/Effect/ButtonHover");
-            SoundEffect buttonClick = Globals.Content.Load<SoundEffect>("Sound/Effect/ButtonClick");
-            Globals.soundManager.LoadSound("Hover", buttonHover);
-            Globals.soundManager.LoadSound("Click", buttonClick);
+            
         }
 
         public override void Update(GameTime gameTime)

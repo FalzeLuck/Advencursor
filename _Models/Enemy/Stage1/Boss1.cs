@@ -306,5 +306,11 @@ namespace Advencursor._Models.Enemy.Stage1
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
             Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White * 0.6f, rotation, shadowOrigin, shadowScale, spriteEffects, 0f);
         }
+
+        public override void Die()
+        {
+            base.Die();
+            Globals.soundManager.PlaySound("Common1Die");
+        }
     }
 }

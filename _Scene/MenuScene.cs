@@ -37,6 +37,7 @@ namespace Advencursor._Scene
             uiManager.AddElement("playButton",playButton);
             uiManager.AddElement("exitButton",exitButton);
             gameData.LoadData();
+            Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
             background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
 

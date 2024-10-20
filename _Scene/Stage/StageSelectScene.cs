@@ -26,8 +26,6 @@ namespace Advencursor._Scene.Stage
         private UIManager uiManager;
 
 
-        private Song bgsong;
-
         private GameData gameData;
 
         private Texture2D background;
@@ -66,10 +64,11 @@ namespace Advencursor._Scene.Stage
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
             gameData.LoadData();
             screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
-
-            bgsong = Globals.Content.Load<Song>("Sound/Song/Stage Select Song");
             Globals.soundManager.SetSongVolume(gameData.volumeMusic);
-            Globals.soundManager.PlaySong("Stage Select Song",bgsong,true);
+
+            Song bgsong = Globals.Content.Load<Song>("Sound/Song/Stage Select Song");
+            Globals.soundManager.SetSongVolume(gameData.volumeMusic);
+            Globals.soundManager.PlaySong("Stage Select Song", bgsong, true);
 
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonExit2"), new Vector2(120, 75), OnExitButtonClick);
             UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);

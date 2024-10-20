@@ -382,18 +382,6 @@ namespace Advencursor._Scene.Stage
             uiManager.UpdateBarValue("bossBar", boss_obj.Status.CurrentHP);
             uiManager.UpdateBarValue("playerBar", player.Status.CurrentHP);
         }
-        private void CollisionManage(GameTime gameTime)
-        {
-            foreach (var enemy in Globals.EnemyManager)
-            {
-                if (enemy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
-                {
-                    enemy.TakeDamage(1, player);
-                    enemy.Status.immunity = true;
-                }
-            }
-            damageNumberManager.Update();
-        }
 
         protected override void SceneManage()
         {

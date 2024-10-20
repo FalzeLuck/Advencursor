@@ -93,8 +93,7 @@ namespace Advencursor._Models
                 {Keys.R,nullSkill},
             };
 
-            SoundEffect slashSound = Globals.Content.Load<SoundEffect>("Sound/Effect/Slash");
-            Globals.soundManager.LoadSound("Slash", slashSound);
+            
         }
 
         public void LoadGameData(GameData gameData)
