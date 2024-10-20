@@ -52,6 +52,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow1");
             isShadowStop = false;
             shadowPosition = new Vector2(position.X, position.Y + 75 / 2);
+
         }
 
         public override void Update(GameTime gameTime)

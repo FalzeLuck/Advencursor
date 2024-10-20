@@ -32,6 +32,7 @@ namespace Advencursor
         public static bool Paused = false;
         public static Random random { get; set; } = new Random();
         public static List<_Enemy> EnemyManager { get; set; } = new List<_Enemy>();
+        public static SoundManager soundManager { get; set; } = new SoundManager();
 
 
         public static void Update(GameTime gameTime)

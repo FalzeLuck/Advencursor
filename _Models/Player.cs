@@ -18,6 +18,7 @@ using System.Text.Json;
 using System.IO;
 using Advencursor._Models.Enemy.Stage1;
 using System.Text;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Advencursor._Models
 {
@@ -91,6 +92,9 @@ namespace Advencursor._Models
                 {Keys.E,nullSkill},
                 {Keys.R,nullSkill},
             };
+
+            SoundEffect slashSound = Globals.Content.Load<SoundEffect>("Sound/Effect/Slash");
+            Globals.soundManager.LoadSound("Slash", slashSound);
         }
 
         public void LoadGameData(GameData gameData)
@@ -307,6 +311,7 @@ namespace Advencursor._Models
         public void DoNormalAttack()
         {
             normalAttackCooldown = normalAttackDelay;
+            Globals.soundManager.PlaySound("Slash");
         }
 
         public bool CanNormalAttack()

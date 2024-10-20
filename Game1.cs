@@ -53,7 +53,7 @@ namespace Advencursor
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.IsFullScreen = false;
-            Window.IsBorderless = false;
+            Window.IsBorderless = true;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 

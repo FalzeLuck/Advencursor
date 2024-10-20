@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Advencursor._SaveData;
 using Advencursor._Managers;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Advencursor._Scene.Stage
 {
@@ -25,7 +26,6 @@ namespace Advencursor._Scene.Stage
         private UIManager uiManager;
 
 
-        private SoundManager soundManager;
         private Song bgsong;
 
         private GameData gameData;
@@ -59,7 +59,6 @@ namespace Advencursor._Scene.Stage
             this.sceneManager = sceneManager;
             uiManager = new UIManager();
             gameData = new GameData();
-            soundManager = new SoundManager();
         }
 
         public void Load()
@@ -69,8 +68,8 @@ namespace Advencursor._Scene.Stage
             screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
 
             bgsong = Globals.Content.Load<Song>("Sound/Song/Stage Select Song");
-            //soundManager.PlaySong("Stage Select Song",bgsong,true);
-            soundManager.SetSongVolume(gameData.volumeMusic);
+            Globals.soundManager.SetSongVolume(gameData.volumeMusic);
+            Globals.soundManager.PlaySong("Stage Select Song",bgsong,true);
 
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonExit2"), new Vector2(120, 75), OnExitButtonClick);
             UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/GachaButton"), new Vector2(Globals.Bounds.X / 2 - 500, Globals.Bounds.Y / 2), OnGachaButtonClick);

@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework.Input;
 using Advencursor._Particles;
 using System.Diagnostics;
 using Advencursor._Scene.Transition;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Advencursor._Scene.Stage
 {
@@ -86,7 +87,8 @@ namespace Advencursor._Scene.Stage
             gameData.LoadData();
             player.LoadGameData(gameData);
 
-
+            //Sound
+            
 
             //Load Animation
             Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 30, false, 1.5f);

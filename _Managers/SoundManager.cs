@@ -18,6 +18,7 @@ namespace Advencursor._Managers
         private Song currentSong;
         private string currentSongName;
 
+        private float soundEffectVolume = 1f;
         public SoundManager()
         {
             soundEffects = new Dictionary<string, SoundEffect>();
@@ -29,7 +30,9 @@ namespace Advencursor._Managers
             if (!soundEffects.ContainsKey(soundName))
             {
                 soundEffects.Add(soundName, soundEffect);
-                soundInstances.Add(soundName, soundEffect.CreateInstance());
+                var instance = soundEffect.CreateInstance();
+                instance.Volume = soundEffectVolume;
+                soundInstances.Add(soundName, instance);
             }
         }
 
@@ -39,6 +42,7 @@ namespace Advencursor._Managers
             {
                 var instance = soundInstances[soundName];
                 instance.IsLooped = loop;
+                instance.Volume = soundEffectVolume;
                 instance.Play();
             }
         }
@@ -50,6 +54,7 @@ namespace Advencursor._Managers
                 var soundEffect = soundEffects[soundName];
                 var instance = soundEffect.CreateInstance();
                 instance.IsLooped = loop;
+                instance.Volume = soundEffectVolume;
                 instance.Play();
                 activeSoundInstances.Add(instance);
             }
@@ -98,7 +103,7 @@ namespace Advencursor._Managers
         
         public void PlaySong(string songName, Song song, bool loop = true)
         {
-            if (currentSong != null && currentSongName == songName)
+            if (currentSong != null && MediaPlayer.State == MediaState.Playing && currentSongName == songName)
             {
                 return;
             }
@@ -125,6 +130,21 @@ namespace Advencursor._Managers
         public void SetSongVolume(float volume)
         {
             MediaPlayer.Volume = MathHelper.Clamp(volume, 0f, 1f);
+        }
+        public void SetGlobalSoundEffectVolume(float volume)
+        {
+            soundEffectVolume = MathHelper.Clamp(volume, 0f, 1f);
+
+            
+            foreach (var instance in soundInstances.Values)
+            {
+                instance.Volume = MathHelper.Clamp(instance.Volume * soundEffectVolume, 0f, 1f);
+            }
+
+            foreach (var instance in activeSoundInstances)
+            {
+                instance.Volume = MathHelper.Clamp(instance.Volume * soundEffectVolume, 0f, 1f);
+            }
         }
     }
 }

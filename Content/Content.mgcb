@@ -1082,11 +1082,101 @@
 /processorParam:Quality=Best
 /build:Sound/Boss1Charge.wav
 
+#begin Sound/Effect/Boss1/Die.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss1/Die.wav
+
+#begin Sound/Effect/Boss1/Poison.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss1/Poison.wav
+
+#begin Sound/Effect/Boss1/RollAttack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss1/RollAttack.wav
+
+#begin Sound/Effect/Boss1/TomatoBomb.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss1/TomatoBomb.wav
+
+#begin Sound/Effect/Boss1/WallHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss1/WallHit.wav
+
+#begin Sound/Effect/ButtonClick.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/ButtonClick.wav
+
+#begin Sound/Effect/ButtonHover.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/ButtonHover.wav
+
+#begin Sound/Effect/Common1/Die.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Common1/Die.wav
+
+#begin Sound/Effect/Common1/Hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Common1/Hit.wav
+
+#begin Sound/Effect/Common1/Moving.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Common1/Moving.wav
+
+#begin Sound/Effect/Elite1/Die.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Elite1/Die.wav
+
+#begin Sound/Effect/Elite1/Moving.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Elite1/Moving.wav
+
+#begin Sound/Effect/Elite1/Slam.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Elite1/Slam.wav
+
+#begin Sound/Effect/EquipItem.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/EquipItem.wav
+
 #begin Sound/Effect/Knife Swing.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/Knife Swing.wav
+
+#begin Sound/Effect/Slash.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Slash.wav
 
 #begin Sound/Parry.wav
 /importer:WavImporter
