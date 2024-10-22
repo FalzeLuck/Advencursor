@@ -32,11 +32,22 @@ namespace Advencursor._Scene
 
         public void Load()
         {
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(Globals.Bounds.X - 400 ,Globals.Bounds.Y/2),OnPlayButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(Globals.Bounds.X - 400, (Globals.Bounds.Y / 2) + 300), OnExitButtonClick);
-            uiManager.AddElement("playButton",playButton);
-            uiManager.AddElement("exitButton",exitButton);
+            int posX = 400;
+            int posY = 250;
+            int yOffset = 150;
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(posX, posY * 0 + yOffset), OnPlayButtonClick);
+            UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/gachaMenuButton"), new Vector2(posX, posY * 1 + yOffset), OnGachaButtonClick);
+            UIButton settingButton = new(Globals.Content.Load<Texture2D>("Button/settingButton"), new Vector2(posX, posY * 2 + yOffset), OnSettingButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(posX, posY * 3 + yOffset), OnExitButtonClick);
+            uiManager.AddElement("playButton", playButton);
+            uiManager.AddElement("gachaButton", gachaButton);
+            uiManager.AddElement("settingButton", settingButton);
+            uiManager.AddElement("exitButton", exitButton);
             gameData.LoadData();
+            if (gameData.isFirstTime)
+            {
+                uiManager.SetDark("gachaButton", true);
+            }
             Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
             background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
@@ -49,19 +60,28 @@ namespace Advencursor._Scene
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Globals.SpriteBatch.Draw(background,Vector2.Zero,Color.White);
+            Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
             uiManager.Draw(spriteBatch);
             Globals.DrawCursor();
         }
 
         private void OnPlayButtonClick()
         {
-            if(gameData.isFirstTime)
+            if (gameData.isFirstTime)
                 sceneManager.AddScene(new DialogueIntro(contentManager, sceneManager));
             else
                 sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
         }
-
+        private void OnGachaButtonClick()
+        {
+            gameData.SaveData();
+            sceneManager.AddScene(new GachaScene(contentManager, sceneManager));
+        }
+        private void OnSettingButtonClick()
+        {
+            gameData.SaveData();
+            sceneManager.AddScene(new SettingScene(contentManager, sceneManager));
+        }
         private void OnExitButtonClick()
         {
             Globals.Game.Exit();

@@ -80,7 +80,7 @@ namespace Advencursor._Scene
                 if (currentSceneDialogue != null && dialogueIndex < currentSceneDialogue.Count)
                 {
                     Dialogue currentLine = currentSceneDialogue[dialogueIndex];
-                    if (currentLine.speaker == "L.I.F.E." || currentLine.speaker == "???")
+                    if (currentLine.speaker == "[L.I.F.E.]")
                     {
                         lifeOpacity = 0f;
                         textureLife = Globals.Content.Load<Texture2D>("Story/L_Smile");

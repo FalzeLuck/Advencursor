@@ -17,6 +17,7 @@ namespace Advencursor._Models
     {
         public float poolDuration = 0f;
         public float burnCooldown;
+        private bool isPoisonSound = false;
         public bool canBurn => burnCooldown > 0.5f;
         public PoisonPool(Texture2D texture, Vector2 position,  int row, int column) : base(texture, position)
         {
@@ -33,7 +34,11 @@ namespace Advencursor._Models
         {
             poolDuration += TimeManager.TimeGlobal;
             burnCooldown += TimeManager.TimeGlobal;
-
+            if (!isPoisonSound)
+            {
+                Globals.soundManager.PlaySoundCanStack("TomatoPoison");
+                isPoisonSound = true;
+            }
             if (animations["Normal"].IsComplete)
             {
                 indicator = "Loop";

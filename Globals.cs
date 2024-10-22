@@ -189,24 +189,48 @@ namespace Advencursor
 
         public static void LoadSounds()
         {
+            //Stage1
             SoundEffect Common1Moving = Content.Load<SoundEffect>("Sound/Effect/Common1/Moving");
             SoundEffect Common1Hit = Content.Load<SoundEffect>("Sound/Effect/Common1/Hit");
             SoundEffect Common1Die = Content.Load<SoundEffect>("Sound/Effect/Common1/Die");
             SoundEffect Elite1Moving = Content.Load<SoundEffect>("Sound/Effect/Elite1/Moving");
             SoundEffect Elite1Slam = Content.Load<SoundEffect>("Sound/Effect/Elite1/Slam");
+            SoundEffect BossRolling = Content.Load<SoundEffect>("Sound/Effect/Boss1/RollAttack");
+            SoundEffect BossWallHit = Content.Load<SoundEffect>("Sound/Effect/Boss1/WallHit");
+            SoundEffect TomatoBomb = Content.Load<SoundEffect>("Sound/Effect/Boss1/TomatoBomb");
+            SoundEffect TomatoPoison = Content.Load<SoundEffect>("Sound/Effect/Boss1/Poison");
+            soundManager.LoadSound("Common1Moving", Common1Moving,0.3f);
+            soundManager.LoadSound("Common1Hit", Common1Hit,0.2f);
+            soundManager.LoadSound("Common1Die", Common1Die,0.3f);
+            soundManager.LoadSound("Elite1Moving", Elite1Moving,0.5f);
+            soundManager.LoadSound("Elite1Slam", Elite1Slam);
+            soundManager.LoadSound("BossRolling", BossRolling,0.7f);
+            soundManager.LoadSound("BossWallHit", BossWallHit);
+            soundManager.LoadSound("TomatoBomb", TomatoBomb);
+            soundManager.LoadSound("TomatoPoison", TomatoPoison ,0.15f);
+            //Stage2
+
+
+            //General
             SoundEffect slashSound = Content.Load<SoundEffect>("Sound/Effect/Slash");
             SoundEffect buttonHover = Content.Load<SoundEffect>("Sound/Effect/ButtonHover");
             SoundEffect buttonClick = Content.Load<SoundEffect>("Sound/Effect/ButtonClick");
             SoundEffect EquipItem = Content.Load<SoundEffect>("Sound/Effect/EquipItem");
-            soundManager.LoadSound("Common1Moving", Common1Moving);
-            soundManager.LoadSound("Common1Hit", Common1Hit);
-            soundManager.LoadSound("Common1Die", Common1Die);
-            soundManager.LoadSound("Elite1Moving", Elite1Moving);
-            soundManager.LoadSound("Elite1Slam", Elite1Slam);
+            SoundEffect Warning = Content.Load<SoundEffect>("Sound/Effect/Warning");
             soundManager.LoadSound("Slash", slashSound);
-            soundManager.LoadSound("Hover", buttonHover);
-            soundManager.LoadSound("Click", buttonClick);
+            soundManager.LoadSound("Hover", buttonHover,0.6f);
+            soundManager.LoadSound("Click", buttonClick,0.8f);
             soundManager.LoadSound("EquipItem", EquipItem);
+            soundManager.LoadSound("Warning", Warning);
+        }
+
+        public static void SetGlobalSongVolume(float volume)
+        {
+            soundManager.SetSongVolume(volume);
+            GameData gameData = new GameData();
+            gameData.LoadData();
+            gameData.volumeMusic = volume;
+            gameData.SaveData();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Advencursor._Models
         private Action onClick;
         private Action onHover;
         private bool hoverSoundPlayed = false;
+
         public UIButton(Texture2D texture, Vector2 position, Action onClick) : base(texture, position)
         {
             _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
@@ -28,7 +29,6 @@ namespace Advencursor._Models
         {
             _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
             this.onHover = onHover;
-            
         }
 
         public override void Update(GameTime gameTime)
@@ -37,7 +37,7 @@ namespace Advencursor._Models
             if (InputManager.MouseCursor.Intersects(_rect))
             {
                 scale = 1.1f;
-                //_color = Color.DarkGray;
+                
                 if (!hoverSoundPlayed)
                 {
                     Globals.soundManager.PlaySound("Hover");
@@ -57,7 +57,10 @@ namespace Advencursor._Models
                 Globals.soundManager.PlaySound("Click");
                 onClick?.Invoke();
             }
-
+            if (isDark)
+            {
+                _color = Color.DarkGray;
+            }
             _rect = new((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), texture.Width, texture.Height);
         }
 

@@ -148,7 +148,7 @@ namespace Advencursor._Scene.Stage
                 animationManager.UpdatePosition("Slash", player.position);
                 ParticleManager.Update();
                 SceneManage();
-
+                startWarning = false;
                 if (player.CanNormalAttack())
                 {
                         if (tutorialDummy.Status.immunity)
@@ -198,7 +198,7 @@ namespace Advencursor._Scene.Stage
             uiManager.Update(gameTime);
             uiManager.UpdateBarValue("playerBar", player.Status.CurrentHP);
         }
-        private void CollisionManage(GameTime gameTime)
+        protected override void CollisionManage(GameTime gameTime)
         {
             if (tutorialDummy.collision.Intersects(animationManager.GetCollision("Slash", player.position)) && animationManager.IsCollision("Slash"))
             {
@@ -231,7 +231,8 @@ namespace Advencursor._Scene.Stage
                 gameData.stage = 1;
                 gameData.isFirstTime = true;
                 gameData.SaveData();
-                sceneManager.AddScene(new InventoryScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                AllSkills.Reset();
+                sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
             }
         }
 

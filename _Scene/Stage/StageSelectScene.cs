@@ -92,6 +92,15 @@ namespace Advencursor._Scene.Stage
             posStage3des = uiManager.GetElementPosition("stage3Button");
             background = Globals.Content.Load<Texture2D>("Background/StageSelect");
 
+
+            if (!gameData.stage1Clear)
+            {
+                uiManager.SetDark("stage2Button", true);
+            }
+            if (!gameData.stage2Clear)
+            {
+                uiManager.SetDark("stage3Button", true);
+            }
         }
 
         public void Update(GameTime gameTime)
@@ -225,7 +234,7 @@ namespace Advencursor._Scene.Stage
             {
                 gameData.stage = currentStage = (int)Stage.Gacha;
                 gameData.SaveData();
-                sceneManager.AddScene(new GachaScene(contentManager, sceneManager));
+                sceneManager.AddScene(new DialogueIntro(contentManager, sceneManager));
             }
             else if (uiManager.GetElementPosition("gachaButton").X > screenCenter.X || uiManager.GetElementPosition("gachaButton").X < screenCenter.X)
             {
@@ -256,6 +265,7 @@ namespace Advencursor._Scene.Stage
         {
             if (uiManager.GetElementPosition("stage2Button") == screenCenter)
             {
+                if (!gameData.stage1Clear) return;
                 gameData.stage = currentStage = (int)Stage.Stage2;
                 gameData.SaveData();
                 sceneManager.AddScene(new InventoryScene(contentManager, sceneManager));
@@ -270,8 +280,10 @@ namespace Advencursor._Scene.Stage
         }
         private void OnStage3ButtonClick()
         {
+            
             if (uiManager.GetElementPosition("stage3Button") == screenCenter)
             {
+                if (!gameData.stage2Clear) return;
                 gameData.stage = currentStage = (int)Stage.Stage3;
                 gameData.SaveData();
                 sceneManager.AddScene(new InventoryScene(contentManager, sceneManager));

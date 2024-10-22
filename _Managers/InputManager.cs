@@ -19,7 +19,6 @@ namespace Advencursor._Managers
         public static Rectangle MouseCursor { get; set; }
         public static void Update()
         {
-            var keyboardState = Keyboard.GetState();
             _lastmouseState = MouseState;
             MouseState = Mouse.GetState();
 

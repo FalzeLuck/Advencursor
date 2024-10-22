@@ -92,7 +92,7 @@ namespace Advencursor._Scene.Stage
         public override void Update(GameTime gameTime)
         {
             CheckPause(gameTime);
-            if(isPause) return;
+            if (isPause) return;
             if (!isPause)
             {
                 EnemyManage();
@@ -111,6 +111,7 @@ namespace Advencursor._Scene.Stage
                 UpdateEnemies(gameTime);
                 UpdateElites(gameTime);
                 UpdatePoisonPool(gameTime);
+                UpdateSound();
                 timer.Update();
                 player.Update(gameTime);
                 animationManager.Update(gameTime);
@@ -121,7 +122,7 @@ namespace Advencursor._Scene.Stage
 
                 if (Keyboard.GetState().IsKeyDown(Keys.O))
                 {
-                    boss_obj.Status.TakeDamage(boss_obj.Status.MaxHP * 1/100,player);
+                    boss_obj.Status.TakeDamage(boss_obj.Status.MaxHP * 1 / 100, player);
                 }
             }
 
@@ -162,12 +163,12 @@ namespace Advencursor._Scene.Stage
             {
                 elite.Draw();
             }
-            foreach(var elite in eliteEnemy2)
+            foreach (var elite in eliteEnemy2)
             {
                 elite.Draw();
             }
             Globals.EndDrawGrayScale();
-            
+
             player.Draw();
 
             animationManager.Draw();
@@ -361,12 +362,12 @@ namespace Advencursor._Scene.Stage
                 }
             }
             //Elite2
-            if (elite_spawn_time > 15f && !startWarning && elite2_reset_time <= 0 && !boss_spawned 
+            if (elite_spawn_time > 15f && !startWarning && elite2_reset_time <= 0 && !boss_spawned
                 || boss_obj.phaseIndicator == (int)Boss3.phase.UnderControl && !boss_obj.isOpening2)
             {
                 if (elite_count2 < elite_max2)
                 {
-                    for (int i = 0; i < 2 ; i++)
+                    for (int i = 0; i < 2; i++)
                     {
                         int spawnDirection = Globals.random.Next(1, 5);
                         Vector2 spawnpoint = Vector2.Zero;
@@ -430,7 +431,7 @@ namespace Advencursor._Scene.Stage
                 boss_spawn_time = 115f;
                 timer.TimeSet(115f);
             }
-            if (boss_spawn_time > 116f && !boss_spawned)
+            if (boss_spawn_time > 115f && !boss_spawned)
             {
                 foreach (var enemy in Globals.EnemyManager)
                 {
@@ -501,7 +502,7 @@ namespace Advencursor._Scene.Stage
                 tomatoSpawn = true;
                 special_count = 0;
             }
-            else if(boss_obj.isTomatoFinish)
+            else if (boss_obj.isTomatoFinish)
             {
                 if (tomatoBoss != null)
                 {
@@ -632,7 +633,6 @@ namespace Advencursor._Scene.Stage
 
         protected override void SceneManage()
         {
-            base.SceneManage();
             if (boss_obj.animations["Die"].IsComplete)
             {
                 damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
@@ -646,7 +646,20 @@ namespace Advencursor._Scene.Stage
                 {
                     enemy.Status.Kill();
                 }
-                GotoSummary(true);
+                if (gameData.stage3Clear)
+                {
+                    GotoSummary(true);
+                }
+                else
+                {
+                    gameData.gems += CalculateReward();
+                    gameData.SaveData();
+                    sceneManager.AddScene(new DialogueEnding(contentManager, sceneManager));
+                }
+            }
+            else if (!player.Status.IsAlive())
+            {
+                GotoSummary(false);
             }
         }
     }

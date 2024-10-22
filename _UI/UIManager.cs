@@ -90,6 +90,10 @@ namespace Advencursor._UI
         {
             uiElements[name].opacity = opacity;
         }
+        public void SetDark(string name,bool dark)
+        {
+            uiElements[name].isDark = dark;
+        }
         public void SetAllOpacity(float opacity)
         {
             foreach (var element in uiElements.Values)
@@ -130,6 +134,11 @@ namespace Advencursor._UI
             }
 
             return false;
+        }
+
+        public void ChangeTexture(string name,Texture2D texture)
+        {
+            uiElements[name].texture = texture;
         }
     }
 }

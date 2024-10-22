@@ -107,6 +107,7 @@ namespace Advencursor._Scene.Stage
                 UpdateElites(gameTime);
                 UpdateSpecial(gameTime);
                 UpdatePoisonPool(gameTime);
+                UpdateSound();
                 timer.Update();
                 player.Update(gameTime);
                 animationManager.Update(gameTime);
@@ -545,6 +546,8 @@ namespace Advencursor._Scene.Stage
 
             if (boss_obj.animations["Die"].currentFrame == 15)
             {
+                gameData.stage1Clear = true;
+                gameData.SaveData();
                 damageNumberManager.UnSubscribeToTakeDamageEvent(boss_obj.Status, boss_obj);
                 soundManager.StopAllSounds();
                 boss_spawned = false;

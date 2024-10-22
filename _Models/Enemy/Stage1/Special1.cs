@@ -45,6 +45,7 @@ namespace Advencursor._Models.Enemy.Stage1
             if(waitBombTimer <= 0)
             {
                 indicator = "Bomb";
+                Globals.soundManager.PlaySound("TomatoBomb");
             }
 
             if (animations["Bomb"].IsComplete)

@@ -255,7 +255,7 @@ namespace Advencursor._Scene
 
         private void OnMenuClick()
         {
-            sceneManager.AddScene(new StageSelectScene(contentManager,sceneManager),new CircleTransition(Globals.graphicsDevice));
+            sceneManager.AddScene(new MenuScene(contentManager,sceneManager),new CircleTransition(Globals.graphicsDevice));
         }
 
         private void OnRestartClick()
@@ -267,6 +267,9 @@ namespace Advencursor._Scene
                     break;
                 case 2:
                     sceneManager.AddScene(new Stage2(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+                    break;
+                case 3:
+                    sceneManager.AddScene(new Stage3(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
                     break;
             }
         }

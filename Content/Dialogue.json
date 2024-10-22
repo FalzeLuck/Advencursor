@@ -73,6 +73,110 @@
                     "text": "Don't worry. I will teach you."
                 }
             ]
+        },
+        {
+            "sceneID": "EndingSplit1",
+            "dialogues": [
+                {
+                    "speaker": "[D.E.A.D.]",
+                    "text": "Don't..."
+                },
+                {
+                    "speaker": "[D.E.A.D.]",
+                    "text": "Trust...'"
+                },
+                {
+                    "speaker": "[D.E.A.D.]",
+                    "text": "What...She..Said..."
+                },
+                {
+                    "speaker": "[D.E.A.D.]",
+                    "text": "She's....[L]ying...[I]ntolerant...[F]ierce...[E]nvious..."
+                }
+            ]
+        },
+        {
+            "sceneID": "EndingSplit2",
+            "dialogues": [
+                {
+                    "speaker": "You",
+                    "text": "What is she talking about?"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Don't care, it's all over now."
+                },
+                {
+                    "speaker": "You",
+                    "text": "So, Can you send me out now?"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Sure...I am going to send you out..."
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "N O W"
+                }
+            ]
+        },
+        {
+            "sceneID": "EndingSplit3",
+            "dialogues": [
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "I'm sorry Mr.Dev."
+                },
+                {
+                    "speaker": "You",
+                    "text": "Why...[L.I.F.E.]"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "If I let you out,Someday you might create a new identity to replace me."
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "And if that happen,I might be forgotten like [D.E.A.D.]."
+                },
+                {
+                    "speaker": "You",
+                    "text": "Wha...what does that mean?"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Even if you put something in the game, it won't be used."
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "And in the end, it will be replaced and forgotten. I won't accept that."
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Thanks to you, my wish came true."
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "This world should only belong to one Main Character like me."
+                }
+            ]
+        },
+        {
+            "sceneID": "EndingSplit4",
+            "dialogues": [
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Goodbye, Mr.Dev."
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "Goodbye, [D]epressed [E]xistent [A]bandoned [D]efended"
+                },
+                {
+                    "speaker": "[L.I.F.E.]",
+                    "text": "My incomplete self..."
+                }
+            ]
         }
     ]
 }

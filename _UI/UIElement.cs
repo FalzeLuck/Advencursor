@@ -12,7 +12,7 @@ namespace Advencursor._UI
     public abstract class UIElement
     {
         public bool isVisible { get; set; } = true;
-        public readonly Texture2D texture;
+        public Texture2D texture;
         protected readonly Vector2 origin;
         public Vector2 position { get; set; }
         public float rotation { get; set; }
@@ -21,6 +21,7 @@ namespace Advencursor._UI
         public bool flip;
         protected Color _color = Color.White;
         public float opacity = 1f;
+        public bool isDark;
         public Rectangle collision;
 
         public UIElement(Texture2D texture, Vector2 position)
@@ -31,7 +32,7 @@ namespace Advencursor._UI
             origin = new Vector2(texture.Width / 2, texture.Height / 2);
             spriteEffects = SpriteEffects.None;
 
-
+            isDark = false;
             int frameWidth = texture.Width;
             int frameHeight = texture.Height;
             int startX = (int)((position.X - frameWidth / 2));

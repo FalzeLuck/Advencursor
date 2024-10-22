@@ -55,6 +55,8 @@ namespace Advencursor._SaveData
                 this.stage1Clear = data.stage1Clear;
                 this.stage2Clear = data.stage2Clear;
                 this.stage3Clear = data.stage3Clear;
+                this.volumeEffect = data.volumeEffect;
+                this.volumeMusic = data.volumeMusic;
             }
             else
             {

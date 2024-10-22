@@ -16,6 +16,7 @@ using Advencursor._Particles;
 using System.Diagnostics;
 using Advencursor._Scene.Transition;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Advencursor._Scene.Stage
 {
@@ -88,7 +89,9 @@ namespace Advencursor._Scene.Stage
             player.LoadGameData(gameData);
 
             //Sound
-            
+            Song bgsong = Globals.Content.Load<Song>("Sound/Song/Fight Song");
+            Globals.soundManager.SetSongVolume(gameData.volumeMusic);
+            Globals.soundManager.PlaySong("Fight Song", bgsong, true);
 
             //Load Animation
             Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 30, false, 1.5f);
@@ -179,7 +182,18 @@ namespace Advencursor._Scene.Stage
                 }
             }
         }
-        protected void CollisionManage(GameTime gameTime)
+        protected virtual void UpdateSound()
+        {
+            if (startWarning)
+            {
+                Globals.soundManager.PlaySound("Warning", true);
+            }
+            else
+            {
+                Globals.soundManager.StopSound("Warning");
+            }
+        }
+        protected virtual void CollisionManage(GameTime gameTime)
         {
             foreach (var enemy in Globals.EnemyManager)
             {
@@ -316,6 +330,7 @@ namespace Advencursor._Scene.Stage
             timer.StartStop();
             float time = timer.timeLeft;
             int gems = CalculateReward();
+            Globals.soundManager.StopCurrentSong();
             UnloadScene();
             sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, gems,gameData,time));
         }
