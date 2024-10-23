@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Advencursor._Animation;
 using Advencursor._SaveData;
+using Microsoft.Xna.Framework.Media;
 
 namespace Advencursor._Scene
 {
@@ -50,6 +51,9 @@ namespace Advencursor._Scene
         public override void Load()
         {
             base.Load();
+            Globals.soundManager.StopAllSounds();
+            Song bgsong = Globals.Content.Load<Song>("Sound/Song/Visual Novel Song");
+            Globals.soundManager.PlaySong("Visual Novel Song", bgsong, true);
             currentSceneDialogue = dialogueManager.GetSceneDialogue("EndingSplit1");
             currentScene = "EndingSplit1";
             blackScreenTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
@@ -107,6 +111,7 @@ namespace Advencursor._Scene
                     dialogueIndex = 0;
                     textureLife = Globals.Content.Load<Texture2D>("Story/L_END");
                     Globals.Camera.Shake(0.5f, 5);
+                    Globals.soundManager.PlaySound("Stab");
                     Globals.SetGreyScale(1f);
                 }
             }

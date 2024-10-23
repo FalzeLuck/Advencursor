@@ -155,7 +155,14 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 player = movementAI.target;
             }
-
+            if (Status.IsAlive())
+            {
+                DrawBurn();
+            }
+            else
+            {
+                RemoveBurn();
+            }
             foreach (Knife knife in knives)
             {
                 knife.Update(gameTime);

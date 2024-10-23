@@ -17,6 +17,7 @@ namespace Advencursor._Models.Enemy.Stage1
         private float walkTimer;
         private float waitBombTimer = 5f;
         public bool isBombed = false;
+        private bool isBombSound = false;
 
         private Texture2D bombTexture;
 
@@ -45,7 +46,11 @@ namespace Advencursor._Models.Enemy.Stage1
             if(waitBombTimer <= 0)
             {
                 indicator = "Bomb";
-                Globals.soundManager.PlaySound("TomatoBomb");
+                if (!isBombSound)
+                {
+                    Globals.soundManager.PlaySound("TomatoBomb");
+                    isBombSound = true;
+                }
             }
 
             if (animations["Bomb"].IsComplete)

@@ -1070,18 +1070,6 @@
 /processorParam:TextureFormat=Color
 /build:playerTexture.png
 
-#begin Sound/Beep.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Sound/Beep.wav
-
-#begin Sound/Boss1Charge.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Sound/Boss1Charge.wav
-
 #begin Sound/Effect/Boss1/Die.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1178,17 +1166,23 @@
 /processorParam:Quality=Best
 /build:Sound/Effect/Slash.wav
 
+#begin Sound/Effect/Stab.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Stab.wav
+
+#begin Sound/Effect/Story/Click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Story/Click.wav
+
 #begin Sound/Effect/Warning.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/Warning.wav
-
-#begin Sound/Parry.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Sound/Parry.wav
 
 #begin Sound/Song/Fight Song.mp3
 /importer:Mp3Importer
@@ -1201,6 +1195,12 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Sound/Song/Stage Select Song.mp3
+
+#begin Sound/Song/Visual Novel Song.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/Song/Visual Novel Song.mp3
 
 #begin Story/D.PNG
 /importer:TextureImporter

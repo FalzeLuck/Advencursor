@@ -64,6 +64,14 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             collisionCooldown -= TimeManager.TimeGlobal;
             burnDuration -= TimeManager.TimeGlobal;
             Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
+            if (Status.IsAlive())
+            {
+                DrawBurn();
+            }
+            else
+            {
+                RemoveBurn();
+            }
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();
@@ -72,6 +80,7 @@ namespace Advencursor._Models.Enemy._CommonEnemy
             UpdateParryZone();
             if (Status.IsAlive() && movementAI.target != null)
             {
+
                 //Update Radius
                 dashRadius = collision;
                 int increaseamount = 300;

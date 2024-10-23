@@ -73,6 +73,7 @@ namespace Advencursor._Scene
                 if (canAdvance && currentKeystate == ButtonState.Pressed && previousKeyState == ButtonState.Released)
                 {
                     dialogueIndex++;
+                    Globals.soundManager.PlaySound("ClickVisualNovel");
                     ResetTypingState();
                 }
 

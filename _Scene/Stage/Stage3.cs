@@ -21,6 +21,7 @@ using Advencursor._Models.Enemy.Stage1;
 using Advencursor._Models.Enemy.Stage2;
 using System.Diagnostics;
 using System.ComponentModel;
+using Advencursor._Scene.Transition;
 
 namespace Advencursor._Scene.Stage
 {
@@ -646,16 +647,10 @@ namespace Advencursor._Scene.Stage
                 {
                     enemy.Status.Kill();
                 }
-                if (gameData.stage3Clear)
-                {
-                    GotoSummary(true);
-                }
-                else
-                {
-                    gameData.gems += CalculateReward();
-                    gameData.SaveData();
-                    sceneManager.AddScene(new DialogueEnding(contentManager, sceneManager));
-                }
+                gameData.gems += CalculateReward();
+                gameData.SaveData();
+                sceneManager.AddScene(new DialogueEnding(contentManager, sceneManager), new FadeTransition(1f));
+
             }
             else if (!player.Status.IsAlive())
             {

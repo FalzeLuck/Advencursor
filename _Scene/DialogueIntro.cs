@@ -1,9 +1,11 @@
 ﻿using Advencursor._Managers;
+using Advencursor._SaveData;
 using Advencursor._Scene.Stage;
 using Advencursor._Scene.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,10 +46,11 @@ namespace Advencursor._Scene
         public override void Load()
         {
             base.Load();
+            Globals.soundManager.StopAllSounds();
             currentSceneDialogue = dialogueManager.GetSceneDialogue("Intro");
             blackScreenTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
             fadeOpacity = 1;
-
+            Globals.soundManager.StopCurrentSong();
             textureLife = Globals.Content.Load<Texture2D>("Story/L");
             lifePos = new Vector2(Globals.Bounds.X/2, Globals.Bounds.Y/2);
             lifeOrigin = new Vector2(textureLife.Width/2, textureLife.Height/2);
@@ -66,6 +69,8 @@ namespace Advencursor._Scene
                     dialogueIndex = 0;
                     isIntro = false;
                     fadeTime = fadeTimeMax;
+                    Song bgsong = Globals.Content.Load<Song>("Sound/Song/Visual Novel Song");
+                    Globals.soundManager.PlaySong("Visual Novel Song", bgsong, true);
                     currentSceneDialogue = dialogueManager.GetSceneDialogue("Start");
                 }
             }

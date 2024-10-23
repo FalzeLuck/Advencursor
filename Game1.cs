@@ -66,7 +66,7 @@ namespace Advencursor
             Globals.SetGreyScale(1.0f);
             Globals.fullScreenRectangle = new Rectangle(0, 0, Globals.Bounds.X, Globals.Bounds.Y);
             Globals.LoadSounds();
-            
+
 
             base.Initialize();
 

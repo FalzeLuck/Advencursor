@@ -377,7 +377,7 @@ namespace Advencursor._Scene
 
         private void OnExitButtonClick()
         {
-            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager));
+            sceneManager.AddScene(new MenuScene(contentManager, sceneManager));
         }
 
         public Color HSVtoRGB(float h, float s, float v)

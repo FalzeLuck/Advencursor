@@ -66,7 +66,14 @@ namespace Advencursor._Models.Enemy.Stage1
             collisionCooldown -= TimeManager.TimeGlobal;
             burnDuration -= TimeManager.TimeGlobal;
             Vector2 playerPosition = new(InputManager._mousePosition.X, InputManager._mousePosition.Y);
-
+            if (Status.IsAlive())
+            {
+                DrawBurn();
+            }
+            else
+            {
+                RemoveBurn();
+            }
 
 
             if (animations.ContainsKey(indicator))
@@ -120,6 +127,7 @@ namespace Advencursor._Models.Enemy.Stage1
                         {
                             animations["Attack"].Play();
                             Globals.Camera.Shake(0.2f, 10);
+                            Globals.soundManager.PlaySound("BossWallHit");
                         }
                         velocity = Vector2.Zero;
                         stand_time -= TimeManager.TimeGlobal;
@@ -209,6 +217,7 @@ namespace Advencursor._Models.Enemy.Stage1
         {
             if (charge)
             {
+                Globals.soundManager.PlaySound("BossRolling");
                 Vector2 origin = new Vector2(0, 100);
                 if (warningOpacity <= 0.3f)
                 {

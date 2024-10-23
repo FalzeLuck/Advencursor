@@ -60,6 +60,10 @@ namespace Advencursor._Combat
             {
                 tempScale = numberScale * 1.75f;
                 tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
+                if (fromwho.Status.isParalysis)
+                {
+                    tempDamage = tempDamage * 0.75f;
+                }
                 tempString = $"{tempDamage.ToString("F0")}!";
                 tempColor = color;
             }
@@ -75,9 +79,12 @@ namespace Advencursor._Combat
                 }
                 tempScale = numberScale;
                 tempDamage = damage;
+                if (fromwho.Status.isParalysis)
+                {
+                    tempDamage = tempDamage * 0.75f;
+                }
                 tempString = tempDamage.ToString("F0");
             }
-
 
             if (immunity == false)
             {
@@ -107,14 +114,12 @@ namespace Advencursor._Combat
         {
             if (damage < 0) throw new ArgumentOutOfRangeException("Damage can't be negative");
             float tempDamage = damage;
+            if (fromwho.Status.isParalysis)
+            {
+                tempDamage = tempDamage * 0.75f;
+            }
             string tempString = statusText + tempDamage.ToString("F0");
             Color tempColor = color;
-
-            /*if (fromwho is _Enemy)
-            {
-                tempColor = Color.Red;
-            }*/
-
 
 
             if (immunity == false)
@@ -154,6 +159,10 @@ namespace Advencursor._Combat
             {
                 tempScale = numberScale * 1.75f;
                 tempDamage = (damage * ((fromwho.Status.CritDam / 100) + 1));
+                if (fromwho.Status.isParalysis)
+                {
+                    tempDamage = tempDamage * 0.75f;
+                }
                 tempString = $"{tempDamage.ToString("F0")}!";
                 tempColor = color;
             }
@@ -169,9 +178,13 @@ namespace Advencursor._Combat
                 }
                 tempScale = numberScale;
                 tempDamage = damage;
+                if (fromwho.Status.isParalysis)
+                {
+                    tempDamage = tempDamage * 0.75f;
+                }
                 tempString = tempDamage.ToString("F0");
             }
-
+            
             if (Shield >= tempDamage)
             {
                 Shield -= tempDamage;
@@ -243,8 +256,11 @@ namespace Advencursor._Combat
 
         public void Paralysis(float time)
         {
-            paralysisTimer = time;
-            isParalysis = true;
+            if (time > paralysisTimer)
+            {
+                paralysisTimer = time;
+                isParalysis = true;
+            }
         }
 
         public void Update()

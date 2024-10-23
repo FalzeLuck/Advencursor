@@ -90,6 +90,14 @@ namespace Advencursor._Models.Enemy.Stage2
             {
                 player = movementAI.target;
             }
+            if (Status.IsAlive())
+            {
+                DrawBurn();
+            }
+            else
+            {
+                RemoveBurn();
+            }
             if (isStart)
             {
                 collisionCooldown -= TimeManager.TimeGlobal;

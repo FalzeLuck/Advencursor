@@ -60,6 +60,14 @@ namespace Advencursor._Models.Enemy.Stage1
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            if (Status.IsAlive())
+            {
+                DrawBurn();
+            }
+            else
+            {
+                RemoveBurn();
+            }
             if (animations.ContainsKey(indicator))
             {
                 animations[indicator].Update();

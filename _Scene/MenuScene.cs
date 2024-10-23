@@ -48,6 +48,7 @@ namespace Advencursor._Scene
             {
                 uiManager.SetDark("gachaButton", true);
             }
+            Globals.soundManager.StopAllSounds();
             Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
             background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
@@ -74,6 +75,7 @@ namespace Advencursor._Scene
         }
         private void OnGachaButtonClick()
         {
+            if (gameData.isFirstTime) return;
             gameData.SaveData();
             sceneManager.AddScene(new GachaScene(contentManager, sceneManager));
         }

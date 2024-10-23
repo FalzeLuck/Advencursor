@@ -78,6 +78,8 @@ namespace Advencursor._Scene.Stage
         {
             Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
             warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Red);
+            Globals.soundManager.StopAllSounds();
+            ParticleManager.RemoveAll();
 
             //Player
             Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
@@ -204,6 +206,10 @@ namespace Advencursor._Scene.Stage
                         Globals.soundManager.PlaySound("Common1Hit");
                     }
                     enemy.TakeDamage(1, player);
+                    if(player.buffIndicator == "Thunder_")
+                    {
+                        enemy.Status.Paralysis(2f);
+                    }
                     enemy.Status.immunity = true;
                 }
             }
@@ -287,7 +293,7 @@ namespace Advencursor._Scene.Stage
         private void OnExitClick()
         {
             UnloadScene();
-            sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+            sceneManager.AddScene(new MenuScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
         }
 
         protected void DrawPause()

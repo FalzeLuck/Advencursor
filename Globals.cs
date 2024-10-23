@@ -206,7 +206,7 @@ namespace Advencursor
             soundManager.LoadSound("Elite1Slam", Elite1Slam);
             soundManager.LoadSound("BossRolling", BossRolling,0.7f);
             soundManager.LoadSound("BossWallHit", BossWallHit);
-            soundManager.LoadSound("TomatoBomb", TomatoBomb);
+            soundManager.LoadSound("TomatoBomb", TomatoBomb, 0.5f);
             soundManager.LoadSound("TomatoPoison", TomatoPoison ,0.15f);
             //Stage2
 
@@ -222,6 +222,12 @@ namespace Advencursor
             soundManager.LoadSound("Click", buttonClick,0.8f);
             soundManager.LoadSound("EquipItem", EquipItem);
             soundManager.LoadSound("Warning", Warning);
+
+            //Visual Novel Scene
+            SoundEffect stab = Content.Load<SoundEffect>("Sound/Effect/Stab");
+            SoundEffect click = Content.Load<SoundEffect>("Sound/Effect/Story/Click");
+            soundManager.LoadSound("Stab", stab);
+            soundManager.LoadSound("ClickVisualNovel", click);
         }
 
         public static void SetGlobalSongVolume(float volume)

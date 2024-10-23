@@ -2,6 +2,8 @@
 using Advencursor._Animation;
 using Advencursor._Combat;
 using Advencursor._Managers;
+using Advencursor._Particles;
+using Advencursor._Particles.Emitter;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -26,6 +28,10 @@ namespace Advencursor._Models.Enemy
         public float baseAmp = 1f;
         public float burnDuration = 0f;
         public bool isBurn => burnDuration > 0;
+        private bool isBurningParticle = false;
+        private SpriteEmitter spriteEmitter;
+        private ParticleEmitterData ped;
+        private ParticleEmitter pe;
 
         public float collisionCooldown { get; set; }
 
@@ -33,6 +39,34 @@ namespace Advencursor._Models.Enemy
         {
             Status = new(health, attack);
             animations = new Dictionary<string, Animation>();
+            ped = new()
+            {
+                particleData = new ParticleData()
+                {
+                    lifespan = 1f,
+                    colorEnd = Color.Red,
+                    colorStart = Color.Orange,
+                    opacityStart = 0.4f,
+                    opacityEnd = 0,
+                    sizeEnd = 12f,
+                    sizeStart = 48f,
+                    speed = 75,
+                    angle = 270,
+                    rotation = 0f,
+                    rangeMax = 300f,
+                },
+                angleVariance = 30,
+                lifeSpanMin = 0.5f,
+                lifeSpanMax = 1.0f,
+                speedMin = 100f,
+                speedMax = 150f,
+                rotationMin = 0,
+                rotationMax = 0,
+                interval = 0.1f,
+                emitCount = 10
+            };
+            spriteEmitter = new SpriteEmitter(() => this.position);
+            pe = new(spriteEmitter, ped);
         }
 
         public override void Update(GameTime gameTime)
@@ -90,6 +124,26 @@ namespace Advencursor._Models.Enemy
             int newWidth = parryZone.Width + increaseamount;
             int newHeight = parryZone.Height + increaseamount;
             parryZone = new Rectangle(newX, newY, newWidth, newHeight);
+        }
+
+        public void DrawBurn()
+        {
+            if (isBurn && !isBurningParticle)
+            {
+                ParticleManager.AddParticleEmitter(pe);
+                isBurningParticle = true;
+            }
+            else if (!isBurn || !Status.IsAlive())
+            {
+                ParticleManager.RemoveParticleEmitter(pe);
+                isBurningParticle= false;
+            }
+        }
+
+        public void RemoveBurn()
+        {
+            isBurningParticle = true;
+            ParticleManager.RemoveParticleEmitter(pe);
         }
         public void BurnDamage(Sprite player)
         {

@@ -79,6 +79,10 @@ namespace Advencursor._Managers
             {
                 sound.Pause();
             }
+            foreach (var sound in activeSoundInstances)
+            {
+                sound.Pause();
+            }
         }
         public void ResumeSound(string soundName)
         {
@@ -93,6 +97,10 @@ namespace Advencursor._Managers
             {
                 sound.Resume();
             }
+            foreach (var sound in activeSoundInstances)
+            {
+                sound.Resume();
+            }
         }
 
 
@@ -102,6 +110,7 @@ namespace Advencursor._Managers
             {
                 soundInstances[soundName].Stop();
             }
+
         }
 
         public void SetVolume(string soundName, float volume)
@@ -116,6 +125,10 @@ namespace Advencursor._Managers
         public void StopAllSounds()
         {
             foreach (var sound in soundInstances.Values)
+            {
+                sound.Stop();
+            }
+            foreach (var sound in activeSoundInstances)
             {
                 sound.Stop();
             }
