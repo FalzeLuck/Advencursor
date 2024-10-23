@@ -30,7 +30,6 @@ namespace Advencursor._Skill.Thunder_Set
         private List<Rectangle> collision = new List<Rectangle>();
         private List<float> collisionCooldown = new List<float>();
 
-        private float oldPlayerDelay;
 
         //For Multiplier
         private Player player;
@@ -99,8 +98,7 @@ namespace Advencursor._Skill.Thunder_Set
 
             collisionCooldown = new List<float>(new float[100]);
 
-            oldPlayerDelay = player.normalAttackDelay;
-            player.SetAttackDelay(oldPlayerDelay / speedMultiplier);
+            player.SetAttackDelay(player.baseAttackDelay / speedMultiplier);
 
             isUsing = true;
         }
@@ -119,7 +117,7 @@ namespace Advencursor._Skill.Thunder_Set
                     ParticleManager.RemoveParticleEmitter(pe);
                     ParticleManager.RemoveParticleEmitter(pe1);
                     isUsing = false;
-                    player.SetAttackDelay(oldPlayerDelay);
+                    player.SetAttackDelay(player.baseAttackDelay);
                 }
 
                 collision.Add(new Rectangle((int)player.position.X,(int)player.position.Y,10,10));
@@ -149,6 +147,14 @@ namespace Advencursor._Skill.Thunder_Set
                 collisionCooldown.Clear();
             }
 
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+            collision.Clear();
+            collisionCooldown.Clear();
+            bufftime = 0;
         }
     }
 }

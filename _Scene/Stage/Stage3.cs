@@ -97,6 +97,7 @@ namespace Advencursor._Scene.Stage
             if (!isPause)
             {
                 EnemyManage();
+                SongManage();
                 foreach (var enemy in Globals.EnemyManager)
                 {
                     enemy.Update(gameTime);

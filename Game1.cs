@@ -31,7 +31,10 @@ namespace Advencursor
         private Camera camera;
         private GameData gameData;
         private SkillData skillData;
-
+        private SpriteFont spriteFont;
+        private bool current;
+        private bool previous;
+        private bool isMemoryCheck = false;
 
         public Game1()
         {
@@ -52,8 +55,8 @@ namespace Advencursor
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = false;
-            Window.IsBorderless = true;
+            _graphics.IsFullScreen = true;
+            Window.IsBorderless = false;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 
@@ -67,6 +70,8 @@ namespace Advencursor
             Globals.fullScreenRectangle = new Rectangle(0, 0, Globals.Bounds.X, Globals.Bounds.Y);
             Globals.LoadSounds();
 
+            spriteFont = Content.Load<SpriteFont>("basicFont");
+
 
             base.Initialize();
 
@@ -77,17 +82,23 @@ namespace Advencursor
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             Globals.SpriteBatch = _spriteBatch;
             Globals.SpriteFont = _font;
-
             gameData.LoadData();
             skillData.LoadData();
             AllSkills.skillData = skillData;
             AllSkills.Reset();
+            Globals.cursor = Content.Load<Texture2D>("Cursor");
 
             _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)
         {
+            previous = current;
+            current = Keyboard.GetState().IsKeyDown(Keys.Insert);
+            if (current != previous && Keyboard.GetState().IsKeyDown(Keys.Insert))
+            {
+                isMemoryCheck = !isMemoryCheck;
+            }
             Globals.Update(gameTime);
             InputManager.Update();
             TimeManager.Update(gameTime);
@@ -103,9 +114,22 @@ namespace Advencursor
 
             _spriteBatch.Begin(transformMatrix: Globals.Camera.transform);
             _sceneManager.Draw(_spriteBatch);
+
+            if (isMemoryCheck)
+            {
+                long memoryUsageBytes = GetMemoryUsage();
+                float memoryUsageMB = memoryUsageBytes / (1024f * 1024f);
+                string memoryUsageText = $"Memory Usage: {memoryUsageMB:F2} MB";
+                _spriteBatch.DrawString(spriteFont, memoryUsageText, new Vector2(1600, 0), Color.White);
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        long GetMemoryUsage()
+        {
+            return GC.GetTotalMemory(false);
         }
     }
 }

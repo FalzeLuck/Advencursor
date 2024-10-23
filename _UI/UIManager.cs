@@ -106,7 +106,10 @@ namespace Advencursor._UI
         {
             uiElements[name].scale = scale;
         }
-
+        public void SetRotation(string name, float radian)
+        {
+            uiElements[name].rotation = radian;
+        }
         public void HideAll()
         {
             foreach (var element in uiElements.Values)

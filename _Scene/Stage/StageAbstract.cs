@@ -74,6 +74,20 @@ namespace Advencursor._Scene.Stage
         protected UIManager uiManager = new UIManager();
         protected UIManager pauseUiManager = new UIManager();
 
+        //Variable for reduce memory Load
+        Texture2D playertexture;
+        Song bgsong;
+        Animation slashAnimation;
+        UIBackground uIBackground;
+        UISkill skillUI_Q;
+        UISkill skillUI_W;
+        UISkill skillUI_E;
+        UISkill skillUI_R;
+        UIPlayerCheckPanel uIPanel;
+        Texture2D bg;
+        Texture2D fg;
+        ProgressBarAnimated playerHpBar;
+
         public virtual void Load()
         {
             Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
@@ -82,7 +96,7 @@ namespace Advencursor._Scene.Stage
             ParticleManager.RemoveAll();
 
             //Player
-            Texture2D playertexture = Globals.Content.Load<Texture2D>("playerTexture");
+            playertexture = Globals.Content.Load<Texture2D>("playerTexture");
             player = new(playertexture, new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2), 1, 1, 2, 4);
             player.LoadPlayer(2, 4);
             damageNumberManager.SubscribeToTakeDamageEvent(player.Status, player);
@@ -91,30 +105,30 @@ namespace Advencursor._Scene.Stage
             player.LoadGameData(gameData);
 
             //Sound
-            Song bgsong = Globals.Content.Load<Song>("Sound/Song/Fight Song");
+            bgsong = Globals.Content.Load<Song>("Sound/Song/Fight Song");
             Globals.soundManager.SetSongVolume(gameData.volumeMusic);
             Globals.soundManager.PlaySong("Fight Song", bgsong, true);
 
             //Load Animation
-            Animation slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 30, false, 1.5f);
+            slashAnimation = new Animation(Globals.Content.Load<Texture2D>("Animation/SlashTexture"), row: 1, column: 4, fps: 30, false, 1.5f);
             animationManager.AddAnimation("Slash", slashAnimation);
 
             //Load UI
-            UIBackground uIBackground = new(Globals.Content.Load<Texture2D>("UI/SkillBackground"), new(Globals.Bounds.X / 2, 930));
+            uIBackground = new(Globals.Content.Load<Texture2D>("UI/SkillBackground"), new(Globals.Bounds.X / 2, 930));
             int startX = (int)uIBackground.position.X - (uIBackground.texture.Width / 2);
             int space = uIBackground.texture.Width / 12;
             int skillY = 980;
 
 
-            UISkill skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 3), skillY), player.Skills[Keys.Q]);
-            UISkill skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 5), skillY), player.Skills[Keys.W]);
-            UISkill skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 7), skillY), player.Skills[Keys.E]);
-            UISkill skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 9), skillY), player.Skills[Keys.R]);
-            UIPlayerCheckPanel uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
+            skillUI_Q = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 3), skillY), player.Skills[Keys.Q]);
+            skillUI_W = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 5), skillY), player.Skills[Keys.W]);
+            skillUI_E = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 7), skillY), player.Skills[Keys.E]);
+            skillUI_R = new(Globals.Content.Load<Texture2D>("UI/SkillUI"), new(startX + (space * 9), skillY), player.Skills[Keys.R]);
+            uIPanel = new(Globals.Content.Load<Texture2D>("TestUI"), new(150, 100), player);
 
-            Texture2D bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
-            Texture2D fg = Globals.Content.Load<Texture2D>("UI/HealthBarFull");
-            ProgressBarAnimated playerHpBar = new ProgressBarAnimated(bg, fg, player.Status.MaxHP, new(Globals.Bounds.X / 2, uIBackground.position.Y - 75));
+            bg = Globals.Content.Load<Texture2D>("UI/HealthBarNone");
+            fg = Globals.Content.Load<Texture2D>("UI/HealthBarFull");
+            playerHpBar = new ProgressBarAnimated(bg, fg, player.Status.MaxHP, new(Globals.Bounds.X / 2, uIBackground.position.Y - 75));
 
 
             //uiManager.AddElement("uiBackground", uIBackground);
@@ -206,7 +220,7 @@ namespace Advencursor._Scene.Stage
                         Globals.soundManager.PlaySound("Common1Hit");
                     }
                     enemy.TakeDamage(1, player);
-                    if(player.buffIndicator == "Thunder_")
+                    if (player.buffIndicator == "Thunder_")
                     {
                         enemy.Status.Paralysis(2f);
                     }
@@ -238,6 +252,27 @@ namespace Advencursor._Scene.Stage
             ParticleManager.RemoveAll();
         }
 
+        public virtual void Reset()
+        {
+            UnloadScene();
+            isPause = false;
+            pauseUiManager.RemoveAll();
+            Mouse.SetPosition(Globals.Bounds.X/2, Globals.Bounds.Y/2);
+            timer.TimeSet(0f);
+            boss_spawn_time = 0f;
+            boss_dash_cooldown = 0;
+            boss_spawned = false;
+            enemy_spawn_time = 0f;
+            elite_spawn_time = 0f;
+            enemy_count = 0;
+            elite_count = 0;
+            enemy_max = 30;
+            elite_max = 2;
+            enemy_killed = 0;
+            elite_killed = 0;
+            boss_killed = false;
+        }
+
         protected void CheckPause(GameTime gameTime)
         {
             pauseUiManager.Update(gameTime);
@@ -255,7 +290,7 @@ namespace Advencursor._Scene.Stage
                 Texture2D exitTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonExit");
 
                 UIElement continueButton = new UIButton(continueTexture, buttonPosition, OnContinueClick);
-                UIElement restartButton = new UIButton(restartTexture, buttonPosition + buttonIncrement*1, OnRestartClick);
+                UIElement restartButton = new UIButton(restartTexture, buttonPosition + buttonIncrement * 1, OnRestartClick);
                 UIElement exitButton = new UIButton(exitTexture, buttonPosition + buttonIncrement * 2, OnExitClick);
 
                 pauseUiManager.AddElement("continue", continueButton);
@@ -288,17 +323,19 @@ namespace Advencursor._Scene.Stage
                     sceneManager.AddScene(new Stage3(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
                     break;
             }
+            GC.Collect();
         }
-
         private void OnExitClick()
         {
             UnloadScene();
+            AllSkills.Reset();
             sceneManager.AddScene(new MenuScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
+            GC.Collect();
         }
 
         protected void DrawPause()
         {
-            
+
             Vector2 pauseBgOrigin = new Vector2(pauseBackground.Width / 2, pauseBackground.Height / 2);
 
             Globals.SpriteBatch.Draw(dimTexture, Vector2.Zero, Color.White * 0.8f);
@@ -310,7 +347,7 @@ namespace Advencursor._Scene.Stage
 
         protected void DrawWarning()
         {
-            
+
             if (warningOpacity <= 0.3f)
             {
                 warningTrigger = true;
@@ -338,15 +375,23 @@ namespace Advencursor._Scene.Stage
             int gems = CalculateReward();
             Globals.soundManager.StopCurrentSong();
             UnloadScene();
-            sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, gems,gameData,time));
+            sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, gems, gameData, time));
         }
+        protected void SongManage()
+        {
+            if (boss_spawn_time > 115f && !boss_spawned)
+            {
+                Song bgsong = Globals.Content.Load<Song>("Sound/Song/Boss Fight Song");
+                Globals.soundManager.PlaySong("Boss Song", bgsong, true);
+            }
 
+        }
         protected int CalculateReward()
         {
             int gems = 0;
             float tempMultiplier = 0;
 
-            if(timer.timeLeft > 120)
+            if (timer.timeLeft > 120)
             {
                 tempMultiplier = 0.3f;
 
@@ -392,7 +437,7 @@ namespace Advencursor._Scene.Stage
             }
 
             return gems;
-            
+
         }
     }
 }

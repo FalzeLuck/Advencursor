@@ -35,6 +35,7 @@ namespace Advencursor
         public static List<_Enemy> EnemyManager { get; set; } = new List<_Enemy>();
         public static SoundManager soundManager { get; set; } = new SoundManager();
 
+        public static Texture2D cursor;
 
         public static void Update(GameTime gameTime)
         {
@@ -138,8 +139,6 @@ namespace Advencursor
         }
         public static void DrawCursor()
         {
-            Texture2D cursor = Content.Load<Texture2D>("Cursor");
-
             SpriteBatch.Draw(cursor, InputManager._mousePosition,Color.White);
         }
         public static void DrawLine(Vector2 start, Vector2 end, Color color, int thickness = 1)
@@ -201,7 +200,7 @@ namespace Advencursor
             SoundEffect TomatoPoison = Content.Load<SoundEffect>("Sound/Effect/Boss1/Poison");
             soundManager.LoadSound("Common1Moving", Common1Moving,0.3f);
             soundManager.LoadSound("Common1Hit", Common1Hit,0.2f);
-            soundManager.LoadSound("Common1Die", Common1Die,0.3f);
+            soundManager.LoadSound("Common1Die", Common1Die,0.1f);
             soundManager.LoadSound("Elite1Moving", Elite1Moving,0.5f);
             soundManager.LoadSound("Elite1Slam", Elite1Slam);
             soundManager.LoadSound("BossRolling", BossRolling,0.7f);

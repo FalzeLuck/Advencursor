@@ -41,6 +41,7 @@ namespace Advencursor._Models
 
         public float normalAttackCooldown;
         public float normalAttackDelay = 0.4f;
+        public readonly float baseAttackDelay = 0.4f;
 
 
         public bool isStun;
@@ -131,6 +132,7 @@ namespace Advencursor._Models
 
         public void AddSkill(Keys key,Skill skill)
         {
+            RemoveSkill(key);
             Skills[key] = skill;
         }
         public void RemoveSkill(Keys key) { Skills[key] = null; }

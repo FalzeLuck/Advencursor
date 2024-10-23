@@ -52,17 +52,45 @@ namespace Advencursor._Managers
 
         public void PlaySoundCanStack(string soundName, bool loop = false)
         {
-            if (soundInstances.ContainsKey(soundName))
+            activeSoundInstances.RemoveAll(instance => instance.State == SoundState.Stopped);
+
+            const int maxActiveSounds = 30;
+
+            if (activeSoundInstances.Count < maxActiveSounds)
             {
-                var soundEffect = soundEffects[soundName];
-                var instance = soundEffect.CreateInstance();
-                instance.IsLooped = loop;
-                instance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
-                instance.Play();
-                activeSoundInstances.Add(instance);
+                if (soundInstances.ContainsKey(soundName))
+                {
+                    var soundEffect = soundEffects[soundName];
+                    var instance = soundEffect.CreateInstance();
+                    instance.IsLooped = loop;
+                    instance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
+                    instance.Play();
+                    activeSoundInstances.Add(instance);
+                }
+            }
+            else
+            {
+                ReplaceOldestSound(soundName, loop);
             }
 
             activeSoundInstances.RemoveAll(instance => instance.State == SoundState.Stopped);
+        }
+
+        private void ReplaceOldestSound(string soundName, bool loop)
+        {
+            var oldestInstance = activeSoundInstances[0];
+            oldestInstance.Stop();
+            activeSoundInstances.RemoveAt(0);
+
+            if (soundInstances.ContainsKey(soundName))
+            {
+                var soundEffect = soundEffects[soundName];
+                var newInstance = soundEffect.CreateInstance();
+                newInstance.IsLooped = loop;
+                newInstance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
+                newInstance.Play();
+                activeSoundInstances.Add(newInstance);
+            }
         }
 
         public void PauseSound(string soundName)

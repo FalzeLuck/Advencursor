@@ -60,5 +60,11 @@ namespace Advencursor._Skill.Thunder_Set
             if (buffTime <= duration && aura != null)
             aura.Draw(position);
         }
+
+        public override void Reset()
+        {
+            base.Reset();
+            buffTime = duration;
+        }
     }
 }

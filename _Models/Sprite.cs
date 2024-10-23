@@ -14,7 +14,7 @@ namespace Advencursor._Models
     {
         public Status Status { get; set; }
 
-        protected Texture2D texture;
+        public Texture2D texture;
         public Vector2 origin;
         public Vector2 position {  get; set; }
         public Vector2 velocity {  get; set; }

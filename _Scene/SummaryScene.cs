@@ -31,6 +31,7 @@ namespace Advencursor._Scene
         private SpriteFont font;
         private Animation summaryScreen;
 
+        private Texture2D black;
 
         //TimeText
         private string formattedTime;
@@ -80,9 +81,10 @@ namespace Advencursor._Scene
 
         public void Load()
         {
+            Globals.soundManager.StopAllSounds();
             font = Globals.Content.Load<SpriteFont>("Font/TextFont");
             gemTexture = Globals.Content.Load<Texture2D>("UI/Gacha/Gem");
-
+            black = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
             if (win)
             {
                 summaryScreen = new Animation(Globals.Content.Load<Texture2D>("UI/Summary/Win"), 1, 2, 2, true);
@@ -185,7 +187,6 @@ namespace Advencursor._Scene
         public void Draw(SpriteBatch spriteBatch)
         {
             Vector2 screenCenter = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
-            Texture2D black = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
             spriteBatch.Draw(black, Vector2.Zero, Color.White);
             spriteBatch.Draw(bg, Vector2.Zero, Color.White * 0.2f);
             summaryScreen.Draw(screenCenter);

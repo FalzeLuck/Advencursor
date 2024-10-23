@@ -39,6 +39,7 @@ namespace Advencursor._Skill
         };
         public static void Reset()
         {
+            allSkills.Clear();
             allSkills = new Dictionary<string, Skill>
             {
             {"null", new Skill("null",skillData) },

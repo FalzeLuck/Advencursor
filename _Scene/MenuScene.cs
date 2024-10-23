@@ -34,11 +34,11 @@ namespace Advencursor._Scene
         {
             int posX = 400;
             int posY = 250;
-            int yOffset = 150;
-            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(posX, posY * 0 + yOffset), OnPlayButtonClick);
-            UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/gachaMenuButton"), new Vector2(posX, posY * 1 + yOffset), OnGachaButtonClick);
-            UIButton settingButton = new(Globals.Content.Load<Texture2D>("Button/settingButton"), new Vector2(posX, posY * 2 + yOffset), OnSettingButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(posX, posY * 3 + yOffset), OnExitButtonClick);
+            int yOffset = 200;
+            UIButton playButton = new(Globals.Content.Load<Texture2D>("Button/playButton"), new Vector2(posX + 1250, posY * 2 + yOffset), OnPlayButtonClick);
+            UIButton gachaButton = new(Globals.Content.Load<Texture2D>("Button/gachaMenuButton"), new Vector2(posX + 1230, posY * 3 + yOffset), OnGachaButtonClick);
+            UIButton settingButton = new(Globals.Content.Load<Texture2D>("Button/settingButton"), new Vector2(posX-100, posY * 2 + yOffset + 100), OnSettingButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("Button/exitButton"), new Vector2(posX-100, posY * 3 + yOffset), OnExitButtonClick);
             uiManager.AddElement("playButton", playButton);
             uiManager.AddElement("gachaButton", gachaButton);
             uiManager.AddElement("settingButton", settingButton);

@@ -63,7 +63,10 @@ namespace Advencursor._Skill
 
         public virtual void Draw() { }
 
-
+        public virtual void Reset()
+        {
+            cooldownTimer = 0;
+        }
 
     }
 }

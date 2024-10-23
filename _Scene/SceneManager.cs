@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Advencursor._Scene.Transition;
+using Advencursor._Managers;
 
 namespace Advencursor._Scene
 {
@@ -32,6 +33,7 @@ namespace Advencursor._Scene
             transitionStart = true;
             isTransitioning = true;
         }
+
 
         public void RemoveScene()
         {

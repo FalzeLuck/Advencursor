@@ -63,7 +63,7 @@ namespace Advencursor._Scene
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
+            Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.DarkGray);
             uiManager.Draw(spriteBatch);
             Globals.DrawCursor();
         }

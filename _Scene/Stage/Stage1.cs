@@ -26,6 +26,7 @@ using Advencursor._SaveData;
 using System.Text.Json;
 using System.IO;
 using Advencursor._Models.Enemy.Stage1;
+using Microsoft.Xna.Framework.Media;
 
 
 namespace Advencursor._Scene.Stage
@@ -94,6 +95,8 @@ namespace Advencursor._Scene.Stage
 
             if (!isPause)
             {
+
+                SongManage();
                 EnemyManage();
                 UpdateBoss(gameTime);
                 foreach (var enemy in Globals.EnemyManager)
@@ -505,6 +508,8 @@ namespace Advencursor._Scene.Stage
 
 
         }
+
+        
         private void UiManage(GameTime gameTime)
         {
             //UI Control

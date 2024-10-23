@@ -23,7 +23,15 @@ namespace Advencursor._Animation
 
         public void AddAnimation(string name, Animation animation)
         {
-            animations[name] = animation;
+            if (animations.ContainsKey(name))
+            {
+                return;
+            }
+            else
+            {
+                animations[name] = animation;
+            }
+
         }
 
         public void Play(string name)
@@ -149,13 +157,13 @@ namespace Advencursor._Animation
             }
         }
 
-        public void Flip(string name,bool isflip)
+        public void Flip(string name, bool isflip)
         {
             Animation animation = GetAnimation(name);
             animation.IsFlip = isflip;
         }
 
-        public void SetScale(string name,float scale)
+        public void SetScale(string name, float scale)
         {
             Animation animation = GetAnimation(name);
             animation.scale = scale;

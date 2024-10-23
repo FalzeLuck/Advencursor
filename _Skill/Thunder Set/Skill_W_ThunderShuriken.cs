@@ -19,8 +19,6 @@ namespace Advencursor._Skill.Thunder_Set
     public class Skill_W_ThunderShuriken : Skill
     {
         private List<Animation> animations = new List<Animation>();
-
-        private float buffTime;
         
 
         private int maxAmount = 4;
@@ -158,6 +156,13 @@ namespace Advencursor._Skill.Thunder_Set
                 }
             }
             
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+            stayDuration = 0f;
+            isUsing = false;
         }
     }
 }

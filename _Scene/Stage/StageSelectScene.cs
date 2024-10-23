@@ -63,11 +63,6 @@ namespace Advencursor._Scene.Stage
         {
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
             gameData.LoadData();
-            if (gameData.isFirstTime)
-            {
-                gameData.isFirstTime = false;
-                gameData.SaveData();
-            }
             screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             Globals.soundManager.SetSongVolume(gameData.volumeMusic);
 

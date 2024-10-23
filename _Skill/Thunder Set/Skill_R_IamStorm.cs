@@ -131,7 +131,6 @@ namespace Advencursor._Skill.Thunder_Set
             countHit = 0;
             player.Immunity(skillTime);
             player.Stop();
-            Globals.Camera.SmoothZoom(1.5f, 5);
             isUsing = true;
         }
 
@@ -241,6 +240,12 @@ namespace Advencursor._Skill.Thunder_Set
             }
 
             return points;
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+            skillTime = 0;
         }
     }
 }
