@@ -18,14 +18,13 @@ namespace Advencursor._Models.Enemy.Stage2
 {
     public class Boss3 : _Enemy
     {
-        private SpriteEmitter spriteEmitter;
         private StaticEmitter staticEmitter;
-        private List<Sprite> waterSprite;
 
         private ParticleEmitterData ped;
         private ParticleEmitter pe;
 
         private Texture2D warningTexture;
+        private Texture2D warningTexture2;
         private Vector2 warningDirection;
         private Sprite player;
         private bool warningTrigger;
@@ -33,7 +32,6 @@ namespace Advencursor._Models.Enemy.Stage2
         private Vector2 screenCenter = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
 
         private bool isStart;
-        private Circle buffCollision;
         private float buffRadius = 600;
         public enum phase
         {
@@ -66,7 +64,6 @@ namespace Advencursor._Models.Enemy.Stage2
         private float blastCollideCooldown;
         private float blastWaitTime;
         private float blastSetTime = 1;
-        Texture2D rayTexture;
 
         //Skill Rest
         private float reduceDamage = 20;
@@ -99,9 +96,14 @@ namespace Advencursor._Models.Enemy.Stage2
         private Rectangle knifeEndArea1;
         private Rectangle knifeEndArea2;
         private Dictionary<int, Rectangle> knifeAreas;
+        Texture2D KnifeTexture;
+        private List<bool> isKnifeSound;
+        private Vector2Pool vectorPool = new Vector2Pool();
+        private bool isPhase2Warning = false;
 
         //Die
         private float dieTimer;
+        private bool isDieSound = false;
         public Boss3(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -123,6 +125,8 @@ namespace Advencursor._Models.Enemy.Stage2
             blastAnim = new Animation(blastTexture, 1, 8, 8, false);
             knives = new List<Knife>();
             knifeDestination = new List<Vector2>();
+            isKnifeSound = new List<bool> { false };
+            KnifeTexture = Globals.Content.Load<Texture2D>("Enemies/Boss3Knife");
             positionIndexList = new List<int>()
             {
                 1,2,3,4
@@ -147,6 +151,11 @@ namespace Advencursor._Models.Enemy.Stage2
                 {7, new Rectangle(-Globals.Bounds.X,((int)screenCenter.Y),Globals.Bounds.X - 200, (int)screenCenter.Y)},
                 {8, new Rectangle(-Globals.Bounds.X,0, Globals.Bounds.X - 200, (int)screenCenter.Y)},
             };
+
+
+            warningTexture = new Texture2D(Globals.graphicsDevice, 640, 1080);
+            warningTexture = Globals.CreateRectangleTexture(640, 1080, Color.Red);
+            SetBlackSmoke(screenCenter, damageRadius);
         }
 
         public override void Update(GameTime gameTime)
@@ -170,6 +179,10 @@ namespace Advencursor._Models.Enemy.Stage2
 
             if (isStart)
             {
+                if (animations["WarpIn"].currentFrame == 50 || animations["WarpOut"].currentFrame == 62)
+                {
+                    Globals.soundManager.PlaySound("Boss3WarpEffect");
+                }
                 if (phaseIndicator != (int)phase.UnderControl && phaseIndicator != (int)phase.Die)
                 {
                     baseAmp = 1f;
@@ -202,13 +215,12 @@ namespace Advencursor._Models.Enemy.Stage2
                     {
                         bombTimer -= TimeManager.TimeGlobal;
                         buffRadius = 1800;
-                        buffCollision = new Circle(screenCenter, buffRadius);
                         UpdateKnifeRotation(10);
-                        UpdateKnifePosition(3000);
+                        UpdateKnifePosition(5000);
                         knifeDestination[0] = screenCenter;
                         if (bombTimer <= 4f && !isSmoke)
                         {
-                            SetBlackSmoke(screenCenter, damageRadius);
+                            Globals.soundManager.PlaySound("Boss3Surprise");
                             damageCollision = new Circle(screenCenter, damageRadius);
                             ParticleManager.AddParticleEmitter(pe);
                             isSmoke = true;
@@ -247,7 +259,6 @@ namespace Advencursor._Models.Enemy.Stage2
                     if (phaseIndicator == (int)phase.SkillVaporBlast)
                     {
                         UpdateContainAnimation();
-                        UpdateKnifePosition(2000);
                         indicator = "Idle";
                         Vector2 pos = new Vector2(screenCenter.X, screenCenter.Y / 2);
                         float walkSpeed = 1000;
@@ -281,6 +292,8 @@ namespace Advencursor._Models.Enemy.Stage2
                                 knifeDestination[0] = new Vector2(blastPosition.X, blastPosition.Y);
                             }
                             blastWaitTime -= TimeManager.TimeGlobal;
+                            if(blastWaitTime > 0)
+                                UpdateKnifePosition(2000);
                             if (blastWaitTime <= 0)
                             {
                                 UpdateKnifeRotation(20, new Vector2(Globals.Bounds.X, 2));
@@ -331,6 +344,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         }
                         if (restTime < 0)
                         {
+                            Globals.soundManager.PlaySound("Boss3Warp");
                             tomatoTimer = 12;
                             phaseIndicator = (int)phase.Tomato;
                         }
@@ -353,6 +367,15 @@ namespace Advencursor._Models.Enemy.Stage2
                 {
                     if (openingTimer >= 0)
                     {
+                        if (!isPhase2Warning)
+                        {
+                            warningTexture = new Texture2D(Globals.graphicsDevice, (int)screenCenter.X, Globals.Bounds.Y);
+                            warningTexture = Globals.CreateRectangleTexture((int)screenCenter.X, Globals.Bounds.Y, Color.Red);
+                            warningTexture2 = new Texture2D(Globals.graphicsDevice, Globals.Bounds.X, (int)screenCenter.Y);
+                            warningTexture2 = Globals.CreateRectangleTexture(Globals.Bounds.X, (int)screenCenter.Y, Color.Red);
+                            isPhase2Warning = true;
+                            GC.Collect();
+                        }
                         isOpening2 = true;
                         openingTimer -= TimeManager.TimeGlobal;
                         UpdateContainAnimation();
@@ -366,6 +389,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                         if (openingTimer <= 5 && !isOpeningKnife)
                         {
+                            Globals.soundManager.PlaySound("Boss3Warp");
                             indicator = "WarpOut";
                             isOpeningKnife = true;
                             AddKnife(30);
@@ -551,6 +575,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                                 if (animations["WarpOut"].IsComplete)
                                 {
+                                    Globals.soundManager.PlaySound("Boss3Warp");
                                     collision = new Rectangle();
                                     position = new Vector2(-600);
                                     isPrepareKnife = false;
@@ -559,6 +584,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                         anim.Reset();
                                     }
                                     positionIndex = positionRandomLoop.GetNext();
+                                    GC.Collect();
                                 }
                             }
                         }
@@ -568,9 +594,15 @@ namespace Advencursor._Models.Enemy.Stage2
                 {
                     UpdateContainAnimation();
                     dieTimer -= TimeManager.TimeGlobal;
-                    if( dieTimer <= 4)
+                    if (dieTimer <= 4)
                     {
                         indicator = "Die";
+                    }
+
+                    if (!isDieSound)
+                    {
+                        Globals.soundManager.PlaySound("Boss3Die");
+                        isDieSound = true;
                     }
                 }
 
@@ -582,6 +614,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     collision = new Rectangle();
                     knives.Clear();
                     knifeDestination.Clear();
+                    isKnifeSound.Clear();
                     indicator = "WarpIn";
                     animations[indicator].Reset();
                     grayScaleAmount = 0;
@@ -601,8 +634,6 @@ namespace Advencursor._Models.Enemy.Stage2
                     if (blastWaitTime > 0)
                     {
                         blastAnim.Reset();
-                        warningTexture = new Texture2D(Globals.graphicsDevice, blastCollision.Width, blastCollision.Height);
-                        warningTexture = Globals.CreateRectangleTexture(blastCollision.Width, blastCollision.Height, Color.Red);
                         Vector2 origin = new Vector2(warningTexture.Width / 2, 0);
                         if (warningOpacity <= 0.3f)
                         {
@@ -651,14 +682,13 @@ namespace Advencursor._Models.Enemy.Stage2
                                 warningOpacity += 1 * TimeManager.TimeGlobal;
                             }
                             Globals.EndDrawGrayScale();
-                            warningTexture = new Texture2D(Globals.graphicsDevice, (int)screenCenter.X, Globals.Bounds.Y);
-                            warningTexture = Globals.CreateRectangleTexture((int)screenCenter.X, Globals.Bounds.Y, Color.Red);
-                            Globals.SpriteBatch.Draw(warningTexture, new Vector2(knifeStartArea1.X,0), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-
-                            warningTexture = new Texture2D(Globals.graphicsDevice, Globals.Bounds.X, (int)screenCenter.Y);
-                            warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, (int)screenCenter.Y, Color.Red);
-                            Globals.SpriteBatch.Draw(warningTexture, new Vector2(0, screenCenter.Y), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                            Globals.SpriteBatch.Draw(warningTexture, new Vector2(knifeStartArea1.X, 0), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                            Globals.SpriteBatch.Draw(warningTexture2, new Vector2(0, screenCenter.Y), null, Color.White * warningOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                             Globals.BeginDrawGrayScale();
+                        }
+                        else
+                        {
+                            isPhase2Warning = false;
                         }
                     }
                 }
@@ -671,9 +701,8 @@ namespace Advencursor._Models.Enemy.Stage2
                 knife.Draw();
             }
 
-            
-        }
 
+        }
         private void UpdateContainAnimation()
         {
             if (animations.ContainsKey(indicator))
@@ -727,43 +756,56 @@ namespace Advencursor._Models.Enemy.Stage2
         {
             for (int i = 0; i < knives.Count; ++i)
             {
-                var dir = knifeDestination[i] - knives[i].position;
+                Vector2 dir = vectorPool.Get();
+                dir = knifeDestination[i] - knives[i].position;
                 float distance = dir.Length();
                 if (distance == 0)
                 {
                     knives[i].position = knifeDestination[i];
+                    isKnifeSound[i] = false;
                 }
                 else if (distance < speed * TimeManager.TimeGlobal)
                 {
-                    dir.Normalize();
                     knives[i].position = knifeDestination[i];
                 }
                 else
                 {
+                    if (!isKnifeSound[i])
+                    {
+                        Globals.soundManager.PlaySoundCanStack("Boss3Knife");
+                        isKnifeSound[i] = true;
+                    }
                     dir.Normalize();
                     knives[i].position += dir * speed * TimeManager.TimeGlobal;
                 }
+                vectorPool.Return(dir);
             }
         }
         private void UpdateKnifePosition(float speed, int knifeIndex)
         {
-            var dir = knifeDestination[knifeIndex] - knives[knifeIndex].position;
+            Vector2 dir = vectorPool.Get();
+            dir = knifeDestination[knifeIndex] - knives[knifeIndex].position;
             float distance = dir.Length();
             if (distance == 0)
             {
                 knives[knifeIndex].position = knifeDestination[knifeIndex];
+                isKnifeSound[knifeIndex] = false;
             }
             else if (distance < speed * TimeManager.TimeGlobal)
             {
-                dir.Normalize();
                 knives[knifeIndex].position = knifeDestination[knifeIndex];
             }
             else
             {
+                if (!isKnifeSound[knifeIndex])
+                {
+                    Globals.soundManager.PlaySoundCanStack("Boss3Knife");
+                    isKnifeSound[knifeIndex] = true;
+                }
                 dir.Normalize();
                 knives[knifeIndex].position += dir * speed * TimeManager.TimeGlobal;
             }
-
+            vectorPool.Return(dir);
         }
         public void Start()
         {
@@ -779,10 +821,10 @@ namespace Advencursor._Models.Enemy.Stage2
         }
         private void AddKnife(int amount)
         {
-            Texture2D KnifeTexture = Globals.Content.Load<Texture2D>("Enemies/Boss3Knife");
             for (int i = 0; i < amount; i++)
             {
-                knives.Add(new Knife(KnifeTexture, new Vector2(screenCenter.X, -300), 0, 150, 1, 4,player));
+                knives.Add(new Knife(KnifeTexture, new Vector2(screenCenter.X, -300), 0, 150, 1, 4, player));
+                isKnifeSound.Add(false);
                 knifeDestination.Add(knives[knives.Count - 1].position);
                 knifeDestination[knives.Count - 1] = knives[knives.Count - 1].position;
                 knives[knives.Count - 1].rotation = MathHelper.ToRadians(90f);
@@ -827,7 +869,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private void DrawShadow()
         {
             Vector2 shadowPosition = new Vector2(position.X, position.Y + 380);
-            float shadowScale = 1.5f;
+            float shadowScale = 1.3f;
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);
             Globals.SpriteBatch.Draw(shadowTexture, shadowPosition, null, Color.White * 0.6f, 0f, shadowOrigin, shadowScale, spriteEffects, 0f);
         }
@@ -854,6 +896,7 @@ namespace Advencursor._Models.Enemy.Stage2
             collision = new Rectangle();
             knives.Clear();
             knifeDestination.Clear();
+            isKnifeSound.Clear();
             indicator = "WarpIn";
             animations[indicator].Reset();
             dieTimer = 5f;

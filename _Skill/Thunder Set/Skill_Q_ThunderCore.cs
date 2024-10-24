@@ -31,6 +31,7 @@ namespace Advencursor._Skill.Thunder_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("QThunder");
             aura = new(Globals.Content.Load<Texture2D>("Item/SetThunder/Q_Thunder"), 1, 4, 8, true);
             buffTime = 0f;
         }

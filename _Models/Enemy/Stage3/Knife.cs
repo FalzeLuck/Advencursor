@@ -18,6 +18,7 @@ namespace Advencursor._Models.Enemy.Stage3
         public bool haveDamage = false;
         private float scale;
         private Sprite player;
+        public bool isRotationComplete = false;
         public Knife(Texture2D texture, Vector2 position, int health, int attack, int row, int column,Sprite player) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>

@@ -37,7 +37,7 @@ namespace Advencursor._Scene
             nocheckButton = Globals.Content.Load<Texture2D>("UI/Setting/NoCheckButton");
 
             Vector2 buttonPosStart = new Vector2(Globals.Bounds.X/2 + 150,(Globals.Bounds.Y/2) - 48);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Setting/ExitButton"), new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y - 300), OnExitButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Setting/ExitButton"), new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y - 350), OnExitButtonClick);
             UIBackground settingBG = new(Globals.Content.Load<Texture2D>("UI/Setting/SettingUI"), new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2));
             UIButton musicOnButton = new(nocheckButton, buttonPosStart + new Vector2(0,0), OnMusicOnButtonClick);
             UIButton musicOffButton = new(nocheckButton, buttonPosStart + new Vector2(100, 0), OnMusicOffButtonClick);

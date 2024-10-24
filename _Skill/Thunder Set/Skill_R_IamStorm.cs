@@ -64,6 +64,7 @@ namespace Advencursor._Skill.Thunder_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("RThunder");
             foreach (var enemy in Globals.EnemyManager)
             {
                 enemy.TakeDamage(player,(enemy.Status.MaxHP*15)/100,true,true,Color.Cyan);
@@ -141,10 +142,9 @@ namespace Advencursor._Skill.Thunder_Set
             if (isUsing)
             {
                 skillTime -= TimeManager.TotalSeconds;
-                Globals.soundManager.PauseAllSound();
+                Globals.soundManager.PauseAllSoundExcept("RThunder");
                 Vector2 dir = targetPoint - player.position;
                 float distance = dir.Length();
-
                 if (starOrder[currentPoint] != 3)
                 {
 
@@ -199,7 +199,7 @@ namespace Advencursor._Skill.Thunder_Set
                     player.Immunity(0.5f);
                     player.position = new Vector2(Globals.Viewport.Width / 2, Globals.Viewport.Height / 2);
                     Mouse.SetPosition((int)(player.position.X), (int)(player.position.Y));
-                    Globals.soundManager.ResumeAllSound();
+                    Globals.soundManager.ResumeAllActiveInstanceSound();
                 }
             }
 

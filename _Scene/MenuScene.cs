@@ -50,6 +50,8 @@ namespace Advencursor._Scene
             }
             Globals.soundManager.StopAllSounds();
             Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
+
+            Globals.soundManager.SoundReset();
             background = Globals.Content.Load<Texture2D>("Background/Menu");
         }
 

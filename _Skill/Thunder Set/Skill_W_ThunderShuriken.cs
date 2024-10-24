@@ -41,6 +41,12 @@ namespace Advencursor._Skill.Thunder_Set
         private float skillMultiplier = 0.5f;
         public Skill_W_ThunderShuriken(string name, SkillData skillData) : base(name, skillData)
         {
+
+            skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
+            maxAmount = (int)skillData.GetMultiplierNumber(name, "Max Amount");
+            radius = skillData.GetMultiplierNumber(name, "Radius");
+            maxDuration = skillData.GetMultiplierNumber(name, "Duration");
+            rotation_speed = skillData.GetMultiplierNumber(name, "Speed");
             rarity = 2;
             setSkill = "Thunder";
             description = "Use lightning to control shuriken. Each of them will spin through enemy and push them away.";
@@ -48,13 +54,8 @@ namespace Advencursor._Skill.Thunder_Set
 
         public override void Use(Player player)
         {
-            skillMultiplier = skillData.GetMultiplierNumber(name, "Damage Multiplier");
-            maxAmount = (int)skillData.GetMultiplierNumber(name, "Max Amount");
-            radius = skillData.GetMultiplierNumber(name, "Radius");
-            maxDuration = skillData.GetMultiplierNumber(name, "Duration");
-            rotation_speed = skillData.GetMultiplierNumber(name, "Speed");
+            Globals.soundManager.PlaySound("WThunder");
 
-            
 
             base.Use(player);
             isUsing = true;

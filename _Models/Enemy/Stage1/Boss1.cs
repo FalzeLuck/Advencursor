@@ -119,6 +119,7 @@ namespace Advencursor._Models.Enemy.Stage1
                     if (animations["Attack"].currentFrame == 21 && stand_time >= 0.5f)
                     {
                         animations["Attack"].PauseFrame(5);
+                        Globals.soundManager.PlaySound("BossRolling");
                     }
 
                     if (collision.X + collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y + collision.Height >= Globals.Bounds.Y || collision.Y <= 0)
@@ -127,7 +128,7 @@ namespace Advencursor._Models.Enemy.Stage1
                         {
                             animations["Attack"].Play();
                             Globals.Camera.Shake(0.2f, 10);
-                            Globals.soundManager.PlaySound("BossWallHit");
+                            Globals.soundManager.PlaySound("Boss1WallHit");
                         }
                         velocity = Vector2.Zero;
                         stand_time -= TimeManager.TimeGlobal;
@@ -217,7 +218,7 @@ namespace Advencursor._Models.Enemy.Stage1
         {
             if (charge)
             {
-                Globals.soundManager.PlaySound("BossRolling");
+                
                 Vector2 origin = new Vector2(0, 100);
                 if (warningOpacity <= 0.3f)
                 {

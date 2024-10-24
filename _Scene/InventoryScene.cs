@@ -108,7 +108,7 @@ namespace Advencursor._Scene
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(800, Globals.Bounds.Y - 100), OnEquipButtonClick);
             UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(170, Globals.Bounds.Y - 105), OnStatusButtonHover, true);
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 300, Globals.Bounds.Y - 115), OnPlayButtonClick);
-            UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonExit"), new Vector2(60, 60), OnExitButtonClick);
+            UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonExit2"), new Vector2(60, 60), OnExitButtonClick);
             uiManager.AddElement("equipButton", equipButton);
             uiManager.AddElement("statButton", statButton);
             uiManager.AddElement("exitButton", exitButton);

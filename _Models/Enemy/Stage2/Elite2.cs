@@ -22,7 +22,7 @@ namespace Advencursor._Models.Enemy.Stage2
         private float bombTimer;
         private bool isBomb;
         private bool isDamage;
-
+        private bool isMoveSoundPlayed = false;
 
         private int dashSpeed = 600;
         public Elite2(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
@@ -43,6 +43,7 @@ namespace Advencursor._Models.Enemy.Stage2
             bombTextureAnimation = new Animation(Globals.Content.Load<Texture2D>("Enemies/Elite2_Effect"), 1, 8, 8, false);
             velocity = new Vector2(dashSpeed);
             shadowTexture = Globals.Content.Load<Texture2D>("Enemies/Shadow3");
+            
         }
         public override void Update(GameTime gameTime)
         {
@@ -64,6 +65,11 @@ namespace Advencursor._Models.Enemy.Stage2
             if (!isBomb)
             {
                 movementAI.Move(this);
+                if (!isMoveSoundPlayed)
+                {
+                    Globals.soundManager.PlaySound("Elite2Moving", false);
+                    isMoveSoundPlayed = true;
+                }
             }
 
             if (isBomb)
@@ -79,6 +85,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     bombTextureAnimation.Update();
                     if (!isDamage)
                     {
+                        Globals.soundManager.PlaySound("Elite2Explode");
                         foreach (var enemy in Globals.EnemyManager)
                         {
                             if (enemy.collision.Intersects(bombRadius) && !(enemy is Boss3))

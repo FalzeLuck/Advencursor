@@ -1100,6 +1100,54 @@
 /processorParam:Quality=Best
 /build:Sound/Effect/Boss1/WallHit.wav
 
+#begin Sound/Effect/Boss2/WaterAttack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss2/WaterAttack.wav
+
+#begin Sound/Effect/Boss2/WaterPour.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss2/WaterPour.wav
+
+#begin Sound/Effect/Boss3/Dead.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Dead.wav
+
+#begin Sound/Effect/Boss3/Hurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Hurt.wav
+
+#begin Sound/Effect/Boss3/Knife.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Knife.wav
+
+#begin Sound/Effect/Boss3/Surprise.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Surprise.wav
+
+#begin Sound/Effect/Boss3/Warp.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Warp.wav
+
+#begin Sound/Effect/Boss3/WarpEffect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/WarpEffect.wav
+
 #begin Sound/Effect/ButtonClick.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1148,6 +1196,18 @@
 /processorParam:Quality=Best
 /build:Sound/Effect/Elite1/Slam.wav
 
+#begin Sound/Effect/Elite2/Explode.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Elite2/Explode.wav
+
+#begin Sound/Effect/Elite2/Moving.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Elite2/Moving.wav
+
 #begin Sound/Effect/EquipItem.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1177,6 +1237,30 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/Story/Click.wav
+
+#begin Sound/Effect/Thunder/E.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Thunder/E.wav
+
+#begin Sound/Effect/Thunder/Q.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Thunder/Q.wav
+
+#begin Sound/Effect/Thunder/R.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Thunder/R.wav
+
+#begin Sound/Effect/Thunder/W.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Thunder/W.wav
 
 #begin Sound/Effect/Warning.wav
 /importer:WavImporter

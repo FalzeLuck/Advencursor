@@ -13,6 +13,7 @@ namespace Advencursor._Managers
     {
         private Dictionary<string, SoundEffect> soundEffects;
         private Dictionary<string, SoundEffectInstance> soundInstances;
+        private Dictionary<string, bool> soundInstancesPauseFactors;
         private Dictionary<string, float> soundBaseVolumes;
         private List<SoundEffectInstance> activeSoundInstances = new List<SoundEffectInstance>();
 
@@ -20,10 +21,13 @@ namespace Advencursor._Managers
         private string currentSongName;
 
         private float globalSoundEffectVolume = 1f;
+
+
         public SoundManager()
         {
             soundEffects = new Dictionary<string, SoundEffect>();
             soundInstances = new Dictionary<string, SoundEffectInstance>();
+            soundInstancesPauseFactors = new Dictionary<string, bool> ();
             soundBaseVolumes = new Dictionary<string, float>();
         }
 
@@ -35,6 +39,7 @@ namespace Advencursor._Managers
                 var instance = soundEffect.CreateInstance();
                 instance.Volume = baseVolume * globalSoundEffectVolume;
                 soundInstances.Add(soundName, instance);
+                soundInstancesPauseFactors.Add(soundName, false);
                 soundBaseVolumes.Add(soundName, MathHelper.Clamp(baseVolume, 0f, 1f));
             }
         }
@@ -46,6 +51,7 @@ namespace Advencursor._Managers
                 var instance = soundInstances[soundName];
                 instance.IsLooped = loop;
                 instance.Volume = soundBaseVolumes[soundName] * globalSoundEffectVolume;
+                soundInstancesPauseFactors[soundName] = true;
                 instance.Play();
             }
         }
@@ -54,7 +60,7 @@ namespace Advencursor._Managers
         {
             activeSoundInstances.RemoveAll(instance => instance.State == SoundState.Stopped);
 
-            const int maxActiveSounds = 30;
+            const int maxActiveSounds = 15;
 
             if (activeSoundInstances.Count < maxActiveSounds)
             {
@@ -112,6 +118,20 @@ namespace Advencursor._Managers
                 sound.Pause();
             }
         }
+        public void PauseAllSoundExcept(string name)
+        {
+            foreach (var sound in soundInstances.Keys)
+            {
+                if (!sound.Equals(name))
+                {
+                    soundInstances[sound].Pause();
+                }
+            }
+            foreach (var sound in activeSoundInstances)
+            {
+                sound.Pause();
+            }
+        }
         public void ResumeSound(string soundName)
         {
             if (soundInstances.ContainsKey(soundName))
@@ -119,19 +139,36 @@ namespace Advencursor._Managers
                 soundInstances[soundName].Resume();
             }
         }
-        public void ResumeAllSound()
+        public void ResumeAllActiveInstanceSound()
         {
-            foreach (var sound in soundInstances.Values)
-            {
-                sound.Resume();
-            }
             foreach (var sound in activeSoundInstances)
             {
                 sound.Resume();
             }
         }
 
+        public void ResumeAllSound()
+        {
+            foreach (var sound in soundInstances)
+            {
+                if (soundInstancesPauseFactors[sound.Key] == true)
+                {
+                    sound.Value.Resume();
+                }
+            }
+        }
 
+        public void SoundReset()
+        {
+            foreach (var sound in soundInstances.Values)
+            {
+                sound.Stop();
+            }
+            foreach (var condition in soundInstancesPauseFactors)
+            {
+                soundInstancesPauseFactors[condition.Key] = false;
+            }
+        }
         public void StopSound(string soundName)
         {
             if (soundInstances.ContainsKey(soundName))

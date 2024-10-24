@@ -115,6 +115,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                 if (Status.IsAlive())
                 {
+                    if (!animations["Open"].IsComplete && animations["Open"].currentFrame == 1) Globals.soundManager.PlaySound("Boss2Opening");
                     movementAI.Stop();
                     if (isCenter && animations["Open"].IsComplete || isDashLeft || isDashRight)
                     {
@@ -123,6 +124,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     }
                     if (isCenter)
                     {
+                        Globals.soundManager.StopSound("Boss2Attack");
                         if (!animations["Open"].IsComplete)
                         {
                             indicator = "WalkOpen";
@@ -165,6 +167,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                     if (isDashLeft)
                     {
+                        Globals.soundManager.StopSound("Boss2Attack");
                         indicator = "Walk";
                         RotateTo(90);
                         velocity = new Vector2(-2000, 0);
@@ -181,6 +184,7 @@ namespace Advencursor._Models.Enemy.Stage2
 
                     if (isDashRight)
                     {
+                        Globals.soundManager.StopSound("Boss2Attack");
                         indicator = "Walk";
                         RotateTo(-90);
                         velocity = new Vector2(2000, 0);
@@ -213,6 +217,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         rayChargeTime -= TimeManager.TimeGlobal;
                         if (rayChargeTime <= 0f)
                         {
+                            Globals.soundManager.PlaySound("Boss2Attack");
                             rayAnimation.Update();
                             rayDuration -= TimeManager.TimeGlobal;
                             if(!isShake)
@@ -291,6 +296,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         rayChargeTime -= TimeManager.TimeGlobal;
                         if (rayChargeTime <= 0f)
                         {
+                            Globals.soundManager.PlaySound("Boss2Attack");
                             rayAnimation.Update();
                             rayDuration -= TimeManager.TimeGlobal;
                             if (!isShake)
@@ -598,7 +604,7 @@ namespace Advencursor._Models.Enemy.Stage2
         }
         private void DrawShadow()
         {
-            Vector2 shadowPosition = new Vector2(position.X, position.Y + 250);
+            Vector2 shadowPosition = new Vector2(position.X, position.Y + 200);
             float shadowScale = 1.5f;
 
             Vector2 shadowOrigin = new Vector2(shadowTexture.Width / 2, shadowTexture.Height / 2);

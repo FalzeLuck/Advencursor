@@ -198,7 +198,7 @@ namespace Advencursor._Scene.Stage
 
 
                     Common1 enemy = (new Common1(
-                        Globals.Content.Load<Texture2D>("Enemies/Common1"),
+                        Common1Texture,
                         spawnpoint,
                         health: 6000,
                         attack: 300,
@@ -265,7 +265,7 @@ namespace Advencursor._Scene.Stage
                         }
 
                         Elite2 enemy = (new Elite2(
-                            Globals.Content.Load<Texture2D>("Enemies/Elite2"),
+                            Elite2Texture,
                             spawnpoint,
                             health: 10000,
                             attack: 1,
@@ -323,7 +323,7 @@ namespace Advencursor._Scene.Stage
             {
                 startWarning = false;
                 elite_spawn_time = 0f;
-                boss_obj = new Boss2(Globals.Content.Load<Texture2D>("Enemies/Boss2"), new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
+                boss_obj = new Boss2(Boss2Texture, new Vector2(Globals.Bounds.X / 2, -200), 250000, 5000, 5, 8)
                 {
                     movementAI = new FollowMovementAI()
                     {

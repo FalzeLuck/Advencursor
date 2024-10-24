@@ -48,6 +48,7 @@ namespace Advencursor._Skill.Thunder_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("EThunder");
             spriteEmitter = new SpriteEmitter(() => player.position);
             bufftime = duration;
 

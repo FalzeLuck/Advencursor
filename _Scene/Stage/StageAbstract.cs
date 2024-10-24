@@ -41,6 +41,7 @@ namespace Advencursor._Scene.Stage
 
         //Pause Variable
         protected bool isPause;
+        protected bool isSoundPause;
         Texture2D dimTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
         Texture2D pauseBackground = Globals.Content.Load<Texture2D>("UI/PauseBackground");
 
@@ -75,21 +76,29 @@ namespace Advencursor._Scene.Stage
         protected UIManager pauseUiManager = new UIManager();
 
         //Variable for reduce memory Load
-        Texture2D playertexture;
-        Song bgsong;
-        Animation slashAnimation;
-        UIBackground uIBackground;
-        UISkill skillUI_Q;
-        UISkill skillUI_W;
-        UISkill skillUI_E;
-        UISkill skillUI_R;
-        UIPlayerCheckPanel uIPanel;
-        Texture2D bg;
-        Texture2D fg;
-        ProgressBarAnimated playerHpBar;
+        protected Texture2D playertexture;
+        protected Texture2D Common1Texture;
+        protected Texture2D Elite1Texture;
+        protected Texture2D Boss1Texture;
+        protected Texture2D Elite2Texture;
+        protected Texture2D Boss2Texture;
+        protected Texture2D Boss3Texture;
+        protected Song bgsong;
+        protected Animation slashAnimation;
+        protected UIBackground uIBackground;
+        protected UISkill skillUI_Q;
+        protected UISkill skillUI_W;
+        protected UISkill skillUI_E;
+        protected UISkill skillUI_R;
+        protected UIPlayerCheckPanel uIPanel;
+        protected Texture2D bg;
+        protected Texture2D fg;
+        protected ProgressBarAnimated playerHpBar;
 
         public virtual void Load()
         {
+
+            AllSkills.Reset();
             Texture2D tempTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
             warningTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Red);
             Globals.soundManager.StopAllSounds();
@@ -138,6 +147,12 @@ namespace Advencursor._Scene.Stage
             uiManager.AddElement("skillUI_E", skillUI_E);
             uiManager.AddElement("skillUI_R", skillUI_R);
 
+            Common1Texture = Globals.Content.Load<Texture2D>("Enemies/Common1");
+            Elite1Texture = Globals.Content.Load<Texture2D>("Enemies/Elite1");
+            Boss1Texture = Globals.Content.Load<Texture2D>("Enemies/Boss1");
+            Elite2Texture = Globals.Content.Load<Texture2D>("Enemies/Elite2");
+            Boss2Texture = Globals.Content.Load<Texture2D>("Enemies/Boss2");
+            Boss3Texture = Globals.Content.Load<Texture2D>("Enemies/Boss3");
 
             Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
         }
@@ -252,26 +267,6 @@ namespace Advencursor._Scene.Stage
             ParticleManager.RemoveAll();
         }
 
-        public virtual void Reset()
-        {
-            UnloadScene();
-            isPause = false;
-            pauseUiManager.RemoveAll();
-            Mouse.SetPosition(Globals.Bounds.X/2, Globals.Bounds.Y/2);
-            timer.TimeSet(0f);
-            boss_spawn_time = 0f;
-            boss_dash_cooldown = 0;
-            boss_spawned = false;
-            enemy_spawn_time = 0f;
-            elite_spawn_time = 0f;
-            enemy_count = 0;
-            elite_count = 0;
-            enemy_max = 30;
-            elite_max = 2;
-            enemy_killed = 0;
-            elite_killed = 0;
-            boss_killed = false;
-        }
 
         protected void CheckPause(GameTime gameTime)
         {
@@ -280,24 +275,39 @@ namespace Advencursor._Scene.Stage
                 Mouse.SetPosition(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
             if (Keyboard.GetState().IsKeyDown(Keys.Escape) || !Globals.Game.IsActive)
             {
+                if (!isPause)
+                {
+                    if (!isSoundPause)
+                    {
+                        Globals.soundManager.PauseAllSound();
+                    }
+                    Vector2 buttonPosition = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2 - 50);
+                    Vector2 buttonIncrement = new Vector2(0, 150);
+                    Texture2D continueTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonPlay");
+                    Texture2D restartTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonRestart");
+                    Texture2D exitTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonExit");
+
+                    UIElement continueButton = new UIButton(continueTexture, buttonPosition, OnContinueClick);
+                    UIElement restartButton = new UIButton(restartTexture, buttonPosition + buttonIncrement * 1, OnRestartClick);
+                    UIElement exitButton = new UIButton(exitTexture, buttonPosition + buttonIncrement * 2, OnExitClick);
+
+                    pauseUiManager.AddElement("continue", continueButton);
+                    pauseUiManager.AddElement("restart", restartButton);
+                    pauseUiManager.AddElement("exit", exitButton);
+                }
+
                 isPause = true;
+                isSoundPause = true;
                 TimeManager.ChangeGameSpeed(0f);
-
-                Vector2 buttonPosition = new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y / 2 - 50);
-                Vector2 buttonIncrement = new Vector2(0, 150);
-                Texture2D continueTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonPlay");
-                Texture2D restartTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonRestart");
-                Texture2D exitTexture = Globals.Content.Load<Texture2D>("UI/PauseButtonExit");
-
-                UIElement continueButton = new UIButton(continueTexture, buttonPosition, OnContinueClick);
-                UIElement restartButton = new UIButton(restartTexture, buttonPosition + buttonIncrement * 1, OnRestartClick);
-                UIElement exitButton = new UIButton(exitTexture, buttonPosition + buttonIncrement * 2, OnExitClick);
-
-                pauseUiManager.AddElement("continue", continueButton);
-                pauseUiManager.AddElement("restart", restartButton);
-                pauseUiManager.AddElement("exit", exitButton);
             }
-
+            if (!isPause)
+            {
+                if (isSoundPause)
+                {
+                    Globals.soundManager.ResumeAllSound();
+                    isSoundPause = false;
+                }
+            }
         }
 
         protected void OnContinueClick()
@@ -327,7 +337,6 @@ namespace Advencursor._Scene.Stage
         private void OnExitClick()
         {
             UnloadScene();
-            AllSkills.Reset();
             sceneManager.AddScene(new MenuScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
         }
 

@@ -194,8 +194,8 @@ namespace Advencursor
             SoundEffect Common1Die = Content.Load<SoundEffect>("Sound/Effect/Common1/Die");
             SoundEffect Elite1Moving = Content.Load<SoundEffect>("Sound/Effect/Elite1/Moving");
             SoundEffect Elite1Slam = Content.Load<SoundEffect>("Sound/Effect/Elite1/Slam");
-            SoundEffect BossRolling = Content.Load<SoundEffect>("Sound/Effect/Boss1/RollAttack");
-            SoundEffect BossWallHit = Content.Load<SoundEffect>("Sound/Effect/Boss1/WallHit");
+            SoundEffect Boss1Rolling = Content.Load<SoundEffect>("Sound/Effect/Boss1/RollAttack");
+            SoundEffect Boss1WallHit = Content.Load<SoundEffect>("Sound/Effect/Boss1/WallHit");
             SoundEffect TomatoBomb = Content.Load<SoundEffect>("Sound/Effect/Boss1/TomatoBomb");
             SoundEffect TomatoPoison = Content.Load<SoundEffect>("Sound/Effect/Boss1/Poison");
             soundManager.LoadSound("Common1Moving", Common1Moving,0.3f);
@@ -203,12 +203,34 @@ namespace Advencursor
             soundManager.LoadSound("Common1Die", Common1Die,0.1f);
             soundManager.LoadSound("Elite1Moving", Elite1Moving,0.5f);
             soundManager.LoadSound("Elite1Slam", Elite1Slam);
-            soundManager.LoadSound("BossRolling", BossRolling,0.7f);
-            soundManager.LoadSound("BossWallHit", BossWallHit);
+            soundManager.LoadSound("Boss1Rolling", Boss1Rolling,0.7f);
+            soundManager.LoadSound("Boss1WallHit", Boss1WallHit);
             soundManager.LoadSound("TomatoBomb", TomatoBomb, 0.5f);
             soundManager.LoadSound("TomatoPoison", TomatoPoison ,0.15f);
-            //Stage2
 
+            //Stage2
+            SoundEffect Elite2Moving = Content.Load<SoundEffect>("Sound/Effect/Elite2/Moving");
+            SoundEffect Elite2Explode = Content.Load<SoundEffect>("Sound/Effect/Elite2/Explode");
+            SoundEffect Boss2Opening = Content.Load<SoundEffect>("Sound/Effect/Boss2/WaterPour");
+            SoundEffect Boss2Attack = Content.Load<SoundEffect>("Sound/Effect/Boss2/WaterAttack");
+            soundManager.LoadSound("Elite2Moving", Elite2Moving, 0.5f);
+            soundManager.LoadSound("Elite2Explode", Elite2Explode, 0.5f);
+            soundManager.LoadSound("Boss2Opening", Boss2Opening, 1f);
+            soundManager.LoadSound("Boss2Attack", Boss2Attack, 0.75f);
+
+            //Stage3
+            SoundEffect Boss3Surprise = Content.Load<SoundEffect>("Sound/Effect/Boss3/Surprise");
+            SoundEffect Boss3Hit = Content.Load<SoundEffect>("Sound/Effect/Boss3/Hurt");
+            SoundEffect Boss3Warp = Content.Load<SoundEffect>("Sound/Effect/Boss3/Warp");
+            SoundEffect Boss3WarpEffect = Content.Load<SoundEffect>("Sound/Effect/Boss3/WarpEffect");
+            SoundEffect Boss3Knife = Content.Load<SoundEffect>("Sound/Effect/Boss3/Knife");
+            SoundEffect Boss3Die = Content.Load<SoundEffect>("Sound/Effect/Boss3/Dead");
+            soundManager.LoadSound("Boss3Surprise", Boss3Surprise);
+            soundManager.LoadSound("Boss3Hit", Boss3Hit);
+            soundManager.LoadSound("Boss3Warp", Boss3Warp);
+            soundManager.LoadSound("Boss3WarpEffect", Boss3WarpEffect);
+            soundManager.LoadSound("Boss3Knife", Boss3Knife,0.5f);
+            soundManager.LoadSound("Boss3Die", Boss3Die);
 
             //General
             SoundEffect slashSound = Content.Load<SoundEffect>("Sound/Effect/Slash");
@@ -222,11 +244,24 @@ namespace Advencursor
             soundManager.LoadSound("EquipItem", EquipItem);
             soundManager.LoadSound("Warning", Warning);
 
+            //ThunderSet
+            SoundEffect QThunder = Content.Load<SoundEffect>("Sound/Effect/Thunder/Q");
+            SoundEffect WThunder = Content.Load<SoundEffect>("Sound/Effect/Thunder/W");
+            SoundEffect EThunder = Content.Load<SoundEffect>("Sound/Effect/Thunder/E");
+            SoundEffect RThunder = Content.Load<SoundEffect>("Sound/Effect/Thunder/R");
+            soundManager.LoadSound("QThunder", QThunder);
+            soundManager.LoadSound("WThunder", WThunder);
+            soundManager.LoadSound("EThunder", EThunder);
+            soundManager.LoadSound("RThunder", RThunder);
             //Visual Novel Scene
             SoundEffect stab = Content.Load<SoundEffect>("Sound/Effect/Stab");
             SoundEffect click = Content.Load<SoundEffect>("Sound/Effect/Story/Click");
             soundManager.LoadSound("Stab", stab);
             soundManager.LoadSound("ClickVisualNovel", click);
+
+
+
+            soundManager.StopAllSounds();
         }
 
         public static void SetGlobalSongVolume(float volume)

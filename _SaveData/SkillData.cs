@@ -115,7 +115,7 @@ namespace Advencursor._SaveData
                 {"Duration", 9f },
                 {"Heal Percentage", 1.3f },
                 {"Heal Interval", 1f },
-                {"Radius", 600f },
+                {"Radius", 400f },
                 {"Cooldown", 20f }
             };
             FireBall = new Dictionary<string, float>()
@@ -176,27 +176,11 @@ namespace Advencursor._SaveData
                 string deserializedData = File.ReadAllText(path);
                 SkillData data = JsonSerializer.Deserialize<SkillData>(deserializedData);
                 this.skillNameForDamageMultipliers = data.skillNameForDamageMultipliers;
-                //UpdateDictionariesFromSkillMultipliers();
             }
             else
             {
                 SaveData();
             }
         }
-        /*private void UpdateDictionariesFromSkillMultipliers()
-        {
-            ThunderCore = skillNameForDamageMultipliers["Thunder Core"];
-            ThunderShuriken = skillNameForDamageMultipliers["Thunder Shuriken"];
-            ThunderSpeed = skillNameForDamageMultipliers["Thunder Speed"];
-            IamStorm = skillNameForDamageMultipliers["I AM the Storm"];
-            FoodTrap = skillNameForDamageMultipliers["Yadom Bait"];
-            PoisonTrap = skillNameForDamageMultipliers["HAHAHA It's A Trap"];
-            EmergencyFood = skillNameForDamageMultipliers["Emergency Food"];
-            Invincibility = skillNameForDamageMultipliers["Nah I'd win"];
-            FireDomain = skillNameForDamageMultipliers["Fire Domain"];
-            FireBall = skillNameForDamageMultipliers["Katon goukakyuu no jutsu"];
-            FireBomb = skillNameForDamageMultipliers["E-X-P-L-O-S-I-O-N!"];
-            FireEmperor = skillNameForDamageMultipliers["Flame Emperor"];
-        }*/
     }
 }

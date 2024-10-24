@@ -23,7 +23,7 @@ namespace Advencursor._SaveData
         public int stage { get; set; } = 0;
 
         //Setting
-        public float volumeMusic { get; set; } = 0.4f;
+        public float volumeMusic { get; set; } = 0.6f;
         public float volumeEffect { get; set; } = 1f;
 
 
