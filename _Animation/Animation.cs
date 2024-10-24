@@ -27,6 +27,7 @@ namespace Advencursor._Animation
         public Vector2 offset { get; set; }
         public Vector2 position { get; set; }
         public float scale { get; set; }
+        public Vector2 scaleVector2 { get; set; }
         public float rotation { get; set; }
         public Color color { get; set; }
 
@@ -53,6 +54,29 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            scaleVector2 = Vector2.Zero;
+            rotation = 0f;
+            color = Color.White;
+        }
+        public Animation(Texture2D texture, int row, int column, float fps, bool IsLooping, Vector2 scale)
+        {
+            this.Texture = texture;
+            this.Row = row;
+            this.Column = column;
+            maxColumn = column;
+            Startrow = 1;
+            TotalFrame = row * column;
+            this.FrameTime = 1 / fps;
+            this.IsLooping = IsLooping;
+            currentFrame = 0;
+            timer = 0f;
+            IsComplete = false;
+            IsPause = false;
+            IsCollide = false;
+            offset = Vector2.Zero;
+            opacityValue = 1f;
+            this.scale = 1;
+            scaleVector2 = scale;
             rotation = 0f;
             color = Color.White;
         }
@@ -75,6 +99,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            scaleVector2 = Vector2.Zero;
             rotation = 0f;
             color = Color.White;
         }
@@ -97,6 +122,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            scaleVector2 = Vector2.Zero;
             rotation = 0f;
             color = Color.White;
         }
@@ -120,6 +146,7 @@ namespace Advencursor._Animation
             offset = Vector2.Zero;
             opacityValue = 1f;
             this.scale = scale;
+            scaleVector2 = Vector2.Zero;
             rotation = 0f;
             color = Color.White;
         }
@@ -210,7 +237,10 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scale, flip, 1);
+                if(scaleVector2 == Vector2.Zero)
+                    Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scale, flip, 1);
+                else
+                    Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scaleVector2, flip, 1);
             }
             else if (Startrow != 0)
             {
@@ -221,7 +251,10 @@ namespace Advencursor._Animation
 
                 Rectangle cutRectangle = new Rectangle(frameWidth * _column, frameHeight * _row, frameWidth, frameHeight);
                 Vector2 origin = new Vector2(frameWidth / 2, frameHeight / 2);
-                Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scale, flip, 1);
+                if (scaleVector2 == Vector2.Zero)
+                    Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scale, flip, 1);
+                else
+                    Globals.SpriteBatch.Draw(Texture, position, cutRectangle, color * opacityValue, rotation, origin - offset, scaleVector2, flip, 1);
             }
 
         }

@@ -41,7 +41,6 @@ namespace Advencursor._Scene
         {
             font = Globals.Content.Load<SpriteFont>("Font/TextFont");
             dialogueManager = new DialogueManager("Content/Dialogue.json");
-            //currentSceneDialogue = dialogueManager.GetSceneDialogue("null");
         }
 
         public virtual void Update(GameTime gameTime)

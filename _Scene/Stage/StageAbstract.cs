@@ -323,14 +323,12 @@ namespace Advencursor._Scene.Stage
                     sceneManager.AddScene(new Stage3(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
                     break;
             }
-            GC.Collect();
         }
         private void OnExitClick()
         {
             UnloadScene();
             AllSkills.Reset();
             sceneManager.AddScene(new MenuScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
-            GC.Collect();
         }
 
         protected void DrawPause()

@@ -123,6 +123,15 @@ namespace Advencursor._Scene
             {
                 DrawCurrentDialogue(new Vector2((Globals.Bounds.X/2) - 600,Globals.Bounds.Y/2),0.3f,Color.White);
             }
+            if (canAdvance)
+            {
+                Vector2 origin = font.MeasureString("Click To Continue");
+                origin = new Vector2(origin.X / 2, origin.Y / 2);
+                if (isIntro)
+                    Globals.SpriteBatch.DrawString(font, $"Click To Continue", new Vector2(Globals.Bounds.X/2 ,Globals.Bounds.Y-50), Color.White, 0, origin, 0.2f, SpriteEffects.None, 0f);
+                else
+                    Globals.SpriteBatch.DrawString(font, $"Click To Continue", new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y - 50), Color.Black, 0, origin, 0.2f, SpriteEffects.None, 0f);
+            }
             
 
             Globals.DrawCursor();

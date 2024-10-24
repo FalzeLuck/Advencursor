@@ -28,6 +28,7 @@ namespace Advencursor._Scene
 
         public void AddScene(IScene scene, ITransition transition = null)
         {
+            GC.Collect();
             nextScene = scene;
             this.transition = transition ?? new FadeTransition();
             transitionStart = true;
