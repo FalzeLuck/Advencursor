@@ -1070,6 +1070,12 @@
 /processorParam:TextureFormat=Color
 /build:playerTexture.png
 
+#begin Sound/Effect/Boss1/Charge.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss1/Charge.wav
+
 #begin Sound/Effect/Boss1/Die.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1100,6 +1106,24 @@
 /processorParam:Quality=Best
 /build:Sound/Effect/Boss1/WallHit.wav
 
+#begin Sound/Effect/Boss2/Charging.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss2/Charging.wav
+
+#begin Sound/Effect/Boss2/Dash.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss2/Dash.wav
+
+#begin Sound/Effect/Boss2/Walk.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss2/Walk.wav
+
 #begin Sound/Effect/Boss2/WaterAttack.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1118,6 +1142,12 @@
 /processorParam:Quality=Best
 /build:Sound/Effect/Boss3/Dead.wav
 
+#begin Sound/Effect/Boss3/Healing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Healing.wav
+
 #begin Sound/Effect/Boss3/Hurt.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1129,6 +1159,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/Boss3/Knife.wav
+
+#begin Sound/Effect/Boss3/Laser.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Boss3/Laser.wav
 
 #begin Sound/Effect/Boss3/Surprise.wav
 /importer:WavImporter
@@ -1147,6 +1183,30 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/Boss3/WarpEffect.wav
+
+#begin Sound/Effect/Buff/E.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Buff/E.wav
+
+#begin Sound/Effect/Buff/Q.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Buff/Q.wav
+
+#begin Sound/Effect/Buff/R.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Buff/R.wav
+
+#begin Sound/Effect/Buff/W.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Buff/W.wav
 
 #begin Sound/Effect/ButtonClick.wav
 /importer:WavImporter
@@ -1213,6 +1273,42 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/EquipItem.wav
+
+#begin Sound/Effect/Fire/E.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Fire/E.wav
+
+#begin Sound/Effect/Fire/Q.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Fire/Q.wav
+
+#begin Sound/Effect/Fire/R.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Fire/R.wav
+
+#begin Sound/Effect/Fire/RAttack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Fire/RAttack.wav
+
+#begin Sound/Effect/Fire/W.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Fire/W.wav
+
+#begin Sound/Effect/GachaRare.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/GachaRare.wav
 
 #begin Sound/Effect/Knife Swing.wav
 /importer:WavImporter

@@ -55,6 +55,12 @@ with.
         <Start>&#32;</Start>
         <End>&#126;</End>
       </CharacterRegion>
+		<CharacterRegion>
+			<Start>&#128;</Start>
+			<!-- Start of Extended ASCII -->
+			<End>&#255;</End>
+			<!-- End of Extended ASCII -->
+		</CharacterRegion>
     </CharacterRegions>
   </Asset>
 </XnaContent>

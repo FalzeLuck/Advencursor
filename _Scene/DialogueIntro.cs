@@ -19,7 +19,6 @@ namespace Advencursor._Scene
     public class DialogueIntro : DialogueScene
     {
         private bool isIntro;
-        private Vector2 textPosition;
 
         //Fade
         private float fadeTimeMax = 1f;
@@ -160,7 +159,7 @@ namespace Advencursor._Scene
 
         private void EndScene()
         {
-            sceneManager.AddScene(new StageTutorial(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice, 5000));
+            sceneManager.AddScene(new StageTutorial(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
         }
     }
 }

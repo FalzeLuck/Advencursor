@@ -47,6 +47,7 @@ namespace Advencursor._Skill.Food_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("RBuff");
             player.Status.Heal(player.Status.MaxHP * healPercent / 100);
             oldAttack = player.Status.Attack;
             oldCritRate = player.Status.CritRate;

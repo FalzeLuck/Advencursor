@@ -299,6 +299,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                 UpdateKnifeRotation(20, new Vector2(Globals.Bounds.X, 2));
                                 blastCollideCooldown -= TimeManager.TimeGlobal;
                                 blastAnim.Update();
+                                Globals.soundManager.PlaySound("Boss3Laser");
                                 indicator = "Attack";
                                 if (player.collision.Intersects(blastCollision) && blastCollideCooldown <= 0 && blastWaitTime > -0.5f)
                                 {
@@ -334,12 +335,13 @@ namespace Advencursor._Models.Enemy.Stage2
                         indicator = "Sit";
                         UpdateContainAnimation();
 
+                        knives[0].position = new Vector2(screenCenter.X, -100);
                         restTime -= TimeManager.TimeGlobal;
                         healTimer -= TimeManager.TimeGlobal;
                         if (healTimer <= 0)
                         {
                             Status.Heal(((healPercent / 100) * Status.MaxHP) / 5);
-
+                            Globals.soundManager.PlaySound("Boss3Healing");
                             healTimer = 1f;
                         }
                         if (restTime < 0)

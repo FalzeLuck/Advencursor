@@ -125,6 +125,7 @@ namespace Advencursor._Models.Enemy.Stage2
                     if (isCenter)
                     {
                         Globals.soundManager.StopSound("Boss2Attack");
+                        Globals.soundManager.PlaySound("Boss2Walk");
                         if (!animations["Open"].IsComplete)
                         {
                             indicator = "WalkOpen";
@@ -162,6 +163,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         {
                             isStand = false;
                             isDashLeft = true;
+                            Globals.soundManager.PlaySound("Boss2Dash");
                         }
                     }
 
@@ -179,6 +181,7 @@ namespace Advencursor._Models.Enemy.Stage2
                             rayChargeTime = 1f;
                             rayDuration = 6f;
                             rayAnimation.Reset();
+                            Globals.soundManager.PlaySound("Boss2Dash");
                         }
                     }
 
@@ -193,7 +196,7 @@ namespace Advencursor._Models.Enemy.Stage2
                         {
                             isDashRight = false;
                             isRayAttack = true;
-                            rayChargeTime = 1f;
+                            rayChargeTime = 1.8f;
                             rayDuration = 6f;
                             rayAnimation.Reset();
                         }
@@ -225,6 +228,10 @@ namespace Advencursor._Models.Enemy.Stage2
                             isShake = true;
 
                         }
+                        else
+                        {
+                            Globals.soundManager.PlaySound("Boss2Charge");
+                        }
                         if (rayDuration > 0.4f)
                         {
                             if (rayAnimation.currentFrame == 5)
@@ -252,7 +259,7 @@ namespace Advencursor._Models.Enemy.Stage2
                                 else
                                 {
                                     isRayUltimate = true;
-                                    rayChargeTime = 2f;
+                                    rayChargeTime = 1.8f;
                                     rayDuration = 5f;
                                     rayAnimation.Reset();
                                 }
@@ -301,6 +308,10 @@ namespace Advencursor._Models.Enemy.Stage2
                             rayDuration -= TimeManager.TimeGlobal;
                             if (!isShake)
                                 Globals.Camera.Shake(0.2f, 3);
+                        }
+                        else
+                        {
+                            Globals.soundManager.PlaySound("Boss2Charge");
                         }
                         if (rayDuration > 0.4f)
                         {

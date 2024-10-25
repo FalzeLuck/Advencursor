@@ -34,6 +34,7 @@ namespace Advencursor._Skill.Food_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("WBuff");
             poisonFood.position = player.position;
             poisonFood.SetOpacity(0.9f);
             buffTime = duration;

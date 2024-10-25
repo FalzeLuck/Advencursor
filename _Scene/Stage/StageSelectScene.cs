@@ -64,8 +64,7 @@ namespace Advencursor._Scene.Stage
             Texture2D nullTexture = new Texture2D(Globals.graphicsDevice, 1, 1);
             gameData.LoadData();
             screenCenter = new(Globals.Bounds.X / 2, Globals.Bounds.Y / 2);
-            Globals.soundManager.SetSongVolume(gameData.volumeMusic);
-
+            Globals.soundManager.StopAllSounds();
             Song bgsong = Globals.Content.Load<Song>("Sound/Song/Stage Select Song");
             Globals.soundManager.SetSongVolume(gameData.volumeMusic);
             Globals.soundManager.PlaySong("Stage Select Song", bgsong, true);

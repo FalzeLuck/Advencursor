@@ -110,14 +110,14 @@ namespace Advencursor._Scene
             Globals.Game.IsMouseVisible = false;
             uiManager.Update(gameTime);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)
+            /*if (Keyboard.GetState().IsKeyDown(Keys.LeftControl)
                 && Keyboard.GetState().IsKeyDown(Keys.Q)
                 && Keyboard.GetState().IsKeyDown(Keys.W)
                 && Keyboard.GetState().IsKeyDown(Keys.E)
                 && Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 gameData.gems = 999999;
-            }
+            }*/
             if (gachaStart)
             {
                 gachaWaitTime -= TimeManager.TotalSeconds;
@@ -268,6 +268,10 @@ namespace Advencursor._Scene
 
             tempGachaItem.Clear();
             tempGachaItem.Add(tempItem);
+            if (tempGachaItem.Any(rare => rare.skill.rarity == 4))
+            {
+                Globals.soundManager.PlaySound("GachaRare");
+            }
             inventory.Items.Add(tempItem);
             gameData.SaveData();
             inventory.SaveInventory();
@@ -288,6 +292,10 @@ namespace Advencursor._Scene
 
             tempGachaItem.Clear();
             tempGachaItem.AddRange(results);
+            if(tempGachaItem.Any(rare => rare.skill.rarity == 4))
+            {
+                Globals.soundManager.PlaySound("GachaRare");
+            }
             inventory.Items.AddRange(tempGachaItem);
             gameData.SaveData();
             inventory.SaveInventory();

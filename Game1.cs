@@ -55,8 +55,8 @@ namespace Advencursor
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            _graphics.IsFullScreen = true;
-            Window.IsBorderless = false;
+            _graphics.IsFullScreen = false;
+            Window.IsBorderless = true;
             _graphics.SynchronizeWithVerticalRetrace = false;
             _graphics.ApplyChanges();
 
@@ -88,7 +88,7 @@ namespace Advencursor
             AllSkills.Reset();
             Globals.cursor = Content.Load<Texture2D>("Cursor");
 
-            _sceneManager.AddScene(new MenuScene(Content, _sceneManager));
+            _sceneManager.AddScene(new IntroScene(Content, _sceneManager));
         }
 
         protected override void Update(GameTime gameTime)

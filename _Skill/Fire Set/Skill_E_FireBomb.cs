@@ -62,6 +62,7 @@ namespace Advencursor._Skill.Fire_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("EFire");
             isBomb = false;
             countdownTick = 5;
             countdownTimer = 0;

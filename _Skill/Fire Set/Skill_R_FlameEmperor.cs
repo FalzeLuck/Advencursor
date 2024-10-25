@@ -51,6 +51,8 @@ namespace Advencursor._Skill.Fire_Set
 
         private Vector2 previousPlayerPosition;
         private Player player;
+
+        private bool isSlashSound = false;
         public Skill_R_FlameEmperor(string name, SkillData skillData) : base(name, skillData)
         {
             bombMultiplier = skillData.GetMultiplierNumber(name, "Bomb Multiplier"); 
@@ -71,6 +73,7 @@ namespace Advencursor._Skill.Fire_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("RFire");
             this.player = player;
             isBomb = false;
 
@@ -141,9 +144,15 @@ namespace Advencursor._Skill.Fire_Set
                 if (!player.CanNormalAttack())
                 {
                     startAttack = true;
+                    if (!isSlashSound)
+                    {
+                        Globals.soundManager.PlaySoundCanStack("RFireAttack");
+                        isSlashSound = true;
+                    }
                 }
                 if (slashTexture.IsComplete)
                 {
+                    isSlashSound = false;
                     for (int i = 0; i < collisionCooldown.Count; i++) collisionCooldown[i] = 0;
                     slashCollision = new Rectangle();
                     slashTexture.Reset();

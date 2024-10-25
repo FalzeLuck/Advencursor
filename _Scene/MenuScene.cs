@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Input;
 using Advencursor._Scene.Stage;
 using Advencursor._UI;
 using Advencursor._SaveData;
+using Microsoft.Xna.Framework.Media;
+using Advencursor._Managers;
 
 namespace Advencursor._Scene
 {
@@ -48,6 +50,21 @@ namespace Advencursor._Scene
             {
                 uiManager.SetDark("gachaButton", true);
             }
+
+            if (!gameData.stage3Clear)
+            {
+                Song bgsong = Globals.Content.Load<Song>("Sound/Song/Stage Select Song");
+                Globals.soundManager.SetSongVolume(gameData.volumeMusic);
+                Globals.soundManager.PlaySong("Stage Select Song", bgsong, true);
+                Globals.SetGreyScale(0f);
+                
+            }
+            else
+            {
+                Song bgsong = Globals.Content.Load<Song>("Sound/Song/Visual Novel Song");
+                Globals.soundManager.PlaySong("Visual Novel Song", bgsong, true);
+                Globals.SetGreyScale(1.0f);
+            }
             Globals.soundManager.StopAllSounds();
             Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
 
@@ -63,7 +80,9 @@ namespace Advencursor._Scene
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            Globals.BeginDrawGrayScale();
             Globals.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
+            Globals.EndDrawGrayScale();
             uiManager.Draw(spriteBatch);
             Globals.DrawCursor();
         }

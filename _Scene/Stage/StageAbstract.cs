@@ -211,6 +211,8 @@ namespace Advencursor._Scene.Stage
                     animationManager.Play("Slash");
                     player.DoNormalAttack();
                 }
+
+               SkipToBoss();
             }
         }
         protected virtual void UpdateSound()
@@ -340,6 +342,17 @@ namespace Advencursor._Scene.Stage
             sceneManager.AddScene(new MenuScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));
         }
 
+        protected void SkipToBoss()
+        {
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F1) 
+                && Keyboard.GetState().IsKeyDown(Keys.F10)
+                && !boss_spawned)
+            {
+                boss_spawn_time = 115f;
+                timer.TimeSet(115f);
+            }
+        }
         protected void DrawPause()
         {
 
@@ -380,7 +393,6 @@ namespace Advencursor._Scene.Stage
             timer.StartStop();
             float time = timer.timeLeft;
             int gems = CalculateReward();
-            Globals.soundManager.StopCurrentSong();
             UnloadScene();
             sceneManager.AddScene(new SummaryScene(contentManager, sceneManager, win, gems, gameData, time));
         }

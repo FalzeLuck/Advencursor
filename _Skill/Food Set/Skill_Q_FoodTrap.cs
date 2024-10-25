@@ -31,6 +31,7 @@ namespace Advencursor._Skill.Food_Set
         public override void Use(Player player)
         {
             base.Use(player);
+            Globals.soundManager.PlaySound("QBuff");
             tauntFood.position = player.position;
             tauntFood.SetOpacity(0.8f);
             buffTime = duration;

@@ -45,7 +45,7 @@ namespace Advencursor._Scene
 
         public DialogueEnding(ContentManager contentManager, SceneManager sceneManager) : base(contentManager, sceneManager)
         {
-            
+
         }
 
         public override void Load()
@@ -64,7 +64,7 @@ namespace Advencursor._Scene
             lifeOrigin = new Vector2(textureLife.Width / 2, textureLife.Height / 2);
 
             textureDead = Globals.Content.Load<Texture2D>("Story/D");
-            deadDeadAnim = new Animation(Globals.Content.Load<Texture2D>("Enemies/Boss3"),6,12,4,8,false,1.5f);
+            deadDeadAnim = new Animation(Globals.Content.Load<Texture2D>("Enemies/Boss3"), 6, 12, 4, 8, false, 1.5f);
 
             Globals.SetGreyScale(0f);
             textUI = Globals.Content.Load<Texture2D>("UI/SkillBackground");
@@ -74,16 +74,20 @@ namespace Advencursor._Scene
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if(dialogueIndex < currentSceneDialogue.Count)
+            if (dialogueIndex < currentSceneDialogue.Count)
                 currentLine = currentSceneDialogue[dialogueIndex];
 
-            
 
-            if (currentLine != null && currentScene  == "EndingSplit1")
+
+            if (currentLine != null && currentScene == "EndingSplit1")
             {
                 if (dialogueIndex >= currentSceneDialogue.Count)
                 {
                     deadDeadAnim.Update();
+                    if (deadDeadAnim.currentFrame == 37)
+                    {
+                        Globals.soundManager.PlaySound("Boss3Die");
+                    }
                 }
 
                 if (deadDeadAnim.IsComplete)
@@ -92,7 +96,8 @@ namespace Advencursor._Scene
                     currentScene = "EndingSplit2";
                     dialogueIndex = 0;
                 }
-            }else if (currentLine != null && currentScene == "EndingSplit2")
+            }
+            else if (currentLine != null && currentScene == "EndingSplit2")
             {
                 if (currentLine.speaker == "[L.I.F.E.]")
                 {
@@ -158,7 +163,8 @@ namespace Advencursor._Scene
                 DrawTextUI();
                 DrawCurrentDialogue(new Vector2((Globals.Bounds.X / 2) - 500, 930), 0.2f, Color.Black);
                 DrawCurrentSpeaker(new Vector2(Globals.Bounds.X / 2, 860), 0.4f, Color.Black);
-            }else if (currentLine != null && currentScene == "EndingSplit2")
+            }
+            else if (currentLine != null && currentScene == "EndingSplit2")
             {
                 Globals.SpriteBatch.Draw(textureLife, lifePos, null, Color.White, 0f, lifeOrigin, 1.5f, SpriteEffects.None, 0f);
                 Globals.SpriteBatch.Draw(textureLife, lifePos, null, Color.Black * lifeOpacity, 0f, lifeOrigin, 1.5f, SpriteEffects.None, 0f);
@@ -186,7 +192,12 @@ namespace Advencursor._Scene
                 DrawCurrentSpeaker(new Vector2(Globals.Bounds.X / 2, 860), 0.4f, Color.Red);
                 Globals.BeginDrawGrayScale();
             }
-
+            if (canAdvance)
+            {
+                Vector2 origin = font.MeasureString("Click To Continue");
+                origin = new Vector2(origin.X / 2, origin.Y / 2);
+                Globals.SpriteBatch.DrawString(font, $"Click To Continue", new Vector2(Globals.Bounds.X / 2, Globals.Bounds.Y - 50), Color.Black, 0, origin, 0.2f, SpriteEffects.None, 0f);
+            }
 
 
             Globals.DrawCursor();
@@ -197,7 +208,7 @@ namespace Advencursor._Scene
         {
             if (currentSceneDialogue != null && dialogueIndex < currentSceneDialogue.Count)
             {
-                
+
                 Dialogue currentLine = currentSceneDialogue[dialogueIndex];
                 string displayedText = currentLine.text.Substring(0, currentCharIndex);
                 Globals.SpriteBatch.DrawString(font, $"{displayedText}", position, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);

@@ -36,7 +36,7 @@ namespace Advencursor._Models.Enemy.Stage1
 
         private Effect grayscale;
         public bool isGray;
-
+        private bool isSoundCharge = false;
         public Boss1(Texture2D texture, Vector2 position, int health, int attack, int row, int column) : base(texture, position, health, attack)
         {
             animations = new Dictionary<string, Animation>
@@ -101,6 +101,11 @@ namespace Advencursor._Models.Enemy.Stage1
                 {
                     //Change Flip Cuz art do wrong side
                     FlipAuto(playerPosition, true);
+                    if (!isSoundCharge)
+                    {
+                        Globals.soundManager.PlaySound("Boss1Charge");
+                        isSoundCharge = true;
+                    }
                     charge_duration += TimeManager.TimeGlobal;
                     warningDirection = player.position - position;
                     warningDirection.Normalize();
@@ -113,13 +118,14 @@ namespace Advencursor._Models.Enemy.Stage1
 
                 if (dashing)
                 {
+                    isSoundCharge = false;
                     indicator = "Attack";
                     position += velocity * TimeManager.TimeGlobal;
-
+                    Globals.soundManager.PlaySound("Boss1Rolling");
                     if (animations["Attack"].currentFrame == 21 && stand_time >= 0.5f)
                     {
                         animations["Attack"].PauseFrame(5);
-                        Globals.soundManager.PlaySound("BossRolling");
+                        
                     }
 
                     if (collision.X + collision.Width >= Globals.Bounds.X || collision.X <= 0 || collision.Y + collision.Height >= Globals.Bounds.Y || collision.Y <= 0)

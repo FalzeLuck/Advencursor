@@ -398,12 +398,6 @@ namespace Advencursor._Scene.Stage
                     }
                 }
             }
-            //Warning
-            if (Keyboard.GetState().IsKeyDown(Keys.K) && !boss_spawned)
-            {
-                boss_spawn_time = 115f;
-                timer.TimeSet(115f);
-            }
             if (boss_spawn_time > 115f && !boss_spawned)
             {
                 foreach (var enemy in Globals.EnemyManager)
