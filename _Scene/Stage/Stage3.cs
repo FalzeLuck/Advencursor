@@ -126,10 +126,6 @@
 
                     SceneManage();
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.O))
-                    {
-                        boss_obj.Status.TakeDamage(boss_obj.Status.MaxHP * 1 / 100, player);
-                    }
                 }
 
             }

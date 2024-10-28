@@ -106,10 +106,12 @@ namespace Advencursor._Scene
 
 
             UIButton equipButton = new(Globals.Content.Load<Texture2D>("Item/EquipButton"), new Vector2(800, Globals.Bounds.Y - 100), OnEquipButtonClick);
-            UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(170, Globals.Bounds.Y - 105), OnStatusButtonHover, true);
+            UIButton keepButton = new(Globals.Content.Load<Texture2D>("Item/DeleteButton"), new Vector2(430, Globals.Bounds.Y - 100), OnKeepHighRollClick);
+            UIButton statButton = new(Globals.Content.Load<Texture2D>("Item/StatusButton"), new Vector2(180, Globals.Bounds.Y - 105), OnStatusButtonHover, true);
             UIButton playButton = new(Globals.Content.Load<Texture2D>("Item/StartButton"), new Vector2(Globals.Bounds.X - 300, Globals.Bounds.Y - 115), OnPlayButtonClick);
             UIButton exitButton = new(Globals.Content.Load<Texture2D>("UI/Gacha/ButtonExit2"), new Vector2(60, 60), OnExitButtonClick);
             uiManager.AddElement("equipButton", equipButton);
+            uiManager.AddElement("keepButton", keepButton);
             uiManager.AddElement("statButton", statButton);
             uiManager.AddElement("exitButton", exitButton);
             uiManager.AddElement("playButton", playButton);
@@ -304,7 +306,7 @@ namespace Advencursor._Scene
         {
             for (int i = 0; i < 4; i++)
             {
-                Vector2 position = new Vector2(85, gridStartPos.Y + (i * itemSize) + (i * 20) - 100);
+                Vector2 position = new Vector2(95, gridStartPos.Y + (i * itemSize) + (i * 20) - 100);
                 Keys keyIndex = new Keys();
                 if (i == 0) { keyIndex = Keys.Q; }
                 else if (i == 1) { keyIndex = Keys.W; }
@@ -481,7 +483,19 @@ namespace Advencursor._Scene
         }
 
 
-
+        private void OnKeepHighRollClick()
+        {
+            currentScrollIndex = 0;
+            selectedItemIndex = 0;
+            inventory.RemoveDuplicatesKeepHighestStat();
+            player.AddSkill(Keys.W, AllSkills.allSkills["null"]);
+            player.AddSkill(Keys.Q, AllSkills.allSkills["null"]);
+            player.AddSkill(Keys.E, AllSkills.allSkills["null"]);
+            player.AddSkill(Keys.R, AllSkills.allSkills["null"]);
+            player.ResetStat();
+            player.SavePlayer();
+            inventory.SaveInventory();
+        }
         private void CheatInventory()
         {
             inventory.Items.Clear();

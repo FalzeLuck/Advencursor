@@ -22,7 +22,6 @@ namespace Advencursor._Skill
         
         public Inventory()
         {
-            
             Items = new List<Item>()
             {
                 new Item(AllSkills.itemNameViaSkillName["null"],AllSkills.allSkills["null"],Keys.None)
@@ -75,7 +74,21 @@ namespace Advencursor._Skill
                 .ThenByDescending(item => item.statValue)
                 .ToList();
         }
+        public void RemoveDuplicatesKeepHighestStat()
+        {
+            
+            var itemsByName = Items.GroupBy(item => item.name);
 
+            List<Item> highestStatItems = new List<Item>();
+
+            foreach (var group in itemsByName)
+            {
+                var maxStatItem = group.OrderByDescending(item => item.statValue).First();
+                highestStatItems.Add(maxStatItem);
+            }
+
+            Items = highestStatItems;
+        }
     }
 
     public class Item
@@ -107,22 +120,22 @@ namespace Advencursor._Skill
             if (keys == Keys.Q)
             {
                 statDesc = "Health";
-                statValue = BiasedRandomFloat(1000, 3000, 2.2f);
+                statValue = BiasedRandomFloat(1000, 3000, 3.0f);
             }
             else if (keys == Keys.W)
             {
                 statDesc = "Attack";
-                statValue = BiasedRandomFloat(20, 40, 2.2f);
+                statValue = BiasedRandomFloat(20, 40, 4.0f);
             }
             else if (keys == Keys.E)
             {
                 statDesc = "Critical Rate";
-                statValue = BiasedRandomFloat(4.7f, 31.3f, 2.8f);
+                statValue = BiasedRandomFloat(4.7f, 31.3f, 4.0f);
             }
             else if (keys == Keys.R)
             {
                 statDesc = "Critical Damage";
-                statValue = BiasedRandomFloat(9.3f, 62.2f, 3.0f);
+                statValue = BiasedRandomFloat(9.3f, 62.2f, 4.0f);
             }
         }
 

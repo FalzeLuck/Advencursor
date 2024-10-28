@@ -626,6 +626,18 @@
 /processorParam:TextureFormat=Color
 /build:Item/Background2.PNG
 
+#begin Item/DeleteButton.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Item/DeleteButton.PNG
+
 #begin Item/EquipButton.PNG
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1034,6 +1046,18 @@
 /processorParam:TextureFormat=Color
 /build:Item/StatusButton.PNG
 
+#begin Logo.PNG
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Logo.PNG
+
 #begin particle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1316,6 +1340,12 @@
 /processorParam:Quality=Best
 /build:Sound/Effect/Knife Swing.wav
 
+#begin Sound/Effect/Lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Lose.wav
+
 #begin Sound/Effect/Slash.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1363,6 +1393,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sound/Effect/Warning.wav
+
+#begin Sound/Effect/Win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Effect/Win.wav
 
 #begin Sound/Song/Boss Fight Song.mp3
 /importer:Mp3Importer

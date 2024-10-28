@@ -53,11 +53,11 @@ namespace Advencursor
             Globals.Bounds = new(1920, 1080);
             _graphics.PreferredBackBufferWidth = Globals.Bounds.X;
             _graphics.PreferredBackBufferHeight = Globals.Bounds.Y;
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.IsFullScreen = false;
             Window.IsBorderless = true;
             _graphics.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0f / 120);
             _graphics.ApplyChanges();
 
             Globals.Content = Content;
@@ -68,7 +68,6 @@ namespace Advencursor
             Globals.grayScaleEffect = Content.Load<Effect>("greyScale");
             Globals.SetGreyScale(1.0f);
             Globals.fullScreenRectangle = new Rectangle(0, 0, Globals.Bounds.X, Globals.Bounds.Y);
-            Globals.LoadSounds();
 
             spriteFont = Content.Load<SpriteFont>("basicFont");
 

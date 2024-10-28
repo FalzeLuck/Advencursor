@@ -25,6 +25,8 @@ namespace Advencursor._Scene
         private Texture2D blackScreenTexture;
         private bool fadetoblack;
 
+        private Texture2D logoTexture;
+
         private SpriteFont spriteFont;
         private string warningText = "WARNING\r\n\r\nThis game features flashing lights, intense colors, and rapid-action sequences. \r\nThese effects may trigger discomfort or seizures for players with photosensitive epilepsy or visual sensitivities. \r\nIf you experience dizziness, nausea, or visual disturbances, please stop playing.\r\n\r\nThis game also includes cartoonish combat scenes and fast-paced visuals that may not be suitable for all players. \r\nPlease enjoy responsibly and remember to play at your own pace.";
         private float _targetWidthPercentage = 0.8f;
@@ -36,8 +38,8 @@ namespace Advencursor._Scene
             Logo,
             Warning
         }
-        private float logoPhaseTimer = 2f;
-        private float warningPhaseTimer = 3f;
+        private float logoPhaseTimer = 3f;
+        private float warningPhaseTimer = 4f;
         public IntroScene(ContentManager contentManager, SceneManager sceneManager)
         {
             this.contentManager = contentManager;
@@ -46,6 +48,7 @@ namespace Advencursor._Scene
         public void Load()
         {
             spriteFont = Globals.Content.Load<SpriteFont>("Font/TextFont");
+            logoTexture = Globals.Content.Load<Texture2D>("Logo");
             fadetoblack = false;
             phaseIndicator = (int)IntroPhase.Logo;
             blackScreenTexture = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
@@ -83,7 +86,11 @@ namespace Advencursor._Scene
         public void Draw(SpriteBatch spriteBatch)
         {
             Globals.SpriteBatch.Draw(blackScreenTexture, Vector2.Zero, Color.White);
-
+            if(phaseIndicator == (int)IntroPhase.Logo)
+            {
+                Vector2 origin = new Vector2(logoTexture.Width/2, logoTexture.Height/2);
+                spriteBatch.Draw(logoTexture,new Vector2(Globals.Bounds.X/2,Globals.Bounds.Y/2),null,Color.White,0f,origin,1f,SpriteEffects.None,0f);
+            }
             if (phaseIndicator == (int)IntroPhase.Warning)
             {
                 Vector2 textSize = spriteFont.MeasureString(warningText);

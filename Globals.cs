@@ -251,12 +251,16 @@ namespace Advencursor
             SoundEffect EquipItem = Content.Load<SoundEffect>("Sound/Effect/EquipItem");
             SoundEffect Warning = Content.Load<SoundEffect>("Sound/Effect/Warning");
             SoundEffect GachaRare = Content.Load<SoundEffect>("Sound/Effect/GachaRare");
+            SoundEffect Win = Content.Load<SoundEffect>("Sound/Effect/Win");
+            SoundEffect Lose = Content.Load<SoundEffect>("Sound/Effect/Lose");
             soundManager.LoadSound("Slash", slashSound);
             soundManager.LoadSound("Hover", buttonHover,0.6f);
             soundManager.LoadSound("Click", buttonClick,0.8f);
             soundManager.LoadSound("EquipItem", EquipItem);
             soundManager.LoadSound("Warning", Warning,0.5f);
             soundManager.LoadSound("GachaRare", GachaRare);
+            soundManager.LoadSound("Win", Win);
+            soundManager.LoadSound("Lose", Lose);
 
             //ThunderSet
             SoundEffect QThunder = Content.Load<SoundEffect>("Sound/Effect/Thunder/Q");

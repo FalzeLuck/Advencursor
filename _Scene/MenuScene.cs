@@ -46,6 +46,8 @@ namespace Advencursor._Scene
             uiManager.AddElement("settingButton", settingButton);
             uiManager.AddElement("exitButton", exitButton);
             gameData.LoadData();
+            Globals.LoadSounds();
+            Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
             if (gameData.isFirstTime)
             {
                 uiManager.SetDark("gachaButton", true);
@@ -66,7 +68,7 @@ namespace Advencursor._Scene
                 Globals.SetGreyScale(1.0f);
             }
             Globals.soundManager.StopAllSounds();
-            Globals.soundManager.SetGlobalSoundEffectVolume(gameData.volumeEffect);
+            
 
             Globals.soundManager.SoundReset();
             background = Globals.Content.Load<Texture2D>("Background/Menu");

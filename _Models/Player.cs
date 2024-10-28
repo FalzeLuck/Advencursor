@@ -73,8 +73,7 @@ namespace Advencursor._Models
             
             Skills = new Dictionary<Keys, Skill>();
             Status = new(health,attack);
-            Status.SetCritRate(10);
-            Status.SetCritDamage(50);
+            ResetStat();
             Inventory = new Inventory();
 
             isStun = false;
@@ -106,6 +105,14 @@ namespace Advencursor._Models
         {
             AddSkill(item.keys,item.skill);
             CalculateStat(item);
+        }
+
+        public void ResetStat()
+        {
+            Status.SetHP(15000);
+            Status.SetAttack(800);
+            Status.SetCritRate(10);
+            Status.SetCritDamage(50);
         }
 
         public void CalculateStat(Item item)

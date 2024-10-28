@@ -228,8 +228,6 @@ namespace Advencursor._Scene.Stage
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                gameData.stage = 1;
-                gameData.isFirstTime = true;
                 gameData.SaveData();
                 AllSkills.Reset();
                 sceneManager.AddScene(new StageSelectScene(contentManager, sceneManager), new CircleTransition(Globals.graphicsDevice));

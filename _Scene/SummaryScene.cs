@@ -82,16 +82,19 @@ namespace Advencursor._Scene
         public void Load()
         {
             Globals.soundManager.StopAllSounds();
+            Globals.soundManager.StopCurrentSong();
             font = Globals.Content.Load<SpriteFont>("Font/TextFont");
             gemTexture = Globals.Content.Load<Texture2D>("UI/Gacha/Gem");
             black = Globals.CreateRectangleTexture(Globals.Bounds.X, Globals.Bounds.Y, Color.Black);
             if (win)
             {
                 summaryScreen = new Animation(Globals.Content.Load<Texture2D>("UI/Summary/Win"), 1, 2, 2, true);
+                Globals.soundManager.PlaySound("Win");
             }
             else
             {
                 summaryScreen = new Animation(Globals.Content.Load<Texture2D>("UI/Summary/Lose"), 1, 7, 8, false);
+                Globals.soundManager.PlaySound("Lose");
             }
 
             StartShuffleTime();
